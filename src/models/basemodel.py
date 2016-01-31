@@ -42,7 +42,7 @@ class BaseModel:
     def is_list(self, data):
         assert isinstance(data, (list, tuple)), "data '{0}' Must be a list".format(data)
 
-    def is_unique(self, key, scope=[]):
+    def is_unique(self, key):
         def _unique(data):
             value = data[key]
             assert len(self.find_item({key: value})) == 0, "data '{0}' Must must be a unique value in the database with respect to key {1}".format(data, key)
