@@ -69,5 +69,6 @@ node_modules/
 src/static/dist/*
 dist/
 
-#*.xls
+#*.xls and *.csv
 *.xls
+*.csv
