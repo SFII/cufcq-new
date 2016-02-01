@@ -12,22 +12,31 @@ from models.course import Course
 from models.instructor import Instructor
 from models.department import Department
 from config.routes import routes
+from services.scraper import scrape
+
 import logging
 
 define("debug", default=True, help="set True for debug mode", type=bool)
 define("test", default=False, help="set True to run Tests", type=bool)
-define("scraper", default=False, help="set True to initiate a scraper execution", type=bool)
 define('port', default=7000, help='run on the given port', type=int)
 define('initalize', default=False, help='run initialize ', type=bool)
 define('database_name', default='cufcq', help='rethink database name', type=str)
 define('database_host', default='localhost', help='rethink database host', type=str)
 define('database_port', default=28015, help='rethink database port', type=int)
+define('scraper', group='scraper', default=False, help="set True to initiate an fcq data scraping", type=bool)
+define('convert', group='scraper', default=False, help='if scraping, convert the dataset', type=bool)
+define('firstterm', group='scraper', default=1, help='if scraping, the first term to consider. 1 is Spring, 4 is Summer, 7 is Fall.', type=int)
+define('lastterm', group='scraper', default=1, help='if scraping, the last term to consider. 1 is Spring, 4 is Summer, 7 is Fall.', type=int)
+define('firstyear', group='scraper', default=2008, help='if scraping, the first year to consider. 2008 is the earliest.', type=int)
+define('lastyear', group='scraper', default=2015, help='if scraping, the last year to consider.', type=int)
+define('campus', group='scraper', default='BD', help='if scraping, the campus to scrape. BD is boulder, DN is denver, CS is Colorado Springs', type=str)
+
 
 settings = {
     'cookie_secret': "8goWPH9uTyO+9e2NzuaW6pbR6WKH1EbmrXIfxttXq00=",
     'autoreload': True,
     'template_path': 'templates/',
-    'static_path': 'static/',
+    'static_path': 'templates/static/',
     'login_url': '/login',
     'fcq': Fcq(),
     'course': Course(),
@@ -38,6 +47,7 @@ settings = {
 
 def initialize():
     settings['debug'] = options.debug
+    settings['site_port'] = options.port
     database_name = options.database_name
     database_port = options.database_port
     database_host = options.database_host
@@ -45,7 +55,7 @@ def initialize():
         database_name += '-debug'
     if options.test:
         database_name += '-test'
-    pass
+    return
 
 
 def main():
@@ -80,15 +90,19 @@ def main():
     if options.test:
         testsuite = unittest.TestLoader().discover('test')
         return unittest.TextTestRunner(verbosity=2).run(testsuite)
+    if options.scraper:
+        return scrape(options.campus, options.firstyear, options.firstterm, options.lastyear, options.lastterm)
     if options.debug:
-        httpserver.listen(options.port if options.port else settings.SITE_PORT)
+        httpserver.listen(settings['site_port'])
         signal.signal(signal.SIGINT, sig_handler)
         signal.signal(signal.SIGTERM, sig_handler)
     else:
-        httpserver.bind(options.port if options.port else settings.SITE_PORT)  # port
+        httpserver.bind(settings['site_port'])  # port
         httpserver.start(0)
+    logging.info("Now serving on http://localhost:{0}".format(settings['site_port']))
     tornado.ioloop.IOLoop.instance().start()
     logging.info('Exit ...')
+
 
 if __name__ == "__main__":
     main()
