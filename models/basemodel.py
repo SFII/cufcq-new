@@ -8,8 +8,6 @@ import logging
 
 
 class BaseModel:
-    conn = None
-    DB = 'cufcq'
 
     def is_int(self, data):
         assert data is not True, "value '{0}' Must be a number".format(data)
@@ -44,13 +42,16 @@ class BaseModel:
 
     def is_unique(self, key):
         def _unique(data):
-            value = data[key]
+            try:
+                value = data[key]
+            except TypeError:
+                value = data
             assert len(self.find_item({key: value})) == 0, "data '{0}' Must must be a unique value in the database with respect to key {1}".format(data, key)
         return _unique
 
     def exists_in_table(self, table):
         def _exists(data):
-            assert r.db(BaseModel.DB).table(table).get(data).run(BaseModel.conn) is not None, "id '{0}' does not exist in table {1}".format(data, table)
+            assert r.db(self.DB).table(table).get(data).run(self.conn) is not None, "id '{0}' does not exist in table {1}".format(data, table)
         return _exists
 
     def is_none(self, data):
@@ -97,7 +98,10 @@ class BaseModel:
         """
         Initializes a new Table in the database, named after the model that calls it.
         """
-        table = self.__class__.__name__
+        this = self.__class__
+        table = this.__name__
+        this.conn = conn
+        this.DB = DB
         try:
             r.db(DB).table_create(table).run(conn)
         except:
@@ -130,7 +134,7 @@ class BaseModel:
         the idnum corresponds to in the database
         """
         table = self.__class__.__name__
-        return r.db(BaseModel.DB).table(table).get(idnum).run(BaseModel.conn)
+        return r.db(self.DB).table(table).get(idnum).run(self.conn)
 
     def update_item(self, idnum, data):
         """
@@ -139,7 +143,7 @@ class BaseModel:
         data hash
         """
         table = self.__class__.__name__
-        return r.db(BaseModel.DB).table(table).get(idnum).update(data).run(BaseModel.conn)
+        return r.db(self.DB).table(table).get(idnum).update(data).run(self.conn)
 
     def subscribe_user(self, user_id, row_id, user_subscription_name=None):
         """
@@ -147,8 +151,8 @@ class BaseModel:
         """
         row_table = self.__class__.__name__
         user_table = 'User'
-        user_data = r.db(BaseModel.DB).table(user_table).get(user_id).run(BaseModel.conn)
-        row_data = r.db(BaseModel.DB).table(row_table).get(row_id).run(BaseModel.conn)
+        user_data = r.db(self.DB).table(user_table).get(user_id).run(self.conn)
+        row_data = r.db(self.DB).table(row_table).get(row_id).run(self.conn)
         if user_data is None:
             logging.error("User {0} does not exist".format(user_data))
             return False
@@ -159,21 +163,21 @@ class BaseModel:
             if user_subscription_name is not None:
                 user_subscription = user_data[user_subscription_name]
                 user_subscription.append(row_id)
-                r.db(BaseModel.DB).table(user_table).get(user_id).update({user_subscription_name: user_subscription}).run(BaseModel.conn)
+                r.db(self.DB).table(user_table).get(user_id).update({user_subscription_name: user_subscription}).run(self.conn)
         except KeyError:
             logging.error("user subscription {0} not known in user data".format(user_subscription_name))
             return False
         subscribers = row_data['subscribers']
         subscribers.append(user_id)
-        return r.db(BaseModel.DB).table(row_table).get(row_id).update({'subscribers': subscribers}).run(BaseModel.conn)
+        return r.db(self.DB).table(row_table).get(row_id).update({'subscribers': subscribers}).run(self.conn)
 
     # adds a survey_id to a user's unanswered_surveys list.
     # maybe this should live somewhere else? like user? or survey?
     def send_user_survey(self, user_id, survey_id, survey_key='unanswered_surveys'):
         survey_table = 'Survey'
         user_table = 'User'
-        user_data = r.db(BaseModel.DB).table(user_table).get(user_id).run(BaseModel.conn)
-        survey_data = r.db(BaseModel.DB).table(survey_table).get(survey_id).run(BaseModel.conn)
+        user_data = r.db(self.DB).table(user_table).get(user_id).run(self.conn)
+        survey_data = r.db(self.DB).table(survey_table).get(survey_id).run(self.conn)
         if user_data is None:
             logging.error("User {0} does not exist".format(user_data))
             return False
@@ -186,7 +190,7 @@ class BaseModel:
             logging.error("survey key {0} not known in user data".format(survey_key))
             return False
         user_survey_list.append(survey_id)
-        return r.db(BaseModel.DB).table(user_table).get(user_id).update({survey_key: user_survey_list}).run(BaseModel.conn)
+        return r.db(self.DB).table(user_table).get(user_id).update({survey_key: user_survey_list}).run(self.conn)
 
     def find_item(self, data):
         """
@@ -194,7 +198,7 @@ class BaseModel:
         those fields and values.
         """
         table = self.__class__.__name__
-        return list(r.db(BaseModel.DB).table(table).filter(data).run(BaseModel.conn))
+        return list(r.db(self.DB).table(table).filter(data).run(self.conn))
 
     def create_item(self, data):
         """
@@ -204,14 +208,14 @@ class BaseModel:
         table = self.__class__.__name__
         verified = self.verify(data)
         if len(verified) == 0:
-            o = r.db(BaseModel.DB).table(table).insert(data).run(BaseModel.conn)
+            o = r.db(self.DB).table(table).insert(data).run(self.conn)
             return o['generated_keys'][0]
         logging.error(verified)
         return None
 
     def delete_item(self, item_id):
         table = self.__class__.__name__
-        return r.db(BaseModel.DB).table(table).get(item_id).delete().run(BaseModel.conn)
+        return r.db(self.DB).table(table).get(item_id).delete().run(self.conn)
 
     def schema_list_check(self, method):
         def _list_check(list_data):
@@ -247,4 +251,4 @@ class BaseModel:
 
     def get_all(self):
         table = self.__class__.__name__
-        return list(r.db(BaseModel.DB).table(table).run(BaseModel.conn))
+        return list(r.db(self.DB).table(table).run(self.conn))

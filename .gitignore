@@ -72,3 +72,5 @@ dist/
 #*.xls and *.csv
 *.xls
 *.csv
+data/raw/*
+data/csv/*

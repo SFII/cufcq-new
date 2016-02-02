@@ -1,10 +1,14 @@
-import mechanize
 import logging
 import requests
 import os
+import sys
+if sys.version_info[0] < 3:
+    import mechanize
 
 
 def scrape(campus, firstyear, firstterm, lastyear, lastterm):
+    if sys.version_info[0] >= 3:
+        return logging.error("scraper must be run with python version <= 2.5")
     if not verify_options(campus, firstyear, firstterm, lastyear, lastterm):
         return logging.error("bad inputs: {0}, {1}, {2}, {3}, {4}".format(campus, firstyear, firstterm, lastyear, lastterm))
     fcqdpt = {
