@@ -151,9 +151,9 @@ class BaseModel:
         a value, this will append that value to the list.
         """
         table = self.__class__.__name__
-        return r.table(table).get(idnum).update({
+        return r.db(self.DB).table(table).get(idnum).update({
             listfield: r.row[listfield].append(value)
-        }).run(conn)
+        }).run(self.conn)
 
     def remove_item_from_listfield(self, idnum, listfield, value):
         """
@@ -161,9 +161,9 @@ class BaseModel:
         a value, this will remove that value from the listfield
         """
         table = self.__class__.__name__
-        return r.table(table).get(idnum).update({
+        return r.db(self.DB).table(table).get(idnum).update({
             listfield: r.row[listfield].remove(value)
-        }).run(conn)
+        }).run(self.conn)
 
     def remove_duplicates_from_listfield(self, idnum, listfield):
         """
@@ -171,9 +171,9 @@ class BaseModel:
         remove all duplicates in the listfield.
         """
         table = self.__class__.__name__
-        return r.table(table).get(idnum).update({
-            listfield: r.row[listfield].remove(value)
-        }).run(conn)
+        return r.db(self.DB).table(table).get(idnum).update({
+            listfield: list(set(r.row[listfield]))
+        }).run(self.conn)
 
     def subscribe_user(self, user_id, row_id, user_subscription_name=None):
         """
@@ -230,7 +230,7 @@ class BaseModel:
         table = self.__class__.__name__
         return list(r.db(self.DB).table(table).filter(data).run(self.conn))
 
-    def create_item(self, data):
+    def create_item(self, data, quiet=False):
         """
         Given data, creates a new database item if the data passes the validator
         Returns an id of the created item, or None if it fails to pass the validator
@@ -240,7 +240,8 @@ class BaseModel:
         if len(verified) == 0:
             o = r.db(self.DB).table(table).insert(data).run(self.conn)
             return o['generated_keys'][0]
-        logging.error(verified)
+        if not quiet:
+            logging.error(verified)
         return None
 
     def delete_item(self, item_id):

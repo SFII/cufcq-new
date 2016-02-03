@@ -12,15 +12,15 @@ class Course(BaseModel):
 
     def fields(self):
         return {
-            'campus': (self.is_in_list(CAMPUS_CODES), ),
-            'department_id': (self.schema_or(self.is_none, self.exists_in_table('Department'), ),),
-            'fcqs': (self.is_list, self.schema_list_check(self.is_string, )),
-            'courses': (self.is_list, self.schema_list_check(self.is_string, )),
+            'campus': (self.is_in_list(self.CAMPUS_CODES), ),
+            'department_id': (self.schema_or(self.is_none, self.is_string, ),),
+            'fcqs': (self.is_list, self.schema_list_check(self.is_string, ),),
+            'courses': (self.is_list, self.schema_list_check(self.is_string, ),),
             'course_number': (self.is_int, self.is_truthy),
-            'course_subject': (self.is_string, self.is_not_empty),
-            'course_title': (self.is_string, self.is_not_empty),
-            'course_flavor': (self.schema_or(self.is_none, self.is_string)),
-            'slug': (self.string, self.is_not_empty, self.is_unique('slug')),
+            'course_subject': (self.is_string, self.is_not_empty, ),
+            'course_title': (self.is_string, self.is_not_empty, ),
+            'course_flavor': (self.schema_or(self.is_none, self.is_string),),
+            'slug': (self.is_string, self.is_not_empty, self.is_unique('slug'), ),
         }
 
     def default(self):
@@ -37,13 +37,14 @@ class Course(BaseModel):
         }
 
     def generate_slug(self, data):
-        subject = data['subject']
+        course_subject = data['course_subject']
         course_number = data['course_number']
-        slug = "{0}-{1}".format(subject, course_number)
+        slug = "{0}-{1}".format(course_subject, course_number)
         return slug.lower()
 
     def sanitize_from_raw(self, raw):
         sanitized = self.default()
+        sanitized['campus'] = raw['campus']
         sanitized['course_number'] = raw['course_number']
         sanitized['course_title'] = raw['course_title']
         sanitized['course_subject'] = raw['course_subject']

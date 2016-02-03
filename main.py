@@ -14,7 +14,7 @@ from models.department import Department
 from config.routes import routes
 from services.scraper import scrape
 from services.digestor import digest
-
+from services.generator import generate
 import logging
 
 define('debug', default=True, help='set True for debug mode', type=bool)
@@ -32,7 +32,7 @@ define('firstyear', group='scraper', default=2008, help='if scraping, the first 
 define('lastyear', group='scraper', default=2015, help='if scraping, the last year to consider.', type=int)
 define('campus', group='scraper', default='BD', help='if scraping, the campus to scrape. BD is boulder, DN is denver, CS is Colorado Springs', type=str)
 define('digest', group='digestor', default='', help='define explicitly to digest that csv. ALL will digest every .csv', type=str)
-
+define('generate', group='generator', default=False, help='set to true to invoke the data generator.', type=bool)
 
 settings = {
     'cookie_secret': '8goWPH9uTyO+9e2NzuaW6pbR6WKH1EbmrXIfxttXq00=',
@@ -104,6 +104,8 @@ def main():
         return scrape(options.campus, options.firstyear, options.firstterm, options.lastyear, options.lastterm)
     if options.digest != '':
         return digest(options.digest)
+    if options.generate:
+        return generate()
     if options.debug:
         httpserver.listen(settings['site_port'])
         signal.signal(signal.SIGINT, sig_handler)

@@ -5,19 +5,19 @@ class Instructor(BaseModel):
     CAMPUS_CODES = ['BD', 'DN', 'CS']
 
     def requiredFields(self):
-        return ['fcqs', 'courses', 'instructor_first', 'instructor_last', 'department_id', 'slug', 'data']
+        return ['fcqs', 'courses', 'instructor_first', 'instructor_last', 'department_id', 'slug']
 
     def strictSchema(self):
         return False
 
     def fields(self):
         return {
-            'department_id': (self.schema_or(self.is_none, self.exists_in_table('Department'), ),),
+            'department_id': (self.schema_or(self.is_none, self.is_string, ),),
             'fcqs': (self.is_list, self.schema_list_check(self.is_string, )),
             'courses': (self.is_list, self.schema_list_check(self.is_string, )),
-            'instructor_first': (self.string, self.is_not_empty, ),
-            'instructor_last': (self.string, self.is_not_empty, ),
-            'slug': (self.string, self.is_not_empty, self.is_unique('slug')),
+            'instructor_first': (self.is_string, self.is_not_empty, ),
+            'instructor_last': (self.is_string, self.is_not_empty, ),
+            'slug': (self.is_string, self.is_not_empty, self.is_unique('slug')),
         }
 
     def default(self):

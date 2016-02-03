@@ -150,14 +150,14 @@ class Department(BaseModel):
 
     def fields(self):
         return {
-            'campus': (self.is_in_list(CAMPUS_CODES), ),
+            'campus': (self.is_in_list(self.CAMPUS_CODES), ),
             'name': (self.is_string, self.is_not_empty, ),
             'long_name': (self.is_string, self.is_not_empty, ),
             'college': (self.is_string, ),
             'fcqs': (self.is_list, self.schema_list_check(self.is_string, )),  # TODO: exists_in_table is supposed to check for string components
             'courses': (self.is_list, self.schema_list_check(self.is_string, )),
             'instructors': (self.is_list, self.schema_list_check(self.is_string, )),
-            'slug': (self.string, self.is_not_empty, self.is_unique('slug')),
+            'slug': (self.is_string, self.is_not_empty, self.is_unique('slug')),
         }
 
     def default(self):
@@ -180,7 +180,7 @@ class Department(BaseModel):
 
     def sanitize_from_raw(self, raw):
         sanitized = self.default()
-        name = raw['name']
+        name = raw['course_subject']
         sanitized['campus'] = raw['campus']
         sanitized['name'] = name
         sanitized['college'] = raw['college']

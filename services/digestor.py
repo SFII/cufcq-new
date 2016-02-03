@@ -2,6 +2,9 @@ import csv
 import logging
 import os
 from models.fcq import Fcq
+from models.instructor import Instructor
+from models.course import Course
+from models.department import Department
 from os import listdir
 from os.path import isfile, join
 
@@ -15,7 +18,7 @@ class dataSet:
         with open(location, "r") as myfile:
             self.headers = self.toArray(myfile.readline())
             self.stringData = myfile.readlines()
-            self.dictData = self.transformData(self.stringData, self.headers)
+            self.raw_data = self.transformData(self.stringData, self.headers)
 
     def toArray(self, string):
         reader = csv.reader([string], delimiter=',')
@@ -58,7 +61,93 @@ def digest(filename):
         return
     data = dataSet('data/csv/' + filename)
     print(data.headers)
-    for value in data.dictData:
-        sanitized = Fcq().sanitize_from_raw(value)
-        fcq_id = Fcq().create_item(sanitized)
-        logging.info(fcq_id)
+    for raw_data in data.raw_data:
+        generate_fcq(raw_data)
+
+
+
+def generate_fcq_associated_models(fcq_data):
+    instructor_id = None
+    course_id = None
+    department_id = None
+    fcq_id = fcq_data['id']
+    if fcq_data['department_id'] is None:
+        department_id = generate_department(fcq_data)
+    else:
+        department_id = fcq_data['department_id']
+
+    if fcq_data['instructor_id'] is None:
+        instructor_id = generate_instructor(fcq_data, department_id)
+    else:
+        instructor_id = fcq_data['instructor_id']
+
+    if fcq_data['course_id'] is None:
+        course_id = generate_course(fcq_data, department_id)
+    else:
+        course_id = fcq_data['course_id']
+    logging.info(fcq_id)
+    logging.info(course_id)
+    logging.info(instructor_id)
+    logging.info(department_id)
+    Course().append_item_to_listfield(course_id, 'instructors', instructor_id)
+    Course().append_item_to_listfield(course_id, 'fcqs', fcq_id)
+    Instructor().append_item_to_listfield(instructor_id, 'courses', course_id)
+    Instructor().append_item_to_listfield(instructor_id, 'fcqs', fcq_id)
+    Department().append_item_to_listfield(department_id, 'instructors', instructor_id)
+    Department().append_item_to_listfield(department_id, 'courses', course_id)
+    Department().append_item_to_listfield(department_id, 'fcqs', fcq_id)
+    updated_ids = {
+        'department_id': department_id,
+        'course_id': course_id,
+        'instructor_id': instructor_id
+    }
+    Fcq().update_item(fcq_id, updated_ids)
+
+
+
+def generate_instructor(fcq_data, department_id=None):
+    sanitized = Instructor().sanitize_from_raw(fcq_data)
+    sanitized['department_id'] = department_id
+    slug = sanitized['slug']
+    instructor_id = Instructor().create_item(sanitized, quiet=True)
+    if instructor_id is None:
+        instructor_results = Instructor().find_item({'slug': slug})
+        if len(instructor_results):
+            instructor_id = instructor_results[0]['id']
+        else:
+            return logging.error(Instructor().verify(sanitized))
+    return instructor_id
+
+def generate_course(fcq_data, department_id=None):
+    sanitized = Course().sanitize_from_raw(fcq_data)
+    sanitized['department_id'] = department_id
+    slug = sanitized['slug']
+    course_id = Course().create_item(sanitized, )
+    if course_id is None:
+        course_results = Course().find_item({'slug': slug})
+        if len(course_results):
+            course_id = course_results[0]['id']
+        else:
+            return logging.error(Course().verify(sanitized))
+    return course_id
+
+def generate_department(fcq_data):
+    sanitized = Department().sanitize_from_raw(fcq_data)
+    slug = sanitized['slug']
+    department_id = Department().create_item(sanitized, quiet=True)
+    if department_id is None:
+        department_id = Department().find_item({'slug': slug})[0]['id']
+    return department_id
+
+def generate_fcq(raw_data):
+    sanitized = Fcq().sanitize_from_raw(raw_data)
+    slug = sanitized['slug']
+    fcq_id = Fcq().create_item(sanitized, quiet=True)
+    if fcq_id is None:
+        fcq_results = Fcq().find_item({'slug': slug})
+        if len(fcq_results):
+            return generate_fcq_associated_models(fcq_results[0])
+        else:
+            return logging.error(Fcq().verify(sanitized))
+    sanitized['id'] = fcq_id
+    generate_fcq_associated_models(sanitized)
