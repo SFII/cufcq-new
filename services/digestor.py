@@ -58,21 +58,19 @@ def digest(filename):
         for f in allfiles:
             print("python3 main.py --digest={0} ".format(f))
             os.system("python3 main.py --digest={0} ".format(f))
-        return
+        cleanup()
     data = dataSet('data/csv/' + filename)
     for raw_data in data.raw_data:
         generate_fcq(raw_data)
-    finalize()
 
 
-def finalize():
+def cleanup():
     cursor = Course().cursor()
     for doc_data in cursor:
         logging.info(doc_data['slug'])
         instructors = list(set(doc_data['instructors']))
         fcqs = list(set(doc_data['fcqs']))
         Course().update_item(doc_data['id'], {'instructors': instructors, 'fcqs': fcqs})
-
     cursor.close()
     cursor = Instructor().cursor()
     for doc_data in cursor:
@@ -80,7 +78,6 @@ def finalize():
         courses = list(set(doc_data['courses']))
         fcqs = list(set(doc_data['fcqs']))
         Instructor().update_item(doc_data['id'], {'courses': courses, 'fcqs': fcqs})
-
     cursor.close()
     cursor = Department().cursor()
     for doc_data in cursor:

@@ -31,6 +31,7 @@ define('firstyear', group='scraper', default=2008, help='if scraping, the first 
 define('lastyear', group='scraper', default=2015, help='if scraping, the last year to consider.', type=int)
 define('campus', group='scraper', default='BD', help='if scraping, the campus to scrape. BD is boulder, DN is denver, CS is Colorado Springs', type=str)
 define('digest', group='digestor', default='', help='define explicitly to digest that csv. ALL will digest every .csv', type=str)
+define('cleanup', group='digestor', default=False, help='define explicitly to finalize and clean the database', type=bool)
 
 settings = {
     'cookie_secret': '8goWPH9uTyO+9e2NzuaW6pbR6WKH1EbmrXIfxttXq00=',
@@ -104,6 +105,8 @@ def main():
         return digest(options.digest)
     if options.generate:
         return generate()
+    if options.cleanup:
+        return cleanup()
     if options.debug:
         httpserver.listen(settings['site_port'])
         signal.signal(signal.SIGINT, sig_handler)
