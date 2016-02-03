@@ -171,6 +171,7 @@ class BaseModel:
         remove all duplicates in the listfield.
         """
         table = self.__class__.__name__
+        logging.info(listfield)
         return r.db(self.DB).table(table).get(idnum).update({
             listfield: list(set(r.row[listfield]))
         }).run(self.conn)
@@ -241,7 +242,7 @@ class BaseModel:
             o = r.db(self.DB).table(table).insert(data).run(self.conn)
             return o['generated_keys'][0]
         if not quiet:
-            logging.error(verified)
+            logging.warn(verified)
         return None
 
     def delete_item(self, item_id):

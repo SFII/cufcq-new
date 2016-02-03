@@ -60,9 +60,36 @@ def digest(filename):
             os.system("python3 main.py --digest={0} ".format(f))
         return
     data = dataSet('data/csv/' + filename)
-    print(data.headers)
     for raw_data in data.raw_data:
         generate_fcq(raw_data)
+    finalize()
+
+
+def finalize():
+    cursor = Course().cursor()
+    for doc_data in cursor:
+        logging.info(doc_data['slug'])
+        instructors = list(set(doc_data['instructors']))
+        fcqs = list(set(doc_data['fcqs']))
+        Course().update_item(doc_data['id'], {'instructors': instructors, 'fcqs': fcqs})
+
+    cursor.close()
+    cursor = Instructor().cursor()
+    for doc_data in cursor:
+        logging.info(doc_data['slug'])
+        courses = list(set(doc_data['courses']))
+        fcqs = list(set(doc_data['fcqs']))
+        Instructor().update_item(doc_data['id'], {'courses': courses, 'fcqs': fcqs})
+
+    cursor.close()
+    cursor = Department().cursor()
+    for doc_data in cursor:
+        logging.info(doc_data['slug'])
+        instructors = list(set(doc_data['instructors']))
+        courses = list(set(doc_data['courses']))
+        fcqs = list(set(doc_data['fcqs']))
+        Department().update_item(doc_data['id'], {'instructors': instructors, 'courses': courses, 'fcqs': fcqs})
+    cursor.close()
 
 
 
@@ -71,20 +98,19 @@ def generate_fcq_associated_models(fcq_data):
     course_id = None
     department_id = None
     fcq_id = fcq_data['id']
+    department_id = fcq_data['department_id']
+    instructor_id = fcq_data['instructor_id']
+    course_id = fcq_data['course_id']
+    if department_id and instructor_id and course_id:
+        return fcq_id
     if fcq_data['department_id'] is None:
         department_id = generate_department(fcq_data)
-    else:
-        department_id = fcq_data['department_id']
 
     if fcq_data['instructor_id'] is None:
         instructor_id = generate_instructor(fcq_data, department_id)
-    else:
-        instructor_id = fcq_data['instructor_id']
 
     if fcq_data['course_id'] is None:
         course_id = generate_course(fcq_data, department_id)
-    else:
-        course_id = fcq_data['course_id']
     logging.info(fcq_id)
     logging.info(course_id)
     logging.info(instructor_id)
@@ -102,7 +128,7 @@ def generate_fcq_associated_models(fcq_data):
         'instructor_id': instructor_id
     }
     Fcq().update_item(fcq_id, updated_ids)
-
+    return fcq_id
 
 
 def generate_instructor(fcq_data, department_id=None):
@@ -134,7 +160,7 @@ def generate_course(fcq_data, department_id=None):
 def generate_department(fcq_data):
     sanitized = Department().sanitize_from_raw(fcq_data)
     slug = sanitized['slug']
-    department_id = Department().create_item(sanitized, quiet=True)
+    department_id = Department().create_item(sanitized)
     if department_id is None:
         department_id = Department().find_item({'slug': slug})[0]['id']
     return department_id
@@ -142,7 +168,7 @@ def generate_department(fcq_data):
 def generate_fcq(raw_data):
     sanitized = Fcq().sanitize_from_raw(raw_data)
     slug = sanitized['slug']
-    fcq_id = Fcq().create_item(sanitized, quiet=True)
+    fcq_id = Fcq().create_item(sanitized)
     if fcq_id is None:
         fcq_results = Fcq().find_item({'slug': slug})
         if len(fcq_results):
