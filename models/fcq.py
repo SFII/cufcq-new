@@ -26,7 +26,7 @@ class Fcq(BaseModel):
             'yearterm': (self.is_yearterm, ),
             'course_number': (self.is_int, self.is_truthy),
             'course_subject': (self.is_string, self.is_not_empty),
-            'section': (self.is_int, ),
+            'section': (self.is_string, ),
             'course_title': (self.is_string, self.is_not_empty),
             'instructor_first': (self.is_string, self.is_not_empty, ),
             'instructor_last': (self.is_string, self.is_not_empty, ),
@@ -44,7 +44,7 @@ class Fcq(BaseModel):
         assert key in [1, 4, 7]
 
     def is_fcq_value(self, data):
-        assert isinstance(data, (int, float)), "value '{0}' Must be a number".format(data)
+        self.is_int(data)
         self.is_in_range(1.0, 6.0)(data)
 
     def generate_slug(self, data):
@@ -53,7 +53,8 @@ class Fcq(BaseModel):
         course_number = data['course_number']
         section = data['section']
         index = data['index_number']
-        return "{0}-{1}-{2}-{3}-{4}".format(yearterm, course_subject, course_number, section, index)
+        slug = "{0}-{1}-{2}-{3}-{4}".format(yearterm, course_subject, course_number, section, index)
+        return slug.lower()
 
     def default(self):
         return {
@@ -80,7 +81,7 @@ class Fcq(BaseModel):
         sanitized['yearterm'] = int(raw['Yearterm'])
         sanitized['course_subject'] = raw['Subject']
         sanitized['course_number'] = int(raw['Crse'])
-        sanitized['section'] = int(raw['Sec'])
+        sanitized['section'] = raw['Sec']
         sanitized['online_fcq'] = True if len(raw['OnlineFCQ']) else False
         sanitized['bd_continuing_education'] = True if len(raw['BDContinEdCrse']) else False
         instructor_names = raw['Instructor'].split(',')

@@ -5,34 +5,43 @@ class Instructor(BaseModel):
     CAMPUS_CODES = ['BD', 'DN', 'CS']
 
     def requiredFields(self):
-        return ['campus', 'fcqs', 'courses', 'instructor_first', 'instructor_last', 'slug', 'data']
+        return ['fcqs', 'courses', 'instructor_first', 'instructor_last', 'department_id', 'slug', 'data']
 
     def strictSchema(self):
-        return True
+        return False
 
     def fields(self):
         return {
-            'campus': (self.is_string, self.is_not_empty, self.is_in_list(CAMPUS_CODES), ),
-            'department_id': (self.is_string, self.is_not_empty, self.exists_in_table('Department')),
-            'fcqs': (self.is_list, self.is_not_empty, self.schema_list_check(self.is_string, self.exists_in_table('Fcq'))),
-            'courses': (self.is_list, self.is_not_empty, self.schema_list_check(self.is_string)),
-            'instructor_first': (self.string, self.is_not_empty, ),  # TODO self.is_unique('instructor_first', scope=['instructor_last'])
+            'department_id': (self.schema_or(self.is_none, self.exists_in_table('Department'), ),),
+            'fcqs': (self.is_list, self.schema_list_check(self.is_string, )),
+            'courses': (self.is_list, self.schema_list_check(self.is_string, )),
+            'instructor_first': (self.string, self.is_not_empty, ),
             'instructor_last': (self.string, self.is_not_empty, ),
             'slug': (self.string, self.is_not_empty, self.is_unique('slug')),
-            'data': (self.schema_or(self.is_none, self.is_list)),  # TODO: replace is_list with is_dict
         }
 
     def default(self):
         return {
-            'campus': '',
-            'department_id': '',
+            'department_id': None,
             'fcqs': [],
             'courses': [],
             'instructor_first': '',
             'instructor_last': '',
             'slug': '',
-            'data': None
         }
+
+    def generate_slug(self, data):
+        instructor_last = data['instructor_last']
+        instructor_first = data['instructor_first']
+        slug = "{0}-{1}".format(instructor_last, instructor_first)
+        return slug.lower()
+
+    def sanitize_from_raw(self, raw):
+        sanitized = self.default()
+        sanitized['instructor_first'] = raw['instructor_first']
+        sanitized['instructor_last'] = raw['instructor_last']
+        sanitized['slug'] = self.generate_slug(sanitized)
+        return sanitized
 
     def decompose_from_id(self, instructor_id):
         instructor_data = self.get_item(instructor_id)

@@ -138,12 +138,42 @@ class BaseModel:
 
     def update_item(self, idnum, data):
         """
-        Given an id number number of an item in the database and a data hash,
+        Given an id number of an item in the database and a data hash,
         update the fields of the data in the database with the fields in the
         data hash
         """
         table = self.__class__.__name__
         return r.db(self.DB).table(table).get(idnum).update(data).run(self.conn)
+
+    def append_item_to_listfield(self, idnum, listfield, value):
+        """
+        Given an id number of an item in the database, a listfield of that item, and
+        a value, this will append that value to the list.
+        """
+        table = self.__class__.__name__
+        return r.table(table).get(idnum).update({
+            listfield: r.row[listfield].append(value)
+        }).run(conn)
+
+    def remove_item_from_listfield(self, idnum, listfield, value):
+        """
+        Given an id number of an item in the database, a listfield of that item, and
+        a value, this will remove that value from the listfield
+        """
+        table = self.__class__.__name__
+        return r.table(table).get(idnum).update({
+            listfield: r.row[listfield].remove(value)
+        }).run(conn)
+
+    def remove_duplicates_from_listfield(self, idnum, listfield):
+        """
+        Given an id number of an item in the database, a listfield of that item,
+        remove all duplicates in the listfield.
+        """
+        table = self.__class__.__name__
+        return r.table(table).get(idnum).update({
+            listfield: r.row[listfield].remove(value)
+        }).run(conn)
 
     def subscribe_user(self, user_id, row_id, user_subscription_name=None):
         """
@@ -195,7 +225,7 @@ class BaseModel:
     def find_item(self, data):
         """
         Given a dictionary of data, find the items in the database that match
-        those fields and values.
+        those fields and values. Returns an array of results
         """
         table = self.__class__.__name__
         return list(r.db(self.DB).table(table).filter(data).run(self.conn))
@@ -214,8 +244,28 @@ class BaseModel:
         return None
 
     def delete_item(self, item_id):
+        """
+        Given an item_id, delete that item from the table
+        """
         table = self.__class__.__name__
         return r.db(self.DB).table(table).get(item_id).delete().run(self.conn)
+
+    def cursor(self):
+        """
+        Returns a cursor object for the table. A cursor object is used to iterate
+        through every element of the table. When finished with a cursor, the
+        connection must be closed with cursor.close()
+
+        cursor = User().cursor()
+        for doc in cursor:
+            ok = process_row(doc)
+            if ok is False:
+                cursor.close()
+                break
+        """
+        table = self.__class__.__name__
+        return r.db(self.DB).table(table).run(self.conn)
+
 
     def schema_list_check(self, method):
         def _list_check(list_data):

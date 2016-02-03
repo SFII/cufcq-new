@@ -1,6 +1,10 @@
 import csv
 import logging
+import os
 from models.fcq import Fcq
+from os import listdir
+from os.path import isfile, join
+
 
 
 class dataSet:
@@ -46,10 +50,15 @@ class dataSet:
 
 
 def digest(filename):
+    if filename == 'ALL':
+        allfiles = [f for f in listdir('data/csv/') if isfile(join('data/csv/', f))]
+        for f in allfiles:
+            print("python3 main.py --digest={0} ".format(f))
+            os.system("python3 main.py --digest={0} ".format(f))
+        return
     data = dataSet('data/csv/' + filename)
     print(data.headers)
     for value in data.dictData:
         sanitized = Fcq().sanitize_from_raw(value)
-        print(Fcq().verify(sanitized))
         fcq_id = Fcq().create_item(sanitized)
         logging.info(fcq_id)

@@ -31,7 +31,7 @@ define('lastterm', group='scraper', default=7, help='if scraping, the last term 
 define('firstyear', group='scraper', default=2008, help='if scraping, the first year to consider. 2008 is the earliest.', type=int)
 define('lastyear', group='scraper', default=2015, help='if scraping, the last year to consider.', type=int)
 define('campus', group='scraper', default='BD', help='if scraping, the campus to scrape. BD is boulder, DN is denver, CS is Colorado Springs', type=str)
-define('digest', group='digestor', default='', help='define explicitly to digest a that csv.', type=str)
+define('digest', group='digestor', default='', help='define explicitly to digest that csv. ALL will digest every .csv', type=str)
 
 
 settings = {
