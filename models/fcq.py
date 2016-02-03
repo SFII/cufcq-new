@@ -1,10 +1,12 @@
 from models.basemodel import BaseModel
 
+
 def cast_to_float(string):
     try:
         return float(string)
     except:
         return None
+
 
 class Fcq(BaseModel):
     CAMPUS_CODES = ['BD', 'DN', 'CS']

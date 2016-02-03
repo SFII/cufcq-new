@@ -9,7 +9,6 @@ from os import listdir
 from os.path import isfile, join
 
 
-
 class dataSet:
     """
     Class to store a digested csv
@@ -89,7 +88,6 @@ def cleanup():
     cursor.close()
 
 
-
 def generate_fcq_associated_models(fcq_data):
     instructor_id = None
     course_id = None
@@ -141,6 +139,7 @@ def generate_instructor(fcq_data, department_id=None):
             return logging.error(Instructor().verify(sanitized))
     return instructor_id
 
+
 def generate_course(fcq_data, department_id=None):
     sanitized = Course().sanitize_from_raw(fcq_data)
     sanitized['department_id'] = department_id
@@ -154,6 +153,7 @@ def generate_course(fcq_data, department_id=None):
             return logging.error(Course().verify(sanitized))
     return course_id
 
+
 def generate_department(fcq_data):
     sanitized = Department().sanitize_from_raw(fcq_data)
     slug = sanitized['slug']
@@ -161,6 +161,7 @@ def generate_department(fcq_data):
     if department_id is None:
         department_id = Department().find_item({'slug': slug})[0]['id']
     return department_id
+
 
 def generate_fcq(raw_data):
     sanitized = Fcq().sanitize_from_raw(raw_data)
