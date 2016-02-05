@@ -13,7 +13,7 @@ from models.instructor import Instructor
 from models.department import Department
 from config.routes import routes
 from services.scraper import scrape
-from services.digestor import digest
+from services.digestor import digest, cleanup
 import logging
 
 define('debug', default=True, help='set True for debug mode', type=bool)
@@ -56,8 +56,10 @@ def initialize():
         database_name += '_debug'
     if options.test:
         database_name += '_test'
+    settings['database_name'] = database_name
     try:
         conn = r.connect(host=options.database_host, port=options.database_port)
+        settings['conn'] = conn
         r.db_create(database_name).run(conn)
     except Exception as e:
         logging.warn(e.message)
@@ -102,11 +104,9 @@ def main():
     if options.scraper:
         return scrape(options.campus, options.firstyear, options.firstterm, options.lastyear, options.lastterm)
     if options.digest != '':
-        return digest(options.digest)
-    if options.generate:
-        return generate()
+        return digest(options.digest, settings['database_name'], settings['conn'])
     if options.cleanup:
-        return cleanup()
+        return cleanup(settings['database_name'], settings['conn'])
     if options.debug:
         httpserver.listen(settings['site_port'])
         signal.signal(signal.SIGINT, sig_handler)

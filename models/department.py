@@ -146,7 +146,7 @@ class Department(BaseModel):
     }
 
     def requiredFields(self):
-        return ['campus', 'college', 'name', 'fcqs', 'courses', 'instructors', 'long_name', 'slug']
+        return ['campus', 'college', 'name', 'fcqs', 'courses', 'instructors', 'long_name', 'id']
 
     def fields(self):
         return {
@@ -157,7 +157,7 @@ class Department(BaseModel):
             'fcqs': (self.is_list, self.schema_list_check(self.is_string, )),  # TODO: exists_in_table is supposed to check for string components
             'courses': (self.is_list, self.schema_list_check(self.is_string, )),
             'instructors': (self.is_list, self.schema_list_check(self.is_string, )),
-            'slug': (self.is_string, self.is_not_empty, self.is_unique('slug')),
+            'id': (self.is_string, self.is_not_empty, ),
         }
 
     def default(self):
@@ -169,14 +169,14 @@ class Department(BaseModel):
             'fcqs': [],
             'courses': [],
             'instructors': [],
-            'slug': '',
+            'id': '',
         }
 
-    def generate_slug(self, data):
+    def generate_id(self, data):
         campus = data['campus']
         name = data['name']
-        slug = "{0}-{1}".format(campus, name)
-        return slug.lower()
+        department_id = "{0}-{1}".format(campus, name)
+        return department_id.lower()
 
     def sanitize_from_raw(self, raw):
         sanitized = self.default()
@@ -185,5 +185,5 @@ class Department(BaseModel):
         sanitized['name'] = name
         sanitized['college'] = raw['college']
         sanitized['long_name'] = self.LONG_NAMES.get(name, name)
-        sanitized['slug'] = self.generate_slug(sanitized)
+        sanitized['id'] = self.generate_id(sanitized)
         return sanitized

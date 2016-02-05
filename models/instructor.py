@@ -5,7 +5,7 @@ class Instructor(BaseModel):
     CAMPUS_CODES = ['BD', 'DN', 'CS']
 
     def requiredFields(self):
-        return ['fcqs', 'courses', 'instructor_first', 'instructor_last', 'department_id', 'slug']
+        return ['fcqs', 'courses', 'instructor_first', 'instructor_last', 'department_id', 'id']
 
     def strictSchema(self):
         return False
@@ -17,7 +17,7 @@ class Instructor(BaseModel):
             'courses': (self.is_list, self.schema_list_check(self.is_string, )),
             'instructor_first': (self.is_string, self.is_not_empty, ),
             'instructor_last': (self.is_string, self.is_not_empty, ),
-            'slug': (self.is_string, self.is_not_empty, self.is_unique('slug')),
+            'id': (self.is_string, self.is_not_empty, ),
         }
 
     def default(self):
@@ -27,20 +27,21 @@ class Instructor(BaseModel):
             'courses': [],
             'instructor_first': '',
             'instructor_last': '',
-            'slug': '',
+            'id': '',
         }
 
-    def generate_slug(self, data):
+    def generate_id(self, data):
         instructor_last = data['instructor_last']
         instructor_first = data['instructor_first']
-        slug = "{0}-{1}".format(instructor_last, instructor_first)
-        return slug.lower()
+        instructor_id = "{0}-{1}".format(instructor_last, instructor_first).replace(' ','')
+        return instructor_id.lower()
 
     def sanitize_from_raw(self, raw):
         sanitized = self.default()
+        sanitized['department_id'] = raw['department_id']
         sanitized['instructor_first'] = raw['instructor_first']
         sanitized['instructor_last'] = raw['instructor_last']
-        sanitized['slug'] = self.generate_slug(sanitized)
+        sanitized['id'] = self.generate_id(sanitized)
         return sanitized
 
     def decompose_from_id(self, instructor_id):

@@ -5,7 +5,7 @@ class Course(BaseModel):
     CAMPUS_CODES = ['BD', 'DN', 'CS']
 
     def requiredFields(self):
-        return ['department_id', 'fcqs', 'instructors', 'course_number', 'course_subject', 'course_title', 'course_flavor', 'slug']
+        return ['department_id', 'fcqs', 'instructors', 'course_number', 'course_subject', 'course_title', 'course_flavor', 'id']
 
     def strictSchema(self):
         return False
@@ -20,7 +20,7 @@ class Course(BaseModel):
             'course_subject': (self.is_string, self.is_not_empty, ),
             'course_title': (self.is_string, self.is_not_empty, ),
             'course_flavor': (self.schema_or(self.is_none, self.is_string),),
-            'slug': (self.is_string, self.is_not_empty, self.is_unique('slug'), ),
+            'id': (self.is_string, self.is_not_empty, ),
         }
 
     def default(self):
@@ -33,22 +33,23 @@ class Course(BaseModel):
             'course_title': '',
             'course_subject': '',
             'course_flavor': None,
-            'slug': '',
+            'id': '',
         }
 
-    def generate_slug(self, data):
+    def generate_id(self, data):
         course_subject = data['course_subject']
         course_number = data['course_number']
-        slug = "{0}-{1}".format(course_subject, course_number)
-        return slug.lower()
+        course_id = "{0}-{1}".format(course_subject, course_number)
+        return course_id.lower()
 
     def sanitize_from_raw(self, raw):
         sanitized = self.default()
+        sanitized['department_id'] = raw['department_id']
         sanitized['campus'] = raw['campus']
         sanitized['course_number'] = raw['course_number']
         sanitized['course_title'] = raw['course_title']
         sanitized['course_subject'] = raw['course_subject']
-        sanitized['slug'] = self.generate_slug(sanitized)
+        sanitized['id'] = self.generate_id(sanitized)
         return sanitized
 
     def decompose_from_id(self, course_id):

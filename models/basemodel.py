@@ -239,8 +239,14 @@ class BaseModel:
         table = self.__class__.__name__
         verified = self.verify(data)
         if len(verified) == 0:
-            o = r.db(self.DB).table(table).insert(data).run(self.conn)
-            return o['generated_keys'][0]
+            result = r.db(self.DB).table(table).insert(data).run(self.conn)
+            if result['errors']:
+                return result['first error']
+            if result['generated_keys']:
+                return result['generated_keys'][0]
+            if result['inserted']:
+                return data['id']
+            return logging.critical("data {0} did something strange.".format(data))
         if not quiet:
             logging.warn(verified)
         return None

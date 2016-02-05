@@ -1,6 +1,7 @@
 import csv
 import logging
 import os
+import rethinkdb as r
 from models.fcq import Fcq
 from models.instructor import Instructor
 from models.course import Course
@@ -51,41 +52,41 @@ class dataSet:
             outfile.write(str(data)[1:-1])
 
 
-def digest(filename):
+def digest(filename, db, conn):
     if filename == 'ALL':
         allfiles = [f for f in listdir('data/csv/') if isfile(join('data/csv/', f))]
         for f in allfiles:
             print("python3 main.py --digest={0} ".format(f))
             os.system("python3 main.py --digest={0} ".format(f))
-        cleanup()
+        return cleanup(db, conn)
     data = dataSet('data/csv/' + filename)
-    for raw_data in data.raw_data:
-        generate_fcq(raw_data)
+    fcq_data = list(map(Fcq().sanitize_from_raw, data.raw_data))
+    for model in [Department(), Course(), Instructor()]:
+        sanitized_data = list(map(model.sanitize_from_raw, fcq_data))
+        sanitized_data = list({v['id']: v for v in sanitized_data}.values())
+        result = r.db(db).table(model.__class__.__name__).insert(sanitized_data).run(conn)
+        logging.info(result)
+    result = r.db(db).table('Fcq').insert(fcq_data).run(conn)
+    logging.info(result)
 
+def has_many(db, conn, model, has_many, has_many_id=None):
+    model_id = "{0}_id".format(model).lower()
+    has_many_plural = "{0}s".format(has_many).lower()
+    if not has_many_id:
+        has_many_id = "{0}_id".format(has_many).lower()
+    grouped_model = r.db(db).table('Fcq').group(model_id).get_field(has_many_id).ungroup().distinct().for_each(
+        lambda doc: r.db(db).table(model).get(doc["group"]).update({has_many_plural: doc["reduction"]})
+    ).run(conn, array_limit=200000)
+    logging.info(grouped_model)
 
-def cleanup():
-    cursor = Course().cursor()
-    for doc_data in cursor:
-        logging.info(doc_data['slug'])
-        instructors = list(set(doc_data['instructors']))
-        fcqs = list(set(doc_data['fcqs']))
-        Course().update_item(doc_data['id'], {'instructors': instructors, 'fcqs': fcqs})
-    cursor.close()
-    cursor = Instructor().cursor()
-    for doc_data in cursor:
-        logging.info(doc_data['slug'])
-        courses = list(set(doc_data['courses']))
-        fcqs = list(set(doc_data['fcqs']))
-        Instructor().update_item(doc_data['id'], {'courses': courses, 'fcqs': fcqs})
-    cursor.close()
-    cursor = Department().cursor()
-    for doc_data in cursor:
-        logging.info(doc_data['slug'])
-        instructors = list(set(doc_data['instructors']))
-        courses = list(set(doc_data['courses']))
-        fcqs = list(set(doc_data['fcqs']))
-        Department().update_item(doc_data['id'], {'instructors': instructors, 'courses': courses, 'fcqs': fcqs})
-    cursor.close()
+def cleanup(db, conn):
+    has_many(db, conn, 'Course', 'Fcq', has_many_id='id')
+    has_many(db, conn, 'Course', 'Instructor')
+    has_many(db, conn, 'Instructor', 'Fcq', has_many_id='id')
+    has_many(db, conn, 'Instructor', 'Course')
+    has_many(db, conn, 'Department', 'Fcq', has_many_id='id')
+    has_many(db, conn, 'Department', 'Instructor')
+    has_many(db, conn, 'Department', 'Course')
 
 
 def generate_fcq_associated_models(fcq_data):

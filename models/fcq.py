@@ -7,6 +7,12 @@ def cast_to_float(string):
     except:
         return None
 
+def cast_to_int(string):
+    try:
+        return int(string)
+    except:
+        return 0
+
 
 class Fcq(BaseModel):
     CAMPUS_CODES = ['BD', 'DN', 'CS']
@@ -14,7 +20,7 @@ class Fcq(BaseModel):
     INSTRUCTOR_GROUPS = ['TA', 'TTT', 'OTH']
 
     def requiredFields(self):
-        return ['campus', 'department_id', 'course_id', 'instructor_id', 'yearterm', 'course_number', 'course_subject', 'section', 'course_title', 'instructor_first', 'instructor_last', 'instructor_group', 'instructoroverall', 'courseoverall', 'forms_requested', 'forms_returned', 'slug']
+        return ['campus', 'department_id', 'course_id', 'instructor_id', 'yearterm', 'course_number', 'course_subject', 'section', 'course_title', 'instructor_first', 'instructor_last', 'instructor_group', 'instructoroverall', 'courseoverall', 'forms_requested', 'forms_returned', 'id']
 
     def strictSchema(self):
         return False
@@ -37,7 +43,7 @@ class Fcq(BaseModel):
             'forms_returned': (self.is_int, ),
             'courseoverall': (self.schema_or(self.is_none, self.is_fcq_value),),
             'instructoroverall': (self.schema_or(self.is_none, self.is_fcq_value),),
-            'slug': (self.is_string, self.is_not_empty, self.is_unique('slug'),)
+            'id': (self.is_string, self.is_not_empty, )
         }
 
     def is_yearterm(self, data):
@@ -49,14 +55,25 @@ class Fcq(BaseModel):
         self.is_int(data)
         self.is_in_range(1.0, 6.0)(data)
 
-    def generate_slug(self, data):
+    def generate_id(self, data):
         yearterm = data['yearterm']
         course_subject = data['course_subject']
         course_number = data['course_number']
         section = data['section']
         index = data['index_number']
-        slug = "{0}-{1}-{2}-{3}-{4}".format(yearterm, course_subject, course_number, section, index)
-        return slug.lower()
+        fcq_id = "{0}-{1}-{2}-{3}-{4}".format(yearterm, course_subject, course_number, section, index)
+        return fcq_id.lower()
+
+    def generate_dci_ids(self, data):
+        campus = data['campus']
+        course_subject = data['course_subject']
+        course_number = data['course_number']
+        instructor_last = data['instructor_last']
+        instructor_first = data['instructor_first']
+        department_id = "{0}-{1}".format(campus, course_subject).lower()
+        course_id = "{0}-{1}".format(course_subject, course_number).lower()
+        instructor_id = "{0}-{1}".format(instructor_last, instructor_first).lower().replace(' ','')
+        return (department_id, course_id, instructor_id,)
 
     def default(self):
         return {
@@ -75,13 +92,13 @@ class Fcq(BaseModel):
             'instructoroverall': None,
             'forms_requested': 0,
             'forms_returned': 0,
-            'slug': ''
+            'id': ''
         }
 
     def sanitize_from_raw(self, raw):
         sanitized = self.default()
         sanitized['yearterm'] = int(raw['Yearterm'])
-        sanitized['course_subject'] = raw['Subject']
+        sanitized['course_subject'] = raw['Subject'].replace(' ','')
         sanitized['course_number'] = int(raw['Crse'])
         sanitized['section'] = raw['Sec']
         sanitized['online_fcq'] = True if len(raw['OnlineFCQ']) else False
@@ -93,8 +110,10 @@ class Fcq(BaseModel):
         else:
             sanitized['instructor_last'] = instructor_names[0].strip()
             sanitized['instructor_first'] = instructor_names[1].strip()
-        sanitized['forms_requested'] = int(raw['FormsRequested'])
-        sanitized['forms_returned'] = int(raw['FormsReturned'])
+        sanitized['instructor_last'].replace(' ','-').replace('/','-')
+        sanitized['instructor_first'].replace(' ','-').replace('/','-')
+        sanitized['forms_requested'] = cast_to_int(raw['FormsRequested'])
+        sanitized['forms_returned'] = cast_to_int(raw['FormsReturned'])
         sanitized['courseoverall_pct_valid'] = cast_to_float(raw['CourseOverallPctValid'])
         sanitized['courseoverall'] = cast_to_float(raw['CourseOverall'])
         sanitized['courseoverall_sd'] = cast_to_float(raw['CourseOverall_SD'])
@@ -121,5 +140,9 @@ class Fcq(BaseModel):
         sanitized['fcq_department'] = raw['Fcqdept']
         sanitized['instructor_group'] = raw['Instr_Group']
         sanitized['index_number'] = int(raw['I_Num'])
-        sanitized['slug'] = self.generate_slug(sanitized)
+        sanitized['id'] = self.generate_id(sanitized)
+        d, c, i = self.generate_dci_ids(sanitized)
+        sanitized['department_id'] = d
+        sanitized['course_id'] = c
+        sanitized['instructor_id'] = i
         return sanitized
