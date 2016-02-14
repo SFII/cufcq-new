@@ -37,7 +37,7 @@ settings = {
     'cookie_secret': '8goWPH9uTyO+9e2NzuaW6pbR6WKH1EbmrXIfxttXq00=',
     'autoreload': True,
     'template_path': 'templates/',
-    'static_path': 'templates/static/',
+    'static_path': 'static/',
     'login_url': '/login',
     'fcq': Fcq(),
     'course': Course(),
