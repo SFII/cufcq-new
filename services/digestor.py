@@ -56,7 +56,9 @@ def digest(filename, db, conn):
         for f in allfiles:
             logging.info("{0} ".format(f))
             digest_file(f, db, conn)
-    digest_file(filename, db, conn)
+        return
+    else:
+        digest_file(filename, db, conn)
 
 
 def digest_file(filename, db, conn):
@@ -104,7 +106,7 @@ def _filter_field(iterable, fieldkey, fieldvalue):
 
 def _sum_field(iterable, fieldkey):
     stripped = list(filter(None.__ne__, iterable))
-    return sum(map(lambda x: return x.get(fieldkey), stripped))
+    return sum(map(lambda x: x.get(fieldkey), stripped))
 
 
 def _average_field(iterable, fieldkey):
@@ -128,6 +130,7 @@ def has_many(db, conn, model, has_many, has_many_id=None):
         lambda doc: r.db(db).table(model).get(doc["group"]).update({has_many_plural: doc["reduction"].distinct()})
     ).run(conn, array_limit=200000)
     logging.info(grouped_model)
+
 
 def cleanup(db, conn):
     has_many(db, conn, 'Course', 'Fcq', has_many_id='id')
