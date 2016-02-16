@@ -10,12 +10,21 @@ Yeah buddy. You better believe it.
 ## Swiggity. What do I do?
 Follow these instructions:
 
-1. Install python dependencies (see `requirements.txt`)
+0. Install python dependencies (see `requirements.txt`)
+1. `rethinkdb` in the folder, in a seperate terminal tab
 2. `Python main.py` to run the site. If you have all dependencies installed, it should begin build the database
-3. It should host! But it will be boring cuz theres no data in it.
-4. `Python main.py --scraper=True` will scrape the office of planning and budget for data. In 10 minutes you should have cloned the unorganized Office of planning and budget website. More specific options can be set to download one specific campus or yearterm.
-5. `Python3 main.py --digest=20081-BD.csv` will digest that csv file. It takes about 10-20 minutes per file. Run `Python3 main.py --digest=ALL` to digest every csv file. This will take all night.
-6. `Python3 main.py --cleanup=True` will cleanup the DB. This will take about 30 minutes.
+3. It should host! But it will be boring cuz theres no data in it. 
+4. `Python main.py --scraper` will scrape the office of planning and budget for data. This command cannot be called in `python3`. In 10 minutes you should have cloned the unorganized Office of planning and budget website. More specific options can be set to download one specific campus or yearterm.
+5. `Python3 main.py --digest=20081-BD.csv` will digest that csv file. It takes about 1-2 seconds per file. Run `Python3 main.py --digest=ALL` to digest every csv file. This will take 5 minutes.
+6. `Python3 main.py --cleanup` will associate and tie data together. This will take about 10 minutes.
+
+### Quick Install:
+Run `rethinkdb` in a seperate terminal tab. Then:
+```
+python main.py --scraper
+python3 main.py --digest=ALL
+python3 main.py --cleanup
+```
 
 After running all of this, you will have an identical and improved database comparable to the current setup. It can also have Colorado Springs and Denver data.
 
@@ -33,7 +42,10 @@ Totes mcgotes it's feature creep. Which is why **I'm taking full responsibility 
 * ~~Generator~~
 
 #### Part 1: Data Fort Knox
-* Precomputed
+* Precomputed Data
+  * ~~Associations~~
+  * Stats
+  * Chronology
 * Handlers
 * APIs
 
