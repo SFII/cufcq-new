@@ -7,6 +7,7 @@ def cast_to_float(string):
     except:
         return None
 
+
 def cast_to_int(string):
     try:
         return int(string)
@@ -18,9 +19,10 @@ class Fcq(BaseModel):
     CAMPUS_CODES = ['BD', 'DN', 'CS']
     VALID_TERMS = {1: 'Spring', 4: 'Summer', 7: 'Fall'}
     INSTRUCTOR_GROUPS = ['TA', 'TTT', 'OTH']
+    COURSE_LEVELS = ['GR', 'LD', 'UD']
 
     def requiredFields(self):
-        return ['campus', 'department_id', 'course_id', 'instructor_id', 'yearterm', 'course_number', 'course_subject', 'section', 'course_title', 'instructor_first', 'instructor_last', 'instructor_group', 'instructoroverall', 'courseoverall', 'forms_requested', 'forms_returned', 'id']
+        return ['campus', 'department_id', 'course_id', 'instructor_id', 'yearterm', 'course_number', 'course_subject', 'level', 'section', 'course_title', 'instructor_first', 'instructor_last', 'instructor_group', 'instructoroverall', 'courseoverall', 'forms_requested', 'forms_returned', 'id']
 
     def strictSchema(self):
         return False
@@ -34,6 +36,8 @@ class Fcq(BaseModel):
             'yearterm': (self.is_yearterm, ),
             'course_number': (self.is_int, self.is_truthy),
             'course_subject': (self.is_string, self.is_not_empty),
+            'course_subject': (self.is_string, self.is_not_empty),
+            'level': (self.is_in_list(self.COURSE_LEVELS), ),
             'section': (self.is_string, ),
             'course_title': (self.is_string, self.is_not_empty),
             'instructor_first': (self.is_string, self.is_not_empty, ),
@@ -72,7 +76,7 @@ class Fcq(BaseModel):
         instructor_first = data['instructor_first']
         department_id = "{0}-{1}".format(campus, course_subject).lower()
         course_id = "{0}-{1}".format(course_subject, course_number).lower()
-        instructor_id = "{0}-{1}".format(instructor_last, instructor_first).lower().replace(' ','')
+        instructor_id = "{0}-{1}".format(instructor_last, instructor_first).lower().replace(' ', '')
         return (department_id, course_id, instructor_id,)
 
     def default(self):
