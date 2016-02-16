@@ -146,7 +146,7 @@ class Department(BaseModel):
     }
 
     def requiredFields(self):
-        return ['campus', 'college', 'name', 'fcqs', 'courses', 'instructors', 'long_name', 'id']
+        return ['campus', 'college', 'yearterms', 'chronology', 'name', 'fcqs', 'courses', 'instructors', 'long_name', 'id']
 
     def fields(self):
         return {
@@ -154,7 +154,8 @@ class Department(BaseModel):
             'name': (self.is_string, self.is_not_empty, ),
             'long_name': (self.is_string, self.is_not_empty, ),
             'college': (self.is_string, ),
-            'fcqs': (self.is_list, self.schema_list_check(self.is_string, )),  # TODO: exists_in_table is supposed to check for string components
+            'fcqs': (self.is_list, self.schema_list_check(self.is_string, )),
+            'yearterms': (self.is_list, self.schema_list_check(self.is_int, )),
             'courses': (self.is_list, self.schema_list_check(self.is_string, )),
             'instructors': (self.is_list, self.schema_list_check(self.is_string, )),
             'id': (self.is_string, self.is_not_empty, ),
@@ -167,6 +168,8 @@ class Department(BaseModel):
             'long_name': '',
             'college': '',
             'fcqs': [],
+            'yearterms': [],
+            'chronology': {},
             'courses': [],
             'instructors': [],
             'id': '',

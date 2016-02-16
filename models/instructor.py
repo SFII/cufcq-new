@@ -5,7 +5,7 @@ class Instructor(BaseModel):
     CAMPUS_CODES = ['BD', 'DN', 'CS']
 
     def requiredFields(self):
-        return ['fcqs', 'courses', 'instructor_first', 'instructor_last', 'department_id', 'id']
+        return ['fcqs', 'courses', 'yearterms', 'chronology', 'instructor_first', 'instructor_last', 'department_id', 'id']
 
     def strictSchema(self):
         return False
@@ -14,6 +14,7 @@ class Instructor(BaseModel):
         return {
             'department_id': (self.schema_or(self.is_none, self.is_string, ),),
             'fcqs': (self.is_list, self.schema_list_check(self.is_string, )),
+            'yearterms': (self.is_list, self.schema_list_check(self.is_int, )),
             'courses': (self.is_list, self.schema_list_check(self.is_string, )),
             'instructor_first': (self.is_string, self.is_not_empty, ),
             'instructor_last': (self.is_string, self.is_not_empty, ),
@@ -24,7 +25,10 @@ class Instructor(BaseModel):
         return {
             'department_id': None,
             'fcqs': [],
+            'yearterms': [],
+            'chronology': {},
             'courses': [],
+            'yearterms': [],
             'instructor_first': '',
             'instructor_last': '',
             'id': '',
@@ -43,19 +47,3 @@ class Instructor(BaseModel):
         sanitized['instructor_last'] = raw['instructor_last']
         sanitized['id'] = self.generate_id(sanitized)
         return sanitized
-
-    def decompose_from_id(self, instructor_id):
-        instructor_data = self.get_item(instructor_id)
-        return self.decompose(instructor_data)
-
-    def decompose(self, instructor_data):
-        if instructor_data is None:
-            return None
-        decomposed_data = instructor_data.copy()
-        decomposed_question_data = []
-        question_ids = instructor_data['questions']
-        for question_id in question_ids:
-            question_data = Question().get_item(question_id)
-            decomposed_question_data.append(question_data)
-        decomposed_data['questions'] = decomposed_question_data
-        return decomposed_data
