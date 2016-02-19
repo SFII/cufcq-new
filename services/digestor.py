@@ -72,53 +72,70 @@ def digest_file(filename, db, conn):
     result = r.db(db).table('Fcq').insert(fcq_data).run(conn)
     logging.info(result)
 
-# def over_time(db, conn):
-#     for model in ['Instructor', 'Course', 'Department']
-#     grouped_model = r.db(db).table(model).for_each(
-#         lambda doc: r.db(db).table(model).get(doc['id']).update({'over_time': r.db(db).table('Fcq').get_all(*doc['fcqs']).group('yearterm').ungroup().map(
-#
-#         )})
-#     ).run(conn, array_limit=200000)
+
+def cleanup(db, conn):
+    associate(db, conn)
+    overtime(db, conn)
+    # stats_data(db, conn)
+    # grade_data(db, conn)
 
 
-def _fcq_yearterm_aggregation(fcqs_group_by_yearterm):
-
-    over_time = {}
-    fcqs_per_yearterm = {}
-    for fcq_yearterm_group in fcq_yearterm_group:
-        fcqs_per_yearterm[fcq_yearterm_group["group"]] = fcq_yearterm_group["reduction"]
-    for yearterm, fcqs in fcqs_per_yearterm.items():
-        over_time[yearterm] = {
-            'GR_fcqs': len(_filter_field(fcqs, 'level', 'GR')),
-            'UD_fcqs': len(_filter_field(fcqs, 'level', 'UD')),
-            'LD_fcqs': len(_filter_field(fcqs, 'level', 'LD')),
-            'total_fcqs': len(fcqs),
-            'total_students': len()
+def build_overtime(model):
+    def _general_overtime():
+        return {
+            'GR_fcqs': 0,  # len(_filter_field(fcqs, 'level', 'GR')),
+            'UD_fcqs': 0,  # len(_filter_field(fcqs, 'level', 'UD')),
+            'LD_fcqs': 0,  # len(_filter_field(fcqs, 'level', 'LD')),
+            'total_fcqs': 0,  # len(fcqs),
+            'total_forms_requested': 0,  # _sum_field(fcqs, 'forms_requested'),
+            'total_forms_returned': 0  # _sum_field(fcqs, 'forms_returned')
         }
-    return over_time
 
+    def _instructor_overtime(unchained=False):
+        ot = {
+            'total_courses': 0,  # len(_distinct_field(fcqs, 'course_id')),
+            'instructoroverall_average': 0  # _average_field(fcqs, 'instructoroverall'),
+        }
+        chain = {} if unchained else _general_overtime()
+        ot.update(chain)
+        return ot
 
-def _filter_field(iterable, fieldkey, fieldvalue):
-    def _filter(item):
-        return item[fieldkey] == fieldvalue
-    return filter(_filter, iterable)
+    def _course_overtime(unchained=False):
+        ot = {
+            'total_instructors': 0,  # len(_distinct_field(fcqs, 'instructor_id')),
+            'courseoverall_average': 0  # _average_field(fcqs, 'courseoverall'),
+        }
+        chain = {} if unchained else _general_overtime()
+        ot.update(chain)
+        return ot
 
-
-def _sum_field(iterable, fieldkey):
-    stripped = list(filter(None.__ne__, iterable))
-    return sum(map(lambda x: x.get(fieldkey), stripped))
-
-
-def _average_field(iterable, fieldkey):
-    stripped = list(filter(None.__ne__, iterable))
-    numberof = len(stripped)
-    return _sum_field(stripped, fieldkey) / numberof
-
-
-def _count_field(iterable, fieldkey, fieldvalue):
-    def _filter(item):
-        return item[fieldkey] == fieldvalue
-    return len(filter(_filter, iterable))
+    def _depertment_overtime():
+        cot = _course_overtime(unchained=True)
+        iot = _instructor_overtime(unchained=True)
+        got = _general_overtime()
+        dot = {
+            'TA_instructors': 0,  # len(_filter_field(_distinct_field(fcqs, 'instructor_id'), 'level', 'TA')),
+            'OTH_instructors': 0,  # len(_filter_field(_distinct_field(fcqs, 'instructor_id'), 'level', 'OTH')),
+            'TTT_instructors': 0,  # len(_filter_field(_distinct_field(fcqs, 'instructor_id'), 'level', 'TTT')),
+            'GR_courses': 0,  # len(_filter_field(_distinct_field(fcqs, 'course_id'), 'level', 'GR')),
+            'UD_courses': 0,  # len(_filter_field(_distinct_field(fcqs, 'course_id'), 'level', 'UD')),
+            'LD_courses': 0,  # len(_filter_field(_distinct_field(fcqs, 'course_id'), 'level', 'LD')),
+            'TA_instructoroverall_average': 0,  # _average_field(_filter_field(fcqs, 'instructor_group', 'TA'), 'instructoroverall'),
+            'OTH_instructoroverall_average': 0,  # _average_field(_filter_field(fcqs, 'instructor_group', 'OTH'), 'instructoroverall'),
+            'TTT_instructoroverall_average': 0,  # _average_field(_filter_field(fcqs, 'instructor_group', 'TTT'), 'instructoroverall'),
+            'GR_courseoverall_average': 0,  # _average_field(_filter_field(fcqs, 'level', 'GR'), 'courseoverall'),
+            'UD_courseoverall_average': 0,  # _average_field(_filter_field(fcqs, 'level', 'UD'), 'courseoverall'),
+            'LD_courseoverall_average': 0  # _average_field(_filter_field(fcqs, 'level', 'LD'), 'courseoverall'),
+        }
+        dot.update(cot)
+        dot.update(iot)
+        dot.update(got)
+        return dot
+    return {
+        'Instructor': _instructor_overtime(),
+        'Course': _course_overtime(),
+        'Department': _depertment_overtime()
+    }[model]
 
 
 def has_many(db, conn, model, has_many, has_many_id=None):
@@ -132,7 +149,41 @@ def has_many(db, conn, model, has_many, has_many_id=None):
     logging.info(grouped_model)
 
 
-def cleanup(db, conn):
+def overtime(db, conn):
+    department_overtime = r.db(db).table('Department').merge(lambda doc:
+        {'fcq_data': r.db('cufcq_debug').table('Fcq').get_all(r.args(doc['fcqs'])).coerce_to('array')}
+    ).for_each(
+        lambda doc: r.db(db).table('Department').get(doc['id']).update({'overtime': doc['fcq_data'].group('yearterm').ungroup().map(
+            lambda val: [val["group"].coerce_to('string'), {
+                'GR_fcqs': val["reduction"].filter({'level': 'GR'}).count(),
+                'UD_fcqs': val["reduction"].filter({'level': 'UD'}).count(),
+                'LD_fcqs': val["reduction"].filter({'level': 'LD'}).count(),
+                'total_fcqs': val["reduction"].count(),
+                'total_forms_requested': val["reduction"].sum('forms_requested'),
+                'total_forms_returned': val["reduction"].sum('forms_returned'),
+                'GR_courses': val["reduction"].filter({'level': 'GR'}).get_field('course_id').distinct().count(),
+                'UD_courses': val["reduction"].filter({'level': 'UD'}).get_field('course_id').distinct().count(),
+                'LD_courses': val["reduction"].filter({'level': 'LD'}).get_field('course_id').distinct().count(),
+                'total_courses': val["reduction"].get_field('course_id').distinct().count(),
+                'TA_instructors': val["reduction"].filter({'instructor_group': 'TA'}).get_field('instructor_id').distinct().count(),
+                'OTH_instructors': val["reduction"].filter({'instructor_group': 'OTH'}).get_field('instructor_id').distinct().count(),
+                'TTT_instructors': val["reduction"].filter({'instructor_group': 'TTT'}).get_field('instructor_id').distinct().count(),
+                'total_instructors': val["reduction"].get_field('instructor_id').distinct().count(),
+                'instructoroverall_average': val["reduction"].get_field('instructoroverall').avg().default(None),
+                'TA_instructoroverall_average': val["reduction"].filter({'instructor_group': 'TA'}).get_field('instructoroverall').avg().default(None),
+                'OTH_instructoroverall_average': val["reduction"].filter({'instructor_group': 'OTH'}).get_field('instructoroverall').avg().default(None),
+                'TTT_instructoroverall_average': val["reduction"].filter({'instructor_group': 'TTT'}).get_field('instructoroverall').avg().default(None),
+                'courseoverall_average': val["reduction"].get_field('courseoverall').avg().default(None),
+                'GR_courseoverall_average': val["reduction"].filter({'level': 'GR'}).get_field('courseoverall').avg().default(None),
+                'UD_courseoverall_average': val["reduction"].filter({'level': 'UD'}).get_field('courseoverall').avg().default(None),
+                'LD_courseoverall_average': val["reduction"].filter({'level': 'LD'}).get_field('courseoverall').avg().default(None),
+            }]
+        ).coerce_to('object')})
+    ).run(conn, array_limit=200000)
+    logging.info(department_overtime)
+
+
+def associate(db, conn):
     has_many(db, conn, 'Course', 'Fcq', has_many_id='id')
     has_many(db, conn, 'Course', 'yearterm', has_many_id='yearterm')
     has_many(db, conn, 'Course', 'alternate_title', has_many_id='course_title')

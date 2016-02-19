@@ -1,5 +1,6 @@
 from models.basemodel import BaseModel
 
+
 class Department(BaseModel):
     CAMPUS_CODES = ['BD', 'DN', 'CS']
     LONG_NAMES = {
@@ -146,7 +147,7 @@ class Department(BaseModel):
     }
 
     def requiredFields(self):
-        return ['campus', 'college', 'yearterms', 'chronology', 'name', 'fcqs', 'courses', 'instructors', 'long_name', 'id']
+        return ['campus', 'college', 'yearterms', 'overtime', 'stats', 'name', 'fcqs', 'courses', 'instructors', 'long_name', 'id']
 
     def fields(self):
         return {
@@ -169,7 +170,8 @@ class Department(BaseModel):
             'college': '',
             'fcqs': [],
             'yearterms': [],
-            'chronology': {},
+            'overtime': {},
+            'stats': {},
             'courses': [],
             'instructors': [],
             'id': '',

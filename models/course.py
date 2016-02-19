@@ -6,7 +6,7 @@ class Course(BaseModel):
     COURSE_LEVELS = ['GR', 'LD', 'UD']
 
     def requiredFields(self):
-        return ['department_id', 'fcqs', 'alternate_titles', 'yearterms', 'chronology', 'instructors', 'course_number', 'course_subject', 'course_title', 'course_flavor', 'id', 'level']
+        return ['department_id', 'fcqs', 'alternate_titles', 'yearterms', 'overtime', 'stats', 'instructors', 'course_number', 'course_subject', 'course_title', 'course_flavor', 'id', 'level']
 
     def strictSchema(self):
         return False
@@ -33,7 +33,8 @@ class Course(BaseModel):
             'alternate_titles': [],
             'fcqs': [],
             'yearterms': [],
-            'chronology': {},
+            'overtime': {},
+            'stats': {},
             'instructors': [],
             'course_number': '',
             'course_title': '',

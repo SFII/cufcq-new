@@ -5,7 +5,7 @@ class Instructor(BaseModel):
     CAMPUS_CODES = ['BD', 'DN', 'CS']
 
     def requiredFields(self):
-        return ['fcqs', 'courses', 'yearterms', 'chronology', 'instructor_first', 'instructor_last', 'department_id', 'id']
+        return ['fcqs', 'courses', 'yearterms', 'overtime', 'stats', 'instructor_first', 'instructor_last', 'department_id', 'id']
 
     def strictSchema(self):
         return False
@@ -26,7 +26,8 @@ class Instructor(BaseModel):
             'department_id': None,
             'fcqs': [],
             'yearterms': [],
-            'chronology': {},
+            'overtime': {},
+            'stats': {},
             'courses': [],
             'yearterms': [],
             'instructor_first': '',
