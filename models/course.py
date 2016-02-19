@@ -44,9 +44,10 @@ class Course(BaseModel):
         }
 
     def generate_id(self, data):
+        campus = data['campus']
         course_subject = data['course_subject']
         course_number = data['course_number']
-        course_id = "{0}-{1}".format(course_subject, course_number)
+        course_id = "{0}-{1}-{2}".format(campus, course_subject, course_number)
         return course_id.lower()
 
     def sanitize_from_raw(self, raw):
