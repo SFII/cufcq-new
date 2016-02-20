@@ -3,6 +3,7 @@ import requests
 import os
 import sys
 import argparse
+import time
 if sys.version_info[0] < 3:
     import mechanize
 
@@ -12,6 +13,7 @@ parser.add_argument('--lterm', type=int, nargs=1, default=7, help='if scraping, 
 parser.add_argument('--fyear', type=int, nargs=1, default=2008, help='if scraping, the first year to consider. 2008 is the earliest.')
 parser.add_argument('--lyear', type=int, nargs=1, default=2015, help='if scraping, the last year to consider.')
 parser.add_argument('--campus', type=str, nargs=1, default='BD', choices=['BD', 'DN', 'CS'], help='if scraping, the campus to scrape. BD is boulder, DN is denver, CS is Colorado Springs')
+
 
 def scrape(campus, firstyear, firstterm, lastyear, lastterm):
     if sys.version_info[0] >= 3:
@@ -36,6 +38,7 @@ def scrape(campus, firstyear, firstterm, lastyear, lastterm):
         if term not in [1, 4, 7]:
             continue
         filename = download_fcq(str(year), str(term), fcqdpt, url)
+        time.sleep(1)
 
     return
 
