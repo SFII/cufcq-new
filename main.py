@@ -12,8 +12,7 @@ from models.course import Course
 from models.instructor import Instructor
 from models.department import Department
 from config.routes import routes
-from services.scraper import scrape
-from services.digestor import digest, cleanup
+from services.digestor import digest, cleanup, associate, overtime
 import logging
 
 define('debug', default=True, help='set True for debug mode', type=bool)
@@ -23,14 +22,9 @@ define('initalize', default=False, help='run initialize ', type=bool)
 define('database_name', default='cufcq', help='rethink database name', type=str)
 define('database_host', default='localhost', help='rethink database host', type=str)
 define('database_port', default=28015, help='rethink database port', type=int)
-define('scraper', group='scraper', default=False, help='set True to initiate an fcq data scraping', type=bool)
-define('convert', group='scraper', default=False, help='if scraping, convert the dataset', type=bool)
-define('firstterm', group='scraper', default=1, help='if scraping, the first term to consider. 1 is Spring, 4 is Summer, 7 is Fall.', type=int)
-define('lastterm', group='scraper', default=7, help='if scraping, the last term to consider. 1 is Spring, 4 is Summer, 7 is Fall.', type=int)
-define('firstyear', group='scraper', default=2008, help='if scraping, the first year to consider. 2008 is the earliest.', type=int)
-define('lastyear', group='scraper', default=2015, help='if scraping, the last year to consider.', type=int)
-define('campus', group='scraper', default='BD', help='if scraping, the campus to scrape. BD is boulder, DN is denver, CS is Colorado Springs', type=str)
 define('digest', group='digestor', default='', help='define explicitly to digest that csv. ALL will digest every .csv', type=str)
+define('associate', group='digestor', default=False, help='this will build all has-many associations between models', type=bool)
+define('overtime', group='digestor', default=False, help='this will make all overtime associations', type=bool)
 define('cleanup', group='digestor', default=False, help='define explicitly to finalize and clean the database', type=bool)
 
 settings = {
@@ -101,10 +95,12 @@ def main():
     if options.test:
         testsuite = unittest.TestLoader().discover('test')
         return unittest.TextTestRunner(verbosity=2).run(testsuite)
-    if options.scraper:
-        return scrape(options.campus, options.firstyear, options.firstterm, options.lastyear, options.lastterm)
     if options.digest != '':
         return digest(options.digest, settings['database_name'], settings['conn'])
+    if options.associate:
+        return associate(settings['database_name'], settings['conn'])
+    if options.overtime:
+        return overtime(settings['database_name'], settings['conn'])
     if options.cleanup:
         return cleanup(settings['database_name'], settings['conn'])
     if options.debug:

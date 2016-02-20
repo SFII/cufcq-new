@@ -6,7 +6,7 @@ class Course(BaseModel):
     COURSE_LEVELS = ['GR', 'LD', 'UD']
 
     def requiredFields(self):
-        return ['department_id', 'fcqs', 'alternate_titles', 'yearterms', 'chronology', 'instructors', 'course_number', 'course_subject', 'course_title', 'course_flavor', 'id', 'level']
+        return ['department_id', 'fcqs', 'alternate_titles', 'yearterms', 'overtime', 'stats', 'instructors', 'course_number', 'course_subject', 'course_title', 'course_flavor', 'id', 'level']
 
     def strictSchema(self):
         return False
@@ -33,7 +33,8 @@ class Course(BaseModel):
             'alternate_titles': [],
             'fcqs': [],
             'yearterms': [],
-            'chronology': {},
+            'overtime': {},
+            'stats': {},
             'instructors': [],
             'course_number': '',
             'course_title': '',
@@ -43,9 +44,10 @@ class Course(BaseModel):
         }
 
     def generate_id(self, data):
+        campus = data['campus']
         course_subject = data['course_subject']
         course_number = data['course_number']
-        course_id = "{0}-{1}".format(course_subject, course_number)
+        course_id = "{0}-{1}-{2}".format(campus, course_subject, course_number)
         return course_id.lower()
 
     def sanitize_from_raw(self, raw):

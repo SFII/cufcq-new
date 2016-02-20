@@ -22,7 +22,7 @@ class Fcq(BaseModel):
     COURSE_LEVELS = ['GR', 'LD', 'UD']
 
     def requiredFields(self):
-        return ['campus', 'department_id', 'course_id', 'instructor_id', 'yearterm', 'course_number', 'course_subject', 'level', 'section', 'course_title', 'instructor_first', 'instructor_last', 'instructor_group', 'instructoroverall', 'courseoverall', 'forms_requested', 'forms_returned', 'id']
+        return ['denver_data', 'grade_data', 'campus', 'department_id', 'course_id', 'instructor_id', 'yearterm', 'course_number', 'course_subject', 'level', 'section', 'course_title', 'instructor_first', 'instructor_last', 'instructor_group', 'instructoroverall', 'courseoverall', 'forms_requested', 'forms_returned', 'id']
 
     def strictSchema(self):
         return False
@@ -60,13 +60,39 @@ class Fcq(BaseModel):
         self.is_in_range(1.0, 6.0)(data)
 
     def generate_id(self, data):
+        campus = data['campus']
         yearterm = data['yearterm']
         course_subject = data['course_subject']
         course_number = data['course_number']
         section = data['section']
         index = data['index_number']
-        fcq_id = "{0}-{1}-{2}-{3}-{4}".format(yearterm, course_subject, course_number, section, index)
+        fcq_id = "{0}-{1}-{2}-{3}-{4}-{5}".format(campus, yearterm, course_subject, course_number, section, index)
         return fcq_id.lower()
+
+    def generate_denver_data(self, raw, campus, yearterm):
+        if campus == 'DN' and yearterm <= 20144:
+            return {
+                'r_fairness': cast_to_float(raw['R_Fair']),
+                'r_presentation': cast_to_float(raw['R_Presnt']),
+                'r_workload': cast_to_float(raw['Workload']),
+                'r_diversity': cast_to_float(raw['R_Divstu']),
+                'r_accessibility': cast_to_float(raw['R_Access']),
+                'r_learning': cast_to_float(raw['R_Learn'])
+            }
+        return None
+
+    def generate_grade_data(self, data, campus, yearterm):
+        if campus == 'BD' and (yearterm % 10) != 4:
+            return {
+                'pct_A': None,
+                'pct_B': None,
+                'pct_C': None,
+                'pct_D': None,
+                'pct_F': None,
+                'pct_pass': None,
+                'gpa_grade_avg': None
+            }
+        return None
 
     def generate_dci_ids(self, data):
         campus = data['campus']
@@ -75,12 +101,14 @@ class Fcq(BaseModel):
         instructor_last = data['instructor_last']
         instructor_first = data['instructor_first']
         department_id = "{0}-{1}".format(campus, course_subject).lower()
-        course_id = "{0}-{1}".format(course_subject, course_number).lower()
+        course_id = "{0}-{1}-{2}".format(campus, course_subject, course_number).lower()
         instructor_id = "{0}-{1}".format(instructor_last, instructor_first).lower().replace(' ', '')
         return (department_id, course_id, instructor_id,)
 
     def default(self):
         return {
+            'denver_data': None,
+            'grade_data': None,
             'campus': '',
             'department_id': None,
             'course_id': None,
@@ -102,8 +130,10 @@ class Fcq(BaseModel):
     def sanitize_from_raw(self, raw):
         sanitized = self.default()
         sanitized['yearterm'] = int(raw['Yearterm'])
-        sanitized['course_subject'] = raw['Subject'].replace(' ','')
+        sanitized['campus'] = raw['Campus']
+        sanitized['course_subject'] = raw['Subject'].replace(' ', '')
         sanitized['course_number'] = int(raw['Crse'])
+        sanitized['course_title'] = raw['CrsTitle'].capitalize()
         sanitized['section'] = raw['Sec']
         sanitized['online_fcq'] = True if len(raw['OnlineFCQ']) else False
         sanitized['bd_continuing_education'] = True if len(raw['BDContinEdCrse']) else False
@@ -114,8 +144,8 @@ class Fcq(BaseModel):
         else:
             sanitized['instructor_last'] = instructor_names[0].strip()
             sanitized['instructor_first'] = instructor_names[1].strip()
-        sanitized['instructor_last'].replace(' ','-').replace('/','-')
-        sanitized['instructor_first'].replace(' ','-').replace('/','-')
+        sanitized['instructor_last'].replace(' ', '-').replace('/', '-')
+        sanitized['instructor_first'].replace(' ', '-').replace('/', '-')
         sanitized['forms_requested'] = cast_to_int(raw['FormsRequested'])
         sanitized['forms_returned'] = cast_to_int(raw['FormsReturned'])
         sanitized['courseoverall_pct_valid'] = cast_to_float(raw['CourseOverallPctValid'])
@@ -124,20 +154,16 @@ class Fcq(BaseModel):
         sanitized['instructoroverall'] = cast_to_float(raw['InstructorOverall'])
         sanitized['instructoroverall_sd'] = cast_to_float(raw['InstructorOverall_SD'])
         sanitized['hours_per_week_in_class_string'] = raw['HoursPerWkInclClass']
-        sanitized['prior_interest'] = cast_to_float(raw['PriorInterest'])
+        # Instructor Data
         sanitized['instructor_effectiveness'] = cast_to_float(raw['InstrEffective'])
         sanitized['instructor_availability'] = cast_to_float(raw['Availability'])
-        sanitized['instructor_challenge'] = cast_to_float(raw['Challenge'])
-        sanitized['how_much_learned'] = cast_to_float(raw['HowMuchLearned'])
         sanitized['instructor_respect'] = cast_to_float(raw['InstrRespect'])
-        sanitized['course_title'] = raw['CrsTitle'].capitalize()
-        sanitized['r_fairness'] = cast_to_float(raw['R_Fair'])
-        sanitized['r_presentation'] = cast_to_float(raw['R_Presnt'])
-        sanitized['r_workload'] = cast_to_float(raw['Workload'])
-        sanitized['r_diversity'] = cast_to_float(raw['R_Divstu'])
-        sanitized['r_accessibility'] = cast_to_float(raw['R_Access'])
-        sanitized['r_learning'] = cast_to_float(raw['R_Learn'])
-        sanitized['campus'] = raw['Campus']
+        # Course Data
+        sanitized['course_challenge'] = cast_to_float(raw['Challenge'])
+        sanitized['course_howmuchlearned'] = cast_to_float(raw['HowMuchLearned'])
+        sanitized['course_priorinterest'] = cast_to_float(raw['PriorInterest'])
+        sanitized['denver_data'] = self.generate_denver_data(raw, sanitized['campus'], sanitized['yearterm'])
+        sanitized['grade_data'] = None
         sanitized['college'] = raw['College']
         sanitized['asdiv'] = raw['ASdiv']
         sanitized['level'] = raw['Level']
