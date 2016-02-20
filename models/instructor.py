@@ -38,7 +38,7 @@ class Instructor(BaseModel):
     def generate_id(self, data):
         instructor_last = data['instructor_last']
         instructor_first = data['instructor_first']
-        instructor_id = "{0}-{1}".format(instructor_last, instructor_first).replace(' ','')
+        instructor_id = "{0}-{1}".format(instructor_last, instructor_first).replace(' ', '')
         return instructor_id.lower()
 
     def sanitize_from_raw(self, raw):
