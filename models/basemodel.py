@@ -128,6 +128,24 @@ class BaseModel:
         except:
             pass
 
+    def search_items(self, searchstring, returnfields=['id']):
+        """
+        Searches through the Table,
+        """
+        if 'id' not in returnfields:
+            logging.warn("'id' is not in listed returnfields. It's reccomended this field is amongst those returned")
+        if not len(returnfields):
+            logging.error("returnfields cannot be empty")
+            return []
+        table = self.__class__.__name__
+        try:
+            return r.db(DB).table(table).filter(
+                lambda doc: doc['id'].match(searchstring)
+            ).pluck(r.args(searchfields)).run(conn)
+        except:
+            return []
+
+
     def get_item(self, idnum):
         """
         Given an id number number of an item in the database, retrieve the data

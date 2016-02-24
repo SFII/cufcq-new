@@ -5,7 +5,8 @@ from handlers.index_handler import IndexHandler
 from handlers.instructor_handler import InstructorHandler
 # from handlers.course_handler import CourseHandler
 # from handlers.department_handler import DepartmentHandler
-from handlers.api_handler import ApiHandler
+from handlers.api.read_handler import ReadHandler
+from handlers.api.search_handler import SearchHandler
 # Tornado pro-tip: regex routing is optimized by putting more frequently
 # accessed routes and simpler regexes before other routes.
 routes = [
@@ -14,5 +15,6 @@ routes = [
     # (r"/courses", CourseHandler),
     # (r"/departments", DepartmentHandler),
     (r"/instructor/([\w-]+)", InstructorHandler),
-    (r"/api/(instructor|course|fcq|department)/([\w-]+)", ApiHandler)
+    (r"/api/(instructor|course|fcq|department)/([\w-]+)", ReadHandler)
+    # (r"/api/search/(instructor|course|fcq|department)/([\w-]+)", SearchHandler)
 ]
