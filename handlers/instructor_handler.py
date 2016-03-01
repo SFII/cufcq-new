@@ -13,5 +13,12 @@ class InstructorHandler(tornado.web.RequestHandler):
 			"last_fcq" : "Spring 2015",
 			"first_fcq" : "Spring 2012",
 		}
-
-		self.render('layouts/instructor_view.html',instructor_info=instructor_info_object)
+		instructor_stats_object = {
+			"effectiveness" : 5,
+			"overall" : 5,
+			"availability" : 5,
+			"respect" : 5,
+		}
+		self.render('layouts/instructor_view.html',
+			instructor_info=instructor_info_object,
+			instructor_stats=instructor_stats_object)
