@@ -8,6 +8,7 @@ if sys.version_info[0] < 3:
     import mechanize
 
 parser = argparse.ArgumentParser(description='Process some integers.')
+parser.add_argument('--grades', type=bool, nargs=1, default=False, help='if scraping, whether to additionally download the grades .xlsm file')
 parser.add_argument('--fterm', type=int, nargs=1, default=1, help='if scraping, the first term to consider. 1 is Spring, 4 is Summer, 7 is Fall.')
 parser.add_argument('--lterm', type=int, nargs=1, default=7, help='if scraping, the last term to consider. 1 is Spring, 4 is Summer, 7 is Fall.')
 parser.add_argument('--fyear', type=int, nargs=1, default=2008, help='if scraping, the first year to consider. 2008 is the earliest.')
@@ -39,7 +40,6 @@ def scrape(campus, firstyear, firstterm, lastyear, lastterm):
             continue
         filename = download_fcq(str(year), str(term), fcqdpt, url)
         time.sleep(1)
-
     return
 
 
@@ -55,6 +55,20 @@ def verify_options(campus, firstyear, firstterm, lastyear, lastterm):
     if lastterm not in [1, 4, 7]:
         return False
     return True
+
+
+def download_grades():
+    # r = requests.get('http://www.colorado.edu/pba/course/gradesall.xlsm')
+    filename = "grades"
+    xcel_path = "data/raw/{filename}.xls".format(filename=filename)
+    # output = open(xcel_path, 'wb')
+    # output.write(r.content)
+    # output.close()
+    csv_path = "data/grades/{filename}.csv".format(filename=filename)
+    os.system("ssconvert -S {path} temp.csv > /dev/null".format(path=xcel_path))
+    convert_csv('temp.csv.2', csv_path)
+    os.system("rm temp.csv.*")
+    os.system("tail -n +10 {path} > {path}.tmp && mv {path}.tmp {path}".format(path=csv_path))
 
 
 def download_fcq(year, term, fcqdpt, url):
@@ -119,4 +133,7 @@ def convert_csv(input_file, output_file):
 
 if __name__ == "__main__":
     a = parser.parse_args()
-    scrape(a.campus, a.fyear, a.fterm, a.lyear, a.lterm)
+    if(a.grades):
+        download_grades()
+    else:
+        scrape(a.campus, a.fyear, a.fterm, a.lyear, a.lterm)

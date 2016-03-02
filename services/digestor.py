@@ -4,6 +4,7 @@ import os
 import rethinkdb as r
 from time import sleep
 from models.fcq import Fcq
+from models.grade import Grade
 from models.instructor import Instructor
 from models.course import Course
 from models.department import Department
@@ -56,30 +57,48 @@ def digest(filename, db, conn):
         allfiles = [f for f in listdir('data/csv/') if isfile(join('data/csv/', f))]
         for f in allfiles:
             logging.info("{0} ".format(f))
-            digest_file(f, db, conn)
+            digest_fcq(f, db, conn)
         return
+    elif filename == 'GRADES':
+        digest_grades(db, conn)
     else:
-        digest_file(filename, db, conn)
+        digest_fcq(filename, db, conn)
 
 
-def digest_file(filename, db, conn):
-    data = dataSet('data/csv/' + filename)
-    fcq_data = list(map(Fcq().sanitize_from_raw, data.raw_data))
+def digest_grades(db, conn):
+    data = dataSet('data/grades/grades.csv')
+    grade_data = list(map(Grade().sanitize_from_raw, data.raw_data))
+    dci_from_data(grade_data, db, conn)
+    result = r.db(db).table('Grade').insert(grade_data).run(conn)
+    display_results(result, 'grades.csv')
+
+
+def dci_from_data(dataset, db, conn):
     for model in [Department(), Course(), Instructor()]:
-        sanitized_data = list(map(model.sanitize_from_raw, fcq_data))
+        sanitized_data = list(map(model.sanitize_from_raw, dataset))
         sanitized_data = list({v['id']: v for v in sanitized_data}.values())
         modeltable = model.__class__.__name__
         result = r.db(db).table(modeltable).insert(sanitized_data).run(conn)
         inserted = result['inserted']
         errors = result['errors']
         logging.info("{0} Inserted \t {1} \t Skipped {2}".format(modeltable.ljust(12), inserted, errors))
-    result = r.db(db).table('Fcq').insert(fcq_data).run(conn)
+
+
+def display_results(result, filename):
     inserted = result['inserted']
     errors = result['errors']
     logging.info("{0} \t Inserted {1}".format(filename.ljust(12), inserted))
     if errors:
         first_error = result['first_error']
         logging.warn("{0} Errors inserting fcqs. First Error:\n{1}".format(errors, first_error))
+
+
+def digest_fcq(filename, db, conn):
+    data = dataSet('data/csv/' + filename)
+    fcq_data = list(map(Fcq().sanitize_from_raw, data.raw_data))
+    dci_from_data(fcq_data, db, conn)
+    result = r.db(db).table('Fcq').insert(fcq_data).run(conn)
+    display_results(result, filename)
 
 
 def cleanup(db, conn):

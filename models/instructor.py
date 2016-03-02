@@ -25,6 +25,7 @@ class Instructor(BaseModel):
         return {
             'department_id': None,
             'fcqs': [],
+            'grades': [],
             'yearterms': [],
             'overtime': {},
             'stats': {},

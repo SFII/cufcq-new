@@ -36,7 +36,6 @@ class Fcq(BaseModel):
             'yearterm': (self.is_yearterm, ),
             'course_number': (self.is_int, self.is_truthy),
             'course_subject': (self.is_string, self.is_not_empty),
-            'course_subject': (self.is_string, self.is_not_empty),
             'level': (self.is_in_list(self.COURSE_LEVELS), ),
             'section': (self.is_string, ),
             'course_title': (self.is_string, self.is_not_empty),
