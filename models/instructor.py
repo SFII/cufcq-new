@@ -14,7 +14,8 @@ class Instructor(BaseModel):
         return {
             'department_id': (self.schema_or(self.is_none, self.is_string, ),),
             'fcqs': (self.is_list, self.schema_list_check(self.is_string, )),
-            'yearterms': (self.is_list, self.schema_list_check(self.is_int, )),
+            'fcq_yearterms': (self.is_list, self.schema_list_check(self.is_int, )),
+            'grade_yearterms': (self.is_list, self.schema_list_check(self.is_int, )),
             'courses': (self.is_list, self.schema_list_check(self.is_string, )),
             'instructor_first': (self.is_string, self.is_not_empty, ),
             'instructor_last': (self.is_string, self.is_not_empty, ),

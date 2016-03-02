@@ -104,16 +104,16 @@ class Grade(BaseModel):
 
     def sanitize_from_raw(self, raw):
         sanitized = self.default()
-        sanitized['yearterm'] = raw['YearTerm']
-        sanitized['course_subject'] = raw['Subject']
-        sanitized['course_number'] = raw['Course']
+        sanitized['yearterm'] = int(raw['YearTerm'])
+        sanitized['course_subject'] = raw['Subject'].replace(' ', '')
+        sanitized['course_number'] = int(raw['Course'])
         sanitized['section'] = raw['Section']
         sanitized['campus'] = 'BD'
         sanitized['index_number'] = 1
         sanitized['fcq_department'] = raw['CrsPBADept']
         sanitized['college'] = raw['CrsPBAColl']
         sanitized['asdiv'] = raw['CrsPBADiv']
-        sanitized['course_title'] = raw['CourseTitle']
+        sanitized['course_title'] = raw['CourseTitle'].capitalize()
         sanitized['level'] = {
             'Lower': 'LD',
             'Upper': 'UD'
@@ -143,12 +143,13 @@ class Grade(BaseModel):
         instructor_names = raw['insname1'].split(',')
         if len(instructor_names) < 2:
             sanitized['instructor_last'] = instructor_names[0].strip()
-            sanitized['instructor_first'] = instructor_names[0].strip()
+            sanitized['instructor_first'] = instructor_names[0].strip().split(' ')[0]
         else:
             sanitized['instructor_last'] = instructor_names[0].strip()
-            sanitized['instructor_first'] = instructor_names[1].strip()
-        sanitized['RAP'] = True if raw['RAP'] else False
+            sanitized['instructor_first'] = instructor_names[1].strip().split(' ')[0]
+        sanitized['RAP'] = True if raw['RAP'] != '' else False
         sanitized['honors'] = raw['Honors']
+        sanitized['id'] = self.generate_id(sanitized)
         d, c, i = self.generate_dci_ids(sanitized)
         sanitized['department_id'] = d
         sanitized['course_id'] = c

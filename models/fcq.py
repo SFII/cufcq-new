@@ -107,7 +107,6 @@ class Fcq(BaseModel):
     def default(self):
         return {
             'denver_data': None,
-            'grade_data': None,
             'campus': '',
             'department_id': None,
             'course_id': None,

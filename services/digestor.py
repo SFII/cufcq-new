@@ -69,7 +69,7 @@ def digest_grades(db, conn):
     data = dataSet('data/grades/grades.csv')
     grade_data = list(map(Grade().sanitize_from_raw, data.raw_data))
     dci_from_data(grade_data, db, conn)
-    result = r.db(db).table('Grade').insert(grade_data).run(conn)
+    result = r.db(db).table('Grade').insert(grade_data).run(conn, max_batch_rows=1000)
     display_results(result, 'grades.csv')
 
 
@@ -108,12 +108,12 @@ def cleanup(db, conn):
     # grade_data(db, conn)
 
 
-def has_many(db, conn, model, has_many, has_many_id=None):
+def has_many(db, conn, model, has_many, has_many_id=None, many_table='Fcq'):
     model_id = "{0}_id".format(model).lower()
     has_many_plural = "{0}s".format(has_many).lower()
     if not has_many_id:
         has_many_id = "{0}_id".format(has_many).lower()
-    grouped_model = r.db(db).table('Fcq').group(model_id).get_field(has_many_id).ungroup().for_each(
+    grouped_model = r.db(db).table(many_table).group(model_id).get_field(has_many_id).ungroup().for_each(
         lambda doc: r.db(db).table(model).get(doc['group']).update({has_many_plural: doc['reduction'].distinct()})
     ).run(conn, array_limit=200000)
     logging.info(grouped_model)
@@ -130,6 +130,21 @@ def overtime(db, conn):
 
 
 def model_overtime(db, conn):
+
+    def _grades_overtime(doc, val):
+        return {
+            'grade_data_averages': r.branch(((doc.get_field('campus').default(None) == 'BD') & ((val['group'] % 10) != 4)), {
+                'percent_a': val['reduction'].get_field('percent_a').avg().default(None),
+                'percent_b': val['reduction'].get_field('percent_b').avg().default(None),
+                'percent_c': val['reduction'].get_field('percent_c').avg().default(None),
+                'percent_d': val['reduction'].get_field('percent_d').avg().default(None),
+                'percent_f': val['reduction'].get_field('percent_f').avg().default(None),
+                'percent_incomplete': val['reduction'].get_field('percent_incomplete').avg().default(None),
+                'percent_c_minus_or_below': val['reduction'].get_field('percent_c_minus_or_below').avg().default(None),
+                'average_grade': val['reduction'].get_field('average_grade').avg().default(None),
+            }, None)
+        }
+
     def _general_overtime(doc, val):
         return {
             'total_fcqs': val['reduction'].count(),
@@ -266,11 +281,29 @@ def model_overtime(db, conn):
             'Course': _course_stats
         }[model]
         overtime_query = r.db(db).table(model).merge(
-            lambda doc: {'fcq_data': r.db(db).table('Fcq').get_all(r.args(doc['fcqs'])).coerce_to('array')}
+            lambda doc: {
+                'fcq_data': r.branch(
+                    doc['fcqs'].count() > 0,
+                    r.db(db).table('Fcq').get_all(r.args(doc['fcqs'])).coerce_to('array'),
+                    []
+                ),
+                'grade_data': r.branch(
+                    doc['grades'].count() > 0,
+                    r.db(db).table('Grade').get_all(r.args(doc['grades'])).coerce_to('array'),
+                    []
+                )
+            }
         ).for_each(
-            lambda doc: r.db(db).table(model).get(doc['id']).update({'overtime': doc['fcq_data'].group('yearterm').ungroup().map(
-                lambda val: [val['group'].coerce_to('string'), _model_overtime(doc, val)]
-            ).coerce_to('object'), 'stats': _model_stats(doc)})
+            lambda doc: r.db(db).table(model).get(doc['id']).update({
+                'overtime': doc['fcq_data'].group('yearterm').ungroup().map(
+                    lambda val: [val['group'].coerce_to('string'), _model_overtime(doc, val)]
+                ).coerce_to('object'),
+                'stats': _model_stats(doc),
+                'grades_overtime': doc['grade_data'].group('yearterm').ungroup().map(
+                    lambda val: [val['group'].coerce_to('string'), _grades_overtime(doc, val)]
+                ).coerce_to('object'),
+                'grades_stats': None
+            })
         ).run(conn, array_limit=200000)
         logging.info(overtime_query)
 
@@ -280,13 +313,19 @@ def model_overtime(db, conn):
 
 def associate(db, conn):
     has_many(db, conn, 'Course', 'Fcq', has_many_id='id')
-    has_many(db, conn, 'Course', 'yearterm', has_many_id='yearterm')
+    has_many(db, conn, 'Course', 'Grade', has_many_id='id', many_table='Grade')
+    has_many(db, conn, 'Course', 'fcq_yearterm', has_many_id='yearterm')
+    has_many(db, conn, 'Course', 'grade_yearterm', has_many_id='yearterm', many_table='Grade')
     has_many(db, conn, 'Course', 'alternate_title', has_many_id='course_title')
     has_many(db, conn, 'Course', 'Instructor')
     has_many(db, conn, 'Instructor', 'Fcq', has_many_id='id')
-    has_many(db, conn, 'Instructor', 'yearterm', has_many_id='yearterm')
+    has_many(db, conn, 'Instructor', 'Grade', has_many_id='id', many_table='Grade')
+    has_many(db, conn, 'Instructor', 'fcq_yearterm', has_many_id='yearterm')
+    has_many(db, conn, 'Instructor', 'grade_yearterm', has_many_id='yearterm', many_table='Grade')
     has_many(db, conn, 'Instructor', 'Course')
     has_many(db, conn, 'Department', 'Fcq', has_many_id='id')
-    has_many(db, conn, 'Department', 'yearterm', has_many_id='yearterm')
+    has_many(db, conn, 'Department', 'Grade', has_many_id='id', many_table='Grade')
+    has_many(db, conn, 'Department', 'fcq_yearterm', has_many_id='yearterm')
+    has_many(db, conn, 'Department', 'grade_yearterm', has_many_id='yearterm', many_table='Grade')
     has_many(db, conn, 'Department', 'Instructor')
     has_many(db, conn, 'Department', 'Course')
