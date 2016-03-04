@@ -1,11 +1,51 @@
-.gsc-result .gs-title {
-  height: 2em !important;
+/**
+* Overides for Google Custom Search Ugly Crap *
+**/
+
+/* make sure search option container is big enough */
+.gsc-selected-option-container {
+  background-color: transparent;
+  border: 1px solid #eee;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 2px;
+  box-shadow: 0 1px 1px #eee;
+  box-shadow: 0 1px 1px rgba(0,0,0,0.1);
+  color: #444;
+  cursor: default;
+  font-size: 11px;
+  font-weight: bold;
+  height: 27px;
+  line-height: 27px;
+  max-width: 90%;
+  min-width: 54px;
+  outline: 0;
+  padding: 0 28px 0 6px;
+  position: relative;
+  text-align: center;
+  width: 8em!important;
 }
 
-.gsc-selected-option-container .gsc-inline-block{
-  color: red;
+/* remove text branding */
+td.gsc-branding-text div.gsc-branding-text,
+td.gcsc-branding-text div.gcsc-branding-text {
+  padding-bottom : 2px;
+  text-align : right;
+  font-size : 0px;
+  margin-right : 2px;
 }
 
+img.gsc-branding-img,
+img.gsc-branding-img-noclear,
+img.gcsc-branding-img,
+img.gcsc-branding-img-noclear {
+  margin : 0 0 0 0;
+  padding-right : 0;
+  padding-left : 0;
+  padding-bottom : 0;
+  border : none;
+  display : inline;
+  visibility: hidden;
+}
 
 
 /** Copyright 2005 Google Inc. All rights reserved. */
@@ -108,14 +148,6 @@ td.gcsc-branding-text {
   vertical-align : top;
 }
 
-td.gsc-branding-text div.gsc-branding-text,
-td.gcsc-branding-text div.gcsc-branding-text {
-  padding-bottom : 2px;
-  text-align : right;
-  font-size : 11px;
-  margin-right : 2px;
-}
-
 div.gsc-branding-youtube td.gsc-branding-text {
   vertical-align : middle;
 }
@@ -160,18 +192,6 @@ img.gcsc-branding-img-noclear {
   padding-top : 1px;
 }
 
-img.gsc-branding-img,
-img.gsc-branding-img-noclear,
-img.gcsc-branding-img,
-img.gcsc-branding-img-noclear {
-  margin : 0 0 0 0;
-  padding-right : 0;
-  padding-left : 0;
-  padding-bottom : 0;
-  border : none;
-  display : inline;
-}
-
 td.gcsc-branding-text {
   white-space: nowrap;
   width: 100%;
@@ -191,18 +211,6 @@ a.gsc-branding-clickable {
 
 input.gsc-search-button {
   margin-left : 2px;
-}
-
-div.gsc-clear-button {
-  display : inline;
-  text-align : right;
-  margin-left : 4px;
-  margin-right : 4px;
-  padding-left : 10px;
-  background-repeat: no-repeat;
-  background-position: center center;
-  background-image: url('//www.google.com/uds/css/clear.gif');
-  cursor : pointer;
 }
 
 .gsc-search-box-tools .gsc-clear-button {
@@ -939,28 +947,6 @@ input.gsc-configSettingSubmit {
 
 .gsc-getlink-text-invisible {
   display: none;
-}
-
-.gsc-selected-option-container {
-  background-color: transparent;
-  border: 1px solid #eee;
-  border: 1px solid rgba(0, 0, 0, 0.1);
-  border-radius: 2px;
-  box-shadow: 0 1px 1px #eee;
-  box-shadow: 0 1px 1px rgba(0,0,0,0.1);
-  color: #444;
-  cursor: default;
-  font-size: 11px;
-  font-weight: bold;
-  height: 27px;
-  line-height: 27px;
-  max-width: 90%;
-  min-width: 54px;
-  outline: 0;
-  padding: 0 28px 0 6px;
-  position: relative;
-  text-align: center;
-  width: 50px!important;
 }
 
 .gsc-selected-option {
