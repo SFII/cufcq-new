@@ -1,5 +1,6 @@
 import tornado.web
 import tornado.template
+from handlers.base_handler import BaseHandler
 
 class InstructorHandler(tornado.web.RequestHandler):
 	def get(self):

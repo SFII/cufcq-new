@@ -2,8 +2,17 @@ import logging
 import requests
 import os
 import sys
+import argparse
+import time
 if sys.version_info[0] < 3:
     import mechanize
+
+parser = argparse.ArgumentParser(description='Process some integers.')
+parser.add_argument('--fterm', type=int, nargs=1, default=1, help='if scraping, the first term to consider. 1 is Spring, 4 is Summer, 7 is Fall.')
+parser.add_argument('--lterm', type=int, nargs=1, default=7, help='if scraping, the last term to consider. 1 is Spring, 4 is Summer, 7 is Fall.')
+parser.add_argument('--fyear', type=int, nargs=1, default=2008, help='if scraping, the first year to consider. 2008 is the earliest.')
+parser.add_argument('--lyear', type=int, nargs=1, default=2015, help='if scraping, the last year to consider.')
+parser.add_argument('--campus', type=str, nargs=1, default='BD', choices=['BD', 'DN', 'CS'], help='if scraping, the campus to scrape. BD is boulder, DN is denver, CS is Colorado Springs')
 
 
 def scrape(campus, firstyear, firstterm, lastyear, lastterm):
@@ -29,6 +38,7 @@ def scrape(campus, firstyear, firstterm, lastyear, lastterm):
         if term not in [1, 4, 7]:
             continue
         filename = download_fcq(str(year), str(term), fcqdpt, url)
+        time.sleep(1)
 
     return
 
@@ -108,3 +118,7 @@ def convert_csv(input_file, output_file):
         with open(output_file, 'w') as f1:
             for line in f:
                 f1.write(line)
+
+if __name__ == "__main__":
+    a = parser.parse_args()
+    scrape(a.campus, a.fyear, a.fterm, a.lyear, a.lterm)
