@@ -10,9 +10,8 @@ from handlers.api_handler import ApiHandler
 # accessed routes and simpler regexes before other routes.
 routes = [
     (r"/", IndexHandler),
-    (r"/instructors", InstructorHandler),
     (r"/courses", CourseHandler),
     # (r"/departments", DepartmentHandler),
-    # (r"/instructor/([\w-]+)", InstructorHandler),
+    (r"/instructor/([\w-]+)", InstructorHandler),
     (r"/api/(instructor|course|fcq|department)/([\w-]+)", ApiHandler)
 ]
