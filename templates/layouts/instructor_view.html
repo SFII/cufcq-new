@@ -4,7 +4,7 @@
 
 {% block content %}
 <body class="menubar-hoverable header-fixed ">
-	{% include standard/body/header.html %}
+	{% include standard/body/TopBar.html %}
 	<!-- BEGIN BASE-->
 	<div id="base">
 		<!-- BEGIN CONTENT-->
@@ -12,15 +12,8 @@
 			<section>
 				<div class="section-body">
 					<div class="row">
-						{% include instructor/InstructorStats.html %}
-						{% include instructor/InstructorData.html %}
-					</div><!--end .row -->
-
-					<div class="row">
-						{% include instructor/alerts/Overall.html %}
-						{% include instructor/alerts/Availability.html %}
-						{% include instructor/alerts/Respect.html %}
-						{% include instructor/alerts/Effectiveness.html %}
+						{% include instructor/InstructorInfo.html %}
+						{% include instructor/InstructorBreakdown.html %}
 					</div><!--end .row -->
 					<div class="row">
 						{% include instructor/DepartmentStats.html %}
