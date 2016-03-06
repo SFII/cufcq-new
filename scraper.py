@@ -58,12 +58,12 @@ def verify_options(campus, firstyear, firstterm, lastyear, lastterm):
 
 
 def download_grades():
-    # r = requests.get('http://www.colorado.edu/pba/course/gradesall.xlsm')
+    r = requests.get('http://www.colorado.edu/pba/course/gradesall.xlsm')
     filename = "grades"
     xcel_path = "data/raw/{filename}.xls".format(filename=filename)
-    # output = open(xcel_path, 'wb')
-    # output.write(r.content)
-    # output.close()
+    output = open(xcel_path, 'wb')
+    output.write(r.content)
+    output.close()
     csv_path = "data/grades/{filename}.csv".format(filename=filename)
     os.system("ssconvert -S {path} temp.csv > /dev/null".format(path=xcel_path))
     convert_csv('temp.csv.2', csv_path)
@@ -116,6 +116,7 @@ def download_fcq(year, term, fcqdpt, url):
     filename = "{year}{term}-{campus}".format(year=year, term=term, campus=fcqdpt[0:2])
     os.system("mkdir -p data/raw/")
     os.system("mkdir -p data/csv/")
+    os.system("mkdir -p data/grades/")
     xcel_path = "./data/raw/{filename}.xls".format(filename=filename)
     output = open(xcel_path, 'wb')
     output.write(r.content)
