@@ -278,7 +278,8 @@ def model_overtime(db, conn):
         return dot
 
     # model_overtime
-    for model in ['Instructor', 'Department', 'Course']:
+    for model in ['Department']:
+    # for model in ['Instructor', 'Department', 'Course']:
         _model_overtime = {
             'Instructor': _instructor_overtime,
             'Department': _department_overtime,
@@ -304,11 +305,12 @@ def model_overtime(db, conn):
             }
         ).for_each(
             lambda doc: r.db(db).table(model).get(doc['id']).update({
-                'fcqs_overtime': doc['fcq_data'].group('fcqs_yearterms').ungroup().map(
+                'fcq_data': None,
+                'fcqs_overtime': doc['fcq_data'].group('yearterm').ungroup().map(
                     lambda val: [val['group'].coerce_to('string'), _model_overtime(doc, val)]
                 ).coerce_to('object'),
                 'fcqs_stats': _model_stats(doc),
-                'grades_overtime': doc['grade_data'].group('grades_yearterms').ungroup().map(
+                'grades_overtime': doc['grade_data'].group('yearterm').ungroup().map(
                     lambda val: [val['group'].coerce_to('string'), _grades_overtime(doc, val)]
                 ).coerce_to('object'),
                 'grades_stats': None
