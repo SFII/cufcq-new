@@ -4,13 +4,13 @@
 		<div class="panel-group" id="fcqs">
 			<div class="card panel">
 				<div class="card-head card-head-sm collapsed" data-toggle="collapse" data-parent="#accordion{{i+1}}" data-target="#accordion{{str(i+1) + '-' + str(i+1)}}" aria-expanded="false">
-					<header>{{instructor_fcqs[i].get('name')}}</header>
+					<header>{{instructor_fcqs[i].get('course_number')}}</header>
 					<div class="tools">
 						<a class="btn btn-icon-toggle"><i class="fa fa-angle-down"></i></a>
 					</div>
 				</div>
 				<div id="accordion{{str(i+1) + '-' + str(i+1)}}" class="collapse" aria-expanded="false" style="height: 0px;">
-					<div class="card-body"><p>{{instructor_fcqs[i].get('info')}}</p>
+					<div class="card-body"><p>{{instructor_fcqs[i].get('campus')}}</p>
 					</div>
 				</div>
 			</div><!--end .panel -->

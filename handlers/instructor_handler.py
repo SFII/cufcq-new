@@ -1,5 +1,6 @@
 import tornado.web
 import tornado.template
+import logging
 from handlers.base_handler import BaseHandler
 
 class InstructorHandler(BaseHandler):
@@ -7,11 +8,11 @@ class InstructorHandler(BaseHandler):
     def get(self,id):
         
         instructor = self.application.settings['instructor'].get_item(id)
+        logging.warn(instructor)
         if instructor is None: 
             #404 goes here
             return
 
-        print(instructor)
         instructor_info_object = {
             "first_name" : instructor.get('instructor_first').title(),
             "last_name" : instructor.get('instructor_last').title(),
@@ -29,7 +30,6 @@ class InstructorHandler(BaseHandler):
             "availability" : 6,
             "respect" : 2,
         }
-
         department_info_object = {
             "name" : "Computer Science",
             "num_ugrads" : 556,
@@ -40,6 +40,7 @@ class InstructorHandler(BaseHandler):
             "num_instructors" : 58,
             "first_fcq" : "Spring 2012",
         }
+        fcqs = self.get_fcq_data(instructor.get('fcqs'))
         class1 = {
             "name" : "Spring 2015 ACCT 5220-2 Playing with Dildos",
             "info" : "All you need to know!",
@@ -55,11 +56,9 @@ class InstructorHandler(BaseHandler):
             "info" : "Daddy Warbucks!",
             "sdfjksjkdf" : 'akjhsdakljsdjklasd',
         }
-        instructor_fcqs_array = [
-        class1,class2,class3
-        ]
+
         self.render('layouts/instructor_view.html',
             instructor_info=instructor_info_object,
             instructor_stats=instructor_stats_object,
             department_info=department_info_object,
-            instructor_fcqs=instructor_fcqs_array)
+            instructor_fcqs=fcqs)
