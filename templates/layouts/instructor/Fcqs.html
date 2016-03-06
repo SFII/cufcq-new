@@ -1,44 +1,19 @@
 <!-- BEGIN FCQs -->
 	<div class="col-md-9">
-			<div class="panel-group" id="accordion1">
+	{% for i in range(len(instructor_fcqs)) %}
+		<div class="panel-group" id="fcqs">
 			<div class="card panel">
-				<div class="card-head card-head-sm collapsed" data-toggle="collapse" data-parent="#accordion1" data-target="#accordion1-1" aria-expanded="false">
-					<header>Spring 2015 ACCT 3220-2 Corporate Financial Reporting 1</header>
+				<div class="card-head card-head-sm collapsed" data-toggle="collapse" data-parent="#accordion{{i+1}}" data-target="#accordion{{str(i+1) + '-' + str(i+1)}}" aria-expanded="false">
+					<header>{{instructor_fcqs[i].get('name')}}</header>
 					<div class="tools">
 						<a class="btn btn-icon-toggle"><i class="fa fa-angle-down"></i></a>
 					</div>
 				</div>
-				<div id="accordion1-1" class="collapse" aria-expanded="false" style="height: 0px;">
-					<div class="card-body"><p>Per at postea mediocritatem, vim numquam aliquid eu, in nam sale gubergren. Fuisset delicatissimi duo, qui ut animal noluisse erroribus. Ea eum veniam audire. Dicant vituperata consequuntur.</p>
+				<div id="accordion{{str(i+1) + '-' + str(i+1)}}" class="collapse" aria-expanded="false" style="height: 0px;">
+					<div class="card-body"><p>{{instructor_fcqs[i].get('info')}}</p>
 					</div>
 				</div>
 			</div><!--end .panel -->
-			<div class="card panel">
-				<div class="card-head card-head-sm collapsed" data-toggle="collapse" data-parent="#accordion2" data-target="#accordion2-2" aria-expanded="false">
-					<header>Spring 2014 ACCT 3220-2 Corporate Financial Reporting 1</header>
-					<div class="tools">
-						<a class="btn btn-icon-toggle"><i class="fa fa-angle-down"></i></a>
-					</div>
-				</div>
-				<div id="accordion2-2" class="collapse" aria-expanded="false" style="height: 0px;">
-					<div class="card-body"><p>Per at postea mediocritatem, vim numquam aliquid eu, in nam sale gubergren. Fuisset delicatissimi duo, qui ut animal noluisse erroribus. Ea eum veniam audire. Dicant vituperata consequuntur.</p>
-					</div>
-				</div>
-			</div><!--end .panel -->
-			<div class="card panel">
-				<div class="card-head card-head-sm collapsed" data-toggle="collapse" data-parent="#accordion3" data-target="#accordion3-3" aria-expanded="false">
-					<header>Header</header>
-					<div class="tools">
-						<a class="btn btn-icon-toggle"><i class="fa fa-angle-down"></i></a>
-					</div>
-				</div>
-				<div id="accordion3-3" class="collapse" aria-expanded="false" style="height: 0px;">
-					<div class="card-body"><p>Duo semper accumsan ea, quidam convenire cum cu, oportere maiestatis incorrupte est eu. Soluta audiam timeam ius te, idque gubergren forensibus ad mel, persius urbanitas usu id. Civibus nostrum fabellas mea te, ne pri lucilius iudicabit. Ut cibo semper vituperatoribus vix, cum in error elitr. Vix molestiae intellegat omittantur an, nam cu modo ullum scriptorem.</p>
-						<p>Quod option numquam vel in, et fuisset delicatissimi duo, qui ut animal noluisse erroribus. Ea eum veniam audire. Per at postea mediocritatem, vim numquam aliquid eu, in nam sale gubergren. Dicant vituperata consequuntur at sea, mazim commodo</p>
-					</div>
-				</div>
-			</div><!--end .panel -->
-		</div>
-		</div><!--end .card-body -->
+	{% end %}
 	</div><!--end .col -->
 <!-- END FCQS -->
