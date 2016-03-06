@@ -8,6 +8,7 @@ from tornado.httpserver import HTTPServer
 from tornado.options import define, options
 import rethinkdb as r
 from models.fcq import Fcq
+from models.grade import Grade
 from models.course import Course
 from models.instructor import Instructor
 from models.department import Department
@@ -33,6 +34,7 @@ settings = {
     'template_path': 'templates/',
     'static_path': 'static/',
     'login_url': '/login',
+    'grade': Grade(),
     'fcq': Fcq(),
     'course': Course(),
     'instructor': Instructor(),
@@ -58,6 +60,7 @@ def initialize():
     except Exception as e:
         logging.warn(e.message)
     settings['fcq'].init(database_name, conn)
+    settings['grade'].init(database_name, conn)
     settings['course'].init(database_name, conn)
     settings['instructor'].init(database_name, conn)
     settings['department'].init(database_name, conn)

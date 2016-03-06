@@ -74,5 +74,7 @@ dist/
 *.csv
 !data/raw
 !data/csv
+!data/grades
 data/raw/*
 data/csv/*
+data/grades/*
