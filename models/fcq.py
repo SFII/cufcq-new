@@ -80,19 +80,6 @@ class Fcq(BaseModel):
             }
         return None
 
-    def generate_grade_data(self, data, campus, yearterm):
-        if campus == 'BD' and (yearterm % 10) != 4:
-            return {
-                'pct_A': None,
-                'pct_B': None,
-                'pct_C': None,
-                'pct_D': None,
-                'pct_F': None,
-                'pct_pass': None,
-                'gpa_grade_avg': None
-            }
-        return None
-
     def generate_dci_ids(self, data):
         campus = data['campus']
         course_subject = data['course_subject']

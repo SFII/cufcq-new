@@ -148,7 +148,7 @@ class Department(BaseModel):
     }
 
     def requiredFields(self):
-        return ['campus', 'college', 'yearterms', 'overtime', 'stats', 'name', 'fcqs', 'courses', 'instructors', 'long_name', 'id']
+        return ['campus', 'college', 'name', 'fcqs', 'courses', 'instructors', 'long_name', 'id']
 
     def fields(self):
         return {
@@ -158,8 +158,6 @@ class Department(BaseModel):
             'college': (self.is_string, ),
             'fcqs': (self.is_list, self.schema_list_check(self.is_string, )),
             'grades': (self.is_list, self.schema_list_check(self.is_string, ),),
-            'fcq_yearterms': (self.is_list, self.schema_list_check(self.is_int, )),
-            'grade_yearterms': (self.is_list, self.schema_list_check(self.is_int, )),
             'courses': (self.is_list, self.schema_list_check(self.is_string, )),
             'instructors': (self.is_list, self.schema_list_check(self.is_string, )),
             'id': (self.is_string, self.is_not_empty, ),
@@ -173,9 +171,6 @@ class Department(BaseModel):
             'college': '',
             'fcqs': [],
             'grades': [],
-            'yearterms': [],
-            'overtime': {},
-            'stats': {},
             'courses': [],
             'instructors': [],
             'id': '',

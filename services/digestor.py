@@ -65,12 +65,21 @@ def digest(filename, db, conn):
         digest_fcq(filename, db, conn)
 
 
+def batch_insert(db, conn, data, table, batchsize=10000):
+    def batch_data(iterable, n=1):
+        l = len(iterable)
+        for ndx in range(0, l, n):
+            yield iterable[ndx:min(ndx + n, l)]
+    for batch in batch_data(data, batchsize):
+        result = r.db(db).table('Grade').insert(batch).run(conn)
+        display_results(result, table)
+
 def digest_grades(db, conn):
     data = dataSet('data/grades/grades.csv')
     grade_data = list(map(Grade().sanitize_from_raw, data.raw_data))
     dci_from_data(grade_data, db, conn)
-    result = r.db(db).table('Grade').insert(grade_data).run(conn, max_batch_rows=1000)
-    display_results(result, 'grades.csv')
+    batch_insert(db, conn, grade_data, 'Grade')
+
 
 
 def dci_from_data(dataset, db, conn):
@@ -133,7 +142,7 @@ def model_overtime(db, conn):
 
     def _grades_overtime(doc, val):
         return {
-            'grade_data_averages': r.branch(((doc.get_field('campus').default(None) == 'BD') & ((val['group'] % 10) != 4)), {
+            'grade_data_averages': r.branch(((doc.get_field('grades').count() > 0) & ((val['group'] % 10) != 4)), {
                 'percent_a': val['reduction'].get_field('percent_a').avg().default(None),
                 'percent_b': val['reduction'].get_field('percent_b').avg().default(None),
                 'percent_c': val['reduction'].get_field('percent_c').avg().default(None),
@@ -295,11 +304,11 @@ def model_overtime(db, conn):
             }
         ).for_each(
             lambda doc: r.db(db).table(model).get(doc['id']).update({
-                'overtime': doc['fcq_data'].group('yearterm').ungroup().map(
+                'fcqs_overtime': doc['fcq_data'].group('fcqs_yearterms').ungroup().map(
                     lambda val: [val['group'].coerce_to('string'), _model_overtime(doc, val)]
                 ).coerce_to('object'),
-                'stats': _model_stats(doc),
-                'grades_overtime': doc['grade_data'].group('yearterm').ungroup().map(
+                'fcqs_stats': _model_stats(doc),
+                'grades_overtime': doc['grade_data'].group('grades_yearterms').ungroup().map(
                     lambda val: [val['group'].coerce_to('string'), _grades_overtime(doc, val)]
                 ).coerce_to('object'),
                 'grades_stats': None
@@ -309,23 +318,30 @@ def model_overtime(db, conn):
 
 # Mode:
 # r.expr([1,2,2,2,3,3]).group(r.row).count().ungroup().orderBy('reduction').nth(-1)('group')`
+def has_mode(db, conn):
+    pass
+    # has_mode(db, conn, 'Course', 'hours', mode_table='Grade')
+    # has_mode(db, conn, 'Course', 'honors', mode_table='Grade')
+    # has_mode(db, conn, 'Course', 'rap', mode_table='Grade')
+    # has_mode(db, conn, 'Course', 'activity_type', mode_table='Grade')
+    # has_many(db, conn, 'Course', 'hours_per_week_in_class_string')
 
 
 def associate(db, conn):
     has_many(db, conn, 'Course', 'Fcq', has_many_id='id')
     has_many(db, conn, 'Course', 'Grade', has_many_id='id', many_table='Grade')
-    has_many(db, conn, 'Course', 'fcq_yearterm', has_many_id='yearterm')
-    has_many(db, conn, 'Course', 'grade_yearterm', has_many_id='yearterm', many_table='Grade')
+    has_many(db, conn, 'Course', 'fcqs_yearterm', has_many_id='yearterm')
+    has_many(db, conn, 'Course', 'grades_yearterm', has_many_id='yearterm', many_table='Grade')
     has_many(db, conn, 'Course', 'alternate_title', has_many_id='course_title')
     has_many(db, conn, 'Course', 'Instructor')
     has_many(db, conn, 'Instructor', 'Fcq', has_many_id='id')
     has_many(db, conn, 'Instructor', 'Grade', has_many_id='id', many_table='Grade')
-    has_many(db, conn, 'Instructor', 'fcq_yearterm', has_many_id='yearterm')
-    has_many(db, conn, 'Instructor', 'grade_yearterm', has_many_id='yearterm', many_table='Grade')
+    has_many(db, conn, 'Instructor', 'fcqs_yearterm', has_many_id='yearterm')
+    has_many(db, conn, 'Instructor', 'grades_yearterm', has_many_id='yearterm', many_table='Grade')
     has_many(db, conn, 'Instructor', 'Course')
     has_many(db, conn, 'Department', 'Fcq', has_many_id='id')
     has_many(db, conn, 'Department', 'Grade', has_many_id='id', many_table='Grade')
-    has_many(db, conn, 'Department', 'fcq_yearterm', has_many_id='yearterm')
-    has_many(db, conn, 'Department', 'grade_yearterm', has_many_id='yearterm', many_table='Grade')
+    has_many(db, conn, 'Department', 'fcqs_yearterm', has_many_id='yearterm')
+    has_many(db, conn, 'Department', 'grades_yearterm', has_many_id='yearterm', many_table='Grade')
     has_many(db, conn, 'Department', 'Instructor')
     has_many(db, conn, 'Department', 'Course')

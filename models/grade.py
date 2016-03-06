@@ -62,8 +62,6 @@ class Grade(BaseModel):
 
     def default(self):
         return {
-            'denver_data': None,
-            'fcq_data': None,
             'campus': '',
             'department_id': None,
             'course_id': None,
@@ -147,7 +145,7 @@ class Grade(BaseModel):
         else:
             sanitized['instructor_last'] = instructor_names[0].strip()
             sanitized['instructor_first'] = instructor_names[1].strip().split(' ')[0]
-        sanitized['RAP'] = True if raw['RAP'] != '' else False
+        sanitized['rap'] = True if raw['RAP'] != '' else False
         sanitized['honors'] = raw['Honors']
         sanitized['id'] = self.generate_id(sanitized)
         d, c, i = self.generate_dci_ids(sanitized)
