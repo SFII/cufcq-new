@@ -6,7 +6,7 @@ class Course(BaseModel):
     COURSE_LEVELS = ['GR', 'LD', 'UD']
 
     def requiredFields(self):
-        return ['department_id', 'fcqs', 'alternate_titles', 'yearterms', 'overtime', 'stats', 'instructors', 'course_number', 'course_subject', 'course_title', 'course_flavor', 'id', 'level']
+        return ['department_id', 'fcqs', 'alternate_titles', 'instructors', 'course_number', 'course_subject', 'course_title', 'course_flavor', 'id', 'level']
 
     def strictSchema(self):
         return False
@@ -17,7 +17,7 @@ class Course(BaseModel):
             'level': (self.is_in_list(self.COURSE_LEVELS), ),
             'department_id': (self.schema_or(self.is_none, self.is_string, ),),
             'fcqs': (self.is_list, self.schema_list_check(self.is_string, ),),
-            'yearterms': (self.is_list, self.schema_list_check(self.is_int, )),
+            'grades': (self.is_list, self.schema_list_check(self.is_string, ),),
             'courses': (self.is_list, self.schema_list_check(self.is_string, ),),
             'course_number': (self.is_int, self.is_truthy),
             'course_subject': (self.is_string, self.is_not_empty, ),
@@ -32,9 +32,7 @@ class Course(BaseModel):
             'department_id': None,
             'alternate_titles': [],
             'fcqs': [],
-            'yearterms': [],
-            'overtime': {},
-            'stats': {},
+            'grades': [],
             'instructors': [],
             'course_number': '',
             'course_title': '',

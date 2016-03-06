@@ -36,7 +36,6 @@ class Fcq(BaseModel):
             'yearterm': (self.is_yearterm, ),
             'course_number': (self.is_int, self.is_truthy),
             'course_subject': (self.is_string, self.is_not_empty),
-            'course_subject': (self.is_string, self.is_not_empty),
             'level': (self.is_in_list(self.COURSE_LEVELS), ),
             'section': (self.is_string, ),
             'course_title': (self.is_string, self.is_not_empty),
@@ -81,19 +80,6 @@ class Fcq(BaseModel):
             }
         return None
 
-    def generate_grade_data(self, data, campus, yearterm):
-        if campus == 'BD' and (yearterm % 10) != 4:
-            return {
-                'pct_A': None,
-                'pct_B': None,
-                'pct_C': None,
-                'pct_D': None,
-                'pct_F': None,
-                'pct_pass': None,
-                'gpa_grade_avg': None
-            }
-        return None
-
     def generate_dci_ids(self, data):
         campus = data['campus']
         course_subject = data['course_subject']
@@ -108,7 +94,6 @@ class Fcq(BaseModel):
     def default(self):
         return {
             'denver_data': None,
-            'grade_data': None,
             'campus': '',
             'department_id': None,
             'course_id': None,
