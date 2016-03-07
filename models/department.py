@@ -106,6 +106,7 @@ class Department(BaseModel):
         'MGMT': 'Management',
         'MILR': 'Military Science',
         'MKTG': 'Marketing',
+        'MSEN': 'Material Sciences & Engineering',
         'MUEL': 'Music Electives',
         'MUSC': 'Music',
         'MUSM': 'Museum',
@@ -147,7 +148,7 @@ class Department(BaseModel):
     }
 
     def requiredFields(self):
-        return ['campus', 'college', 'yearterms', 'overtime', 'stats', 'name', 'fcqs', 'courses', 'instructors', 'long_name', 'id']
+        return ['campus', 'college', 'name', 'fcqs', 'courses', 'instructors', 'long_name', 'id']
 
     def fields(self):
         return {
@@ -156,7 +157,7 @@ class Department(BaseModel):
             'long_name': (self.is_string, self.is_not_empty, ),
             'college': (self.is_string, ),
             'fcqs': (self.is_list, self.schema_list_check(self.is_string, )),
-            'yearterms': (self.is_list, self.schema_list_check(self.is_int, )),
+            'grades': (self.is_list, self.schema_list_check(self.is_string, ),),
             'courses': (self.is_list, self.schema_list_check(self.is_string, )),
             'instructors': (self.is_list, self.schema_list_check(self.is_string, )),
             'id': (self.is_string, self.is_not_empty, ),
@@ -169,9 +170,7 @@ class Department(BaseModel):
             'long_name': '',
             'college': '',
             'fcqs': [],
-            'yearterms': [],
-            'overtime': {},
-            'stats': {},
+            'grades': [],
             'courses': [],
             'instructors': [],
             'id': '',
