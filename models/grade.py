@@ -146,7 +146,7 @@ class Grade(BaseModel):
             sanitized['instructor_last'] = instructor_names[0].strip()
             sanitized['instructor_first'] = instructor_names[1].strip().split(' ')[0]
         sanitized['rap'] = True if raw['RAP'] != '' else False
-        sanitized['honors'] = raw['Honors']
+        sanitized['honors'] = True if raw['Honors'] == "1" else False
         sanitized['id'] = self.generate_id(sanitized)
         d, c, i = self.generate_dci_ids(sanitized)
         sanitized['department_id'] = d
