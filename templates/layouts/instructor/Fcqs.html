@@ -37,7 +37,7 @@
 				</div>
 				<div id="creator1" class="collapse" aria-expanded="false" style="height: 0px;">
 				{% for i in range(5,len(instructor_fcqs)) %}
-					<div class="card panel">
+					<div class="panel">
 						<div class="card-head card-head-sm collapsed" data-toggle="collapse" data-parent="#accordion{{i}}" data-target="#accordion{{str(i) + '-' + str(i)}}" aria-expanded="false">
 							<header>{{instructor_fcqs[i].get('course_number')}}</header>
 							<div class="tools">
