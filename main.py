@@ -7,6 +7,7 @@ import signal
 from tornado.httpserver import HTTPServer
 from tornado.options import define, options
 import rethinkdb as r
+from modules.chart_overtime import ChartOvertimeModule
 from models.fcq import Fcq
 from models.grade import Grade
 from models.course import Course
@@ -39,6 +40,9 @@ settings = {
     'course': Course(),
     'instructor': Instructor(),
     'department': Department(),
+    'ui_modules': {
+        'chart_overtime': ChartOvertimeModule
+    }
 }
 
 
