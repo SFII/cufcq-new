@@ -13,6 +13,10 @@ class InstructorHandler(BaseHandler):
             #404 goes here
             return
 
+        chart_data = {
+            'test': 5
+        }
+
         instructor_info_object = {
             "first_name" : instructor.get('instructor_first').title(),
             "last_name" : instructor.get('instructor_last').title(),
@@ -42,8 +46,10 @@ class InstructorHandler(BaseHandler):
         }
 
         fcqs = self.get_fcq_data(instructor.get('fcqs'))
+        chart_data = self.overtime_linechart_data(instructor)
 
         self.render('layouts/instructor_view.html',
+            chart_data=chart_data,
             instructor_info=instructor_info_object,
             instructor_stats=instructor_stats_object,
             department_info=department_info_object,
