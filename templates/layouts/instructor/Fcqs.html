@@ -14,7 +14,9 @@
 					</div>
 				</div>
 			</div>
-			{% for i in range(1,5) %}
+			<!-- # Print out the first seven fcqs -->
+			{% for i in range(1,7) %}
+				{% if i < len(instructor_fcqs) %}
 				<div class ="card panel">
 					<div class="card-head card-head-sm collapsed" data-toggle="collapse" data-parent="#accordion{{i}}" data-target="#accordion{{str(i) + '-' + str(i)}}" aria-expanded="false">
 							<header>{{instructor_fcqs[i].get('course_number')}}</header>
@@ -27,7 +29,10 @@
 							</div>
 					</div>
 				</div>
+				{% end %}
 			{% end %}
+			<!-- # if we have more than 7, create the extra box. -->
+			{% if 7 < len(instructor_fcqs) %}
 			<div class="card panel">
 				<div class="card-head card-head-sm " data-toggle="collapse" data-parent="#creator" data-target="#creator1" aria-expanded="false">
 						<header>More FCQs</header>
@@ -36,7 +41,7 @@
 						</div>
 				</div>
 				<div id="creator1" class="collapse" aria-expanded="false" style="height: 0px;">
-				{% for i in range(5,len(instructor_fcqs)) %}
+				{% for i in range(7,len(instructor_fcqs)) %}
 					<div class="panel">
 						<div class="card-head card-head-sm collapsed" data-toggle="collapse" data-parent="#accordion{{i}}" data-target="#accordion{{str(i) + '-' + str(i)}}" aria-expanded="false">
 							<header>{{instructor_fcqs[i].get('course_number')}}</header>
@@ -52,6 +57,7 @@
 				{% end %}
 				</div>
 			</div>
+			{% end %}
 		</div>		
 	</div><!--end .col -->
 <!-- END FCQS -->

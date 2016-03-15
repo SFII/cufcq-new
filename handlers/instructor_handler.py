@@ -18,17 +18,17 @@ class InstructorHandler(BaseHandler):
             "last_name" : instructor.get('instructor_last').title(),
             "department" : instructor.get('department_id').upper(),
             # TODO
-            "type" : "TTT",
+            "type" : instructor.get('instructor_group'),
             "sections" : len(instructor.get('fcqs')),
             "courses" : len(instructor.get('courses')),
             "last_fcq" : self.convert_date(instructor.get('fcqs_yearterms')[-1]),
             "first_fcq" : self.convert_date(instructor.get('fcqs_yearterms')[0]),
         }
         instructor_stats_object = {
-            "effectiveness" : 5,
-            "overall" : 3,
-            "availability" : 6,
-            "respect" : 2,
+            "effectiveness" : round(instructor.get('fcqs_stats').get('instructor_effectiveness_average'),2),
+            "overall" : round(instructor.get('fcqs_stats').get('instructoroverall_average'),2),
+            "availability" : round(instructor.get('fcqs_stats').get('instructor_availability_average'),2),
+            "respect" : round(instructor.get('fcqs_stats').get('instructor_respect_average'),2),
         }
         department_info_object = {
             "name" : "Computer Science",
@@ -40,22 +40,8 @@ class InstructorHandler(BaseHandler):
             "num_instructors" : 58,
             "first_fcq" : "Spring 2012",
         }
+
         fcqs = self.get_fcq_data(instructor.get('fcqs'))
-        class1 = {
-            "name" : "Spring 2015 ACCT 5220-2 Playing with Dildos",
-            "info" : "All you need to know!",
-            "sdfjksjkdf" : 'akjhsdakljsdjklasd',
-        }
-        class2 = {
-            "name" : "Fall 2014 PSYCH 1300-2 Amateur Freud",
-            "info" : "Facts out the wazoo!",
-            "sdfjksjkdf" : 'akjhsdakljsdjklasd',
-        }
-        class3 = {
-            "name" : "Fall 2013 CSCI 5001-2 Making Moneyzz",
-            "info" : "Daddy Warbucks!",
-            "sdfjksjkdf" : 'akjhsdakljsdjklasd',
-        }
 
         self.render('layouts/instructor_view.html',
             instructor_info=instructor_info_object,
