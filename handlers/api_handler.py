@@ -12,5 +12,5 @@ class ApiHandler(BaseHandler):
         except:
             self.set_status(401, "no {0} found with id {1}".format(table, input))
             data = None
-        logging.info(data)
+        self.set_header('Content-Type', 'application/json')
         return self.write(data)
