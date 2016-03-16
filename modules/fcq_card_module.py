@@ -5,9 +5,21 @@ import tornado.web
 class FcqCardModule(BaseModule):
     fcq_ids = []
 
-    def render(self, fcq_id):
-        self.fcq_ids.append(fcq_id)
+    def render(self, fcq_ids):
+        self.fcq_ids = fcq_ids
+        html = '''
+        <div class="col-md-9">
+          <div class="panel-group" id="fcqs">
+        '''
+        for fcq_id in self.fcq_ids:
+            html += self.card_panel(fcq_id)
+        html += '''
+            </div>
+          </div>
+          '''
+        return html
 
+    def card_panel(self, fcq_id):
         return '''
         <div class="card panel">
             <div class="card-head card-head-sm collapsed" data-toggle="collapse" data-parent="#{0}" data-target="#{0}" aria-expanded="false">
@@ -30,9 +42,9 @@ class FcqCardModule(BaseModule):
             $("#header-{0}").one( "click", function(){{
                 $.ajax({{
                     type: "GET",
-                    url: "/api/fcq/{0}",
+                    url: "/ajax/fcqcard/{0}",
                     success: function(data, status) {{
-                        $("#body-{0}").html(JSON.stringify(data));
+                        $("#body-{0}").html(data);
                     }},
                     error: function() {{
                         console.log("AJAX ERROR: {0} could not be loaded.");
