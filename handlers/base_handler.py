@@ -4,22 +4,39 @@ import json
 import rethinkdb as r
 from functools import wraps
 
+
 class BaseHandler(tornado.web.RequestHandler):
 
-    def convert_date(self, date):
+    def convert_date(self, yearterm):
         VALID_TERMS = {'1': 'Spring', '4': 'Summer', '7': 'Fall'}
-        date_str = str(date)
-        year = date_str[0:4]
-        term = VALID_TERMS.get(date_str[4])
-        return '{0} {1}'.format(term,year)
+        yearterm_str = str(yearterm)
+        year = yearterm_str[0:4]
+        term = VALID_TERMS.get(yearterm_str[4])
+        return '{0} {1}'.format(term, year)
 
     def convert_campus(self, campus):
-        CAMPUS_CODES = ['BD', 'DN', 'CS']
+        return {
+            'BD': 'Boulder',
+            'DN': 'Denver',
+            'CS': 'Colorado Springs'
+        }[campus]
+
+    def fcq_title(self, fcq_data):
+        date = self.convert_date(fcq_data['yearterm'])
+        campus = self.convert_campus(fcq_data['campus'])
+        course_title = fcq_data['course_title']
+        course_subject = fcq_data['course_subject']
+        course_number = fcq_data['course_number']
+        course_name = "{0}-{1} {2}".format(course_subject, course_number, course_title)
+        return "{0} {1} {2}".format(campus, date, course_name)
 
     def get_fcq_data(self, fcq_ids):
         db = self.application.settings['database_name']
         conn = self.application.settings['conn']
-        return list(r.db(db).table('Fcq').get_all(r.args(fcq_ids)).run(conn))
+        fcq_data = list(r.db(db).table('Fcq').get_all(r.args(fcq_ids)).run(conn))
+        return list(map(lambda fcq:
+                    dict(fcq_title=self.fcq_title(fcq), **fcq),
+                    fcq_data))
 
     def overtime_linechart_data(self, model_data):
 

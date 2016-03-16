@@ -4,28 +4,24 @@
 
 {% block content %}
 <div class="menubar-hoverable header-fixed ">
-	{% include standard/body/TopBar.html %}
-	<!-- BEGIN BASE-->
-	<div id="base">
-		<!-- BEGIN CONTENT-->
-		<div id="content">
-			<section>
-				<div class="section-body">
-					<div class="row">
-						{% include instructor/InstructorInfo.html %}
-						{% include instructor/InstructorBreakdown.html %}
-					</div><!--end .row -->
-					<div class="row">
-						{% include instructor/DepartmentStats.html %}
-						{% include instructor/FcqCollection.html %}
-					</div><!--end .row -->
-				</div><!--end .section-body -->
-			</section>
-		</div><!--end #content-->
-		<!-- END CONTENT -->
+  {% include standard/body/TopBar.html %}
+  <div id="base">
+    <div id="content">
+      <section>
+        <div class="section-body">
+          <div class="row">
+            {% include instructor/InstructorInfo.html %}
+            {% include instructor/InstructorBreakdown.html %}
+          </div>
+          <div class="row">
+            {% include instructor/DepartmentStats.html %}
+            {% module fcq_card(instructor_fcqs) %}
+          </div>
+        </div>
+      </section>
+    </div>
     {% include standard/body/OffCanvasRight.html %}
-	</div><!--end #base-->
-	<!-- END BASE -->
+  </div>
 {% end %}
 {% include standard/body.html %}
 </div>
