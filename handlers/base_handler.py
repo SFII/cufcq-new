@@ -11,7 +11,6 @@ class BaseHandler(tornado.web.RequestHandler):
         date_str = str(date)
         year = date_str[0:4]
         term = VALID_TERMS.get(date_str[4])
-
         return '{0} {1}'.format(term,year)
 
     def convert_campus(self, campus):
