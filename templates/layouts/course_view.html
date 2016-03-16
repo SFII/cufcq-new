@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+{% include standard/head.html %}
+
+{% block content %}
+<body class="menubar-hoverable header-fixed ">
+	{% include standard/body/TopBar.html %}
+	<!-- BEGIN BASE-->
+	<div id="base">
+		<!-- BEGIN CONTENT-->
+		<div id="content">
+			<section>
+				<div class="section-body">
+					<div class="row">
+						{% include course/CourseInfo.html %}
+						{% include instructor/InstructorBreakdown.html %}
+					</div><!--end .row -->
+					<div class="row">
+						{% include instructor/DepartmentStats.html %}
+						{% include instructor/Fcqs.html %}
+					</div><!--end .row -->
+				</div><!--end .section-body -->
+			</section>
+		</div><!--end #content-->
+		<!-- END CONTENT -->
+    {% include standard/body/OffCanvasRight.html %}
+	</div><!--end #base-->
+	<!-- END BASE -->
+{% end %}
+{% include standard/body.html %}
+</body>
+</html>

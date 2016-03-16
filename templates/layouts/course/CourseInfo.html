@@ -1,0 +1,43 @@
+<!-- BEGIN INSTRUCTOR INFO -->
+<div class="col-md-3">
+	<div class="card instructor-stats-card">
+		<div class="card-head text-primary text-center">
+			<h2>{{ course_info.get('code') }} - {{ course_info.get('title') }} </h2>
+		</div><!--end .card-head -->
+		<div class="card-body no-padding height-8 scroll">
+			<ul class="list divider-full-bleed">
+				<li class="tile">
+					<div class="tile-content">
+						<div class="tile-text text-primary-dark .instructor-stats-card-department">Department: <a href="google.com" class="text-light">{{ course_info.get('department') }}</a></div>
+					</div>
+				</li>
+				<li class="tile">
+					<div class="tile-content">	
+						<div class="tile-text text-primary-dark">Sections Offered : <a class="text-light">{{ course_info.get('sections') }}</a></div>
+					</div>
+				</li>
+				<li class="tile">
+					<div class="tile-content">	
+						<div class="tile-text text-primary-dark"> Participating Instructors: <a class="text-light">{{ course_info.get('instructors') }}</a></div>
+					</div>
+				</li>
+				<li class="tile">
+					<div class="tile-content">	
+						<div class="tile-text text-primary-dark">Students Taught: <a class="text-light">{{ course_info.get('students') }}</a></div>
+					</div>
+				</li>
+				<li class="tile">
+					<div class="tile-content">	
+						<div class="tile-text text-primary-dark">Last FCQ: <a class="text-light">{{ course_info.get('last_fcq') }}</a></div>
+					</div>
+				</li>
+				<li class="tile">
+					<div class="tile-content">	
+						<div class="tile-text text-primary-dark">First FCQ: <a class="text-light">{{ course_info.get('first_fcq') }}</a></div>
+					</div>
+				</li>
+			</ul>
+		</div><!--end .card-body -->
+	</div><!--end .card -->
+</div><!--end .col -->
+<!-- END INSTRUCTOR INFO -->
