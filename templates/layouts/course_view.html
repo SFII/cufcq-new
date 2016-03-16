@@ -3,7 +3,7 @@
 {% include standard/head.html %}
 
 {% block content %}
-<div class="menubar-hoverable header-fixed ">
+<body class="menubar-hoverable header-fixed ">
 	{% include standard/body/TopBar.html %}
 	<!-- BEGIN BASE-->
 	<div id="base">
@@ -12,12 +12,12 @@
 			<section>
 				<div class="section-body">
 					<div class="row">
-						{% include instructor/InstructorInfo.html %}
+						{% include course/CourseInfo.html %}
 						{% include instructor/InstructorBreakdown.html %}
 					</div><!--end .row -->
 					<div class="row">
 						{% include instructor/DepartmentStats.html %}
-						{% include instructor/FcqCollection.html %}
+						{% include instructor/Fcqs.html %}
 					</div><!--end .row -->
 				</div><!--end .section-body -->
 			</section>
@@ -28,5 +28,5 @@
 	<!-- END BASE -->
 {% end %}
 {% include standard/body.html %}
-</div>
+</body>
 </html>
