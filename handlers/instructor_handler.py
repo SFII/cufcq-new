@@ -24,9 +24,6 @@ class InstructorHandler(BaseHandler):
             'last_fcq': self.convert_date(instructor.get('fcqs_yearterms')[-1]),
             'first_fcq': self.convert_date(instructor.get('fcqs_yearterms')[0]),
         }
-        chart_data = {
-            'test': 5
-        }
         instructor_stats_object = {
             'effectiveness': 5,
             'overall': 3,
@@ -43,7 +40,8 @@ class InstructorHandler(BaseHandler):
             'num_instructors': 58,
             'first_fcq': 'Spring 2012',
         }
-        fcqs = self.get_fcq_data(instructor.get('fcqs'))
+        # fcqs = self.get_fcq_data(instructor.get('fcqs'))
+        fcqs = instructor.get('fcqs', [])
         class1 = {
             'name': 'Spring 2015 ACCT 5220-2 Playing with Dildos',
             'info': 'All you need to know!',

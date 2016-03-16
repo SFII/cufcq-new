@@ -1,19 +1,8 @@
-<!-- BEGIN FCQs -->
-  <div class="col-md-9">
-  {% for i, fcq in enumerate(instructor_fcqs) %}
-    <div class="panel-group" id="fcqs">
-      <div class="card panel">
-        <div class="card-head card-head-sm collapsed" data-toggle="collapse" data-parent="#accordion{{i+1}}" data-target="#accordion{{str(i+1) + '-' + str(i+1)}}" aria-expanded="false">
-          <header>{{fcq['fcq_title']}}</header>
-          <div class="tools">
-            <a class="btn btn-icon-toggle"><i class="fa fa-angle-down"></i></a>
-          </div>
-        </div>
-        <div id="accordion{{str(i+1) + '-' + str(i+1)}}" class="collapse" aria-expanded="false" style="height: 0px;">
-          <div class="card-body"><p>{{fcq}}</p>
-          </div>
-        </div>
-      </div><!--end .panel -->
+
+<div class="col-md-9">
+  <div class="panel-group" id="fcqs">
+  {% for i, fcq_id in enumerate(instructor_fcqs) %}
+      {% module fcq_card(fcq_id) %}
   {% end %}
-  </div><!--end .col -->
-<!-- END FCQS -->
+  </div>
+</div>
