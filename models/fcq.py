@@ -22,7 +22,7 @@ class Fcq(BaseModel):
     COURSE_LEVELS = ['GR', 'LD', 'UD']
 
     def requiredFields(self):
-        return ['denver_data', 'grade_data', 'campus', 'department_id', 'course_id', 'instructor_id', 'yearterm', 'course_number', 'course_subject', 'level', 'section', 'course_title', 'instructor_first', 'instructor_last', 'instructor_group', 'instructoroverall', 'courseoverall', 'forms_requested', 'forms_returned', 'id']
+        return ['denver_data', 'campus', 'department_id', 'course_id', 'instructor_id', 'yearterm', 'course_number', 'course_subject', 'level', 'section', 'course_title', 'instructor_first', 'instructor_last', 'instructor_group', 'instructoroverall', 'courseoverall', 'forms_requested', 'forms_returned', 'id']
 
     def strictSchema(self):
         return False
@@ -131,6 +131,7 @@ class Fcq(BaseModel):
             sanitized['instructor_first'] = instructor_names[1].strip()
         sanitized['instructor_last'].replace(' ', '-').replace('/', '-')
         sanitized['instructor_first'].replace(' ', '-').replace('/', '-')
+        sanitized['instructor_group'] = raw.get('Instr_Group', 'TTT')
         sanitized['forms_requested'] = cast_to_int(raw['FormsRequested'])
         sanitized['forms_returned'] = cast_to_int(raw['FormsReturned'])
         sanitized['courseoverall_pct_valid'] = cast_to_float(raw['CourseOverallPctValid'])
@@ -148,12 +149,10 @@ class Fcq(BaseModel):
         sanitized['course_howmuchlearned'] = cast_to_float(raw['HowMuchLearned'])
         sanitized['course_priorinterest'] = cast_to_float(raw['PriorInterest'])
         sanitized['denver_data'] = self.generate_denver_data(raw, sanitized['campus'], sanitized['yearterm'])
-        sanitized['grade_data'] = None
         sanitized['college'] = raw['College']
         sanitized['asdiv'] = raw['ASdiv']
         sanitized['level'] = raw['Level']
         sanitized['fcq_department'] = raw['Fcqdept']
-        sanitized['instructor_group'] = raw['Instr_Group']
         sanitized['index_number'] = int(raw['I_Num'])
         sanitized['id'] = self.generate_id(sanitized)
         d, c, i = self.generate_dci_ids(sanitized)

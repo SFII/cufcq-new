@@ -117,16 +117,6 @@ def cleanup(db, conn):
     # grade_data(db, conn)
 
 
-def has_many(db, conn, model, has_many, has_many_id=None, many_table='Fcq'):
-    model_id = "{0}_id".format(model).lower()
-    has_many_plural = "{0}s".format(has_many).lower()
-    if not has_many_id:
-        has_many_id = "{0}_id".format(has_many).lower()
-    grouped_model = r.db(db).table(many_table).group(model_id).get_field(has_many_id).ungroup().for_each(
-        lambda doc: r.db(db).table(model).get(doc['group']).update({has_many_plural: doc['reduction'].distinct()})
-    ).run(conn, array_limit=200000)
-    logging.info(grouped_model)
-
 
 def overtime(db, conn):
     try:
@@ -304,11 +294,12 @@ def model_overtime(db, conn):
             }
         ).for_each(
             lambda doc: r.db(db).table(model).get(doc['id']).update({
-                'fcqs_overtime': doc['fcq_data'].group('fcqs_yearterms').ungroup().map(
+                'fcq_data': None,
+                'fcqs_overtime': doc['fcq_data'].group('yearterm').ungroup().map(
                     lambda val: [val['group'].coerce_to('string'), _model_overtime(doc, val)]
                 ).coerce_to('object'),
                 'fcqs_stats': _model_stats(doc),
-                'grades_overtime': doc['grade_data'].group('grades_yearterms').ungroup().map(
+                'grades_overtime': doc['grade_data'].group('yearterm').ungroup().map(
                     lambda val: [val['group'].coerce_to('string'), _grades_overtime(doc, val)]
                 ).coerce_to('object'),
                 'grades_stats': None
@@ -318,8 +309,29 @@ def model_overtime(db, conn):
 
 # Mode:
 # r.expr([1,2,2,2,3,3]).group(r.row).count().ungroup().orderBy('reduction').nth(-1)('group')`
-def has_mode(db, conn):
-    pass
+
+
+def has_many(db, conn, model, has_many, has_many_id=None, many_table='Fcq'):
+    model_id = "{0}_id".format(model).lower()
+    has_many_plural = "{0}s".format(has_many).lower()
+    if not has_many_id:
+        has_many_id = "{0}_id".format(has_many).lower()
+    grouped_model = r.db(db).table(many_table).group(model_id).get_field(has_many_id).ungroup().for_each(
+        lambda doc: r.db(db).table(model).get(doc['group']).update({has_many_plural: doc['reduction'].distinct()})
+    ).run(conn, array_limit=200000)
+    logging.info(grouped_model)
+
+
+def has_mode(db, conn, model, field, mode_table='Fcq'):
+    model_id = "{0}_id".format(model).lower()
+    mode_query = r.db(db).table(mode_table).group(model_id).ungroup().for_each(
+        lambda doc: r.db(db).table(model).get(doc['group']).update({
+            field: doc['reduction'].group(field).count().ungroup().order_by('reduction').nth(-1).default({'group': None})['group']
+        })
+    ).run(conn, array_limit=200000)
+    logging.info(mode_query)
+
+
     # has_mode(db, conn, 'Course', 'hours', mode_table='Grade')
     # has_mode(db, conn, 'Course', 'honors', mode_table='Grade')
     # has_mode(db, conn, 'Course', 'rap', mode_table='Grade')
@@ -328,6 +340,12 @@ def has_mode(db, conn):
 
 
 def associate(db, conn):
+    has_mode(db, conn, 'Course', 'hours', mode_table='Grade')
+    has_mode(db, conn, 'Course', 'honors', mode_table='Grade')
+    has_mode(db, conn, 'Course', 'rap', mode_table='Grade')
+    has_mode(db, conn, 'Course', 'activity_type', mode_table='Grade')
+    has_mode(db, conn, 'Course', 'hours_per_week_in_class_string')
+    has_mode(db, conn, 'Instructor', 'instructor_group')
     has_many(db, conn, 'Course', 'Fcq', has_many_id='id')
     has_many(db, conn, 'Course', 'Grade', has_many_id='id', many_table='Grade')
     has_many(db, conn, 'Course', 'fcqs_yearterm', has_many_id='yearterm')
