@@ -2,7 +2,7 @@
 	<div class="col-md-9">
 		<div class="panel-group" id="fcqs">
 			<!-- # Print out the first seven fcqs -->
-			{% for i in range(0,7) %}
+			{% for i in range(0,4) %}
 				{% if i < len(instructor_fcqs) %}
 				<div class ="card panel">
 					{% include fcq.html %}
@@ -10,7 +10,7 @@
 				{% end %}
 			{% end %}
 			<!-- # if we have more than 7, create the extra box. -->
-			{% if 7 < len(instructor_fcqs) %}
+			{% if 4 < len(instructor_fcqs) %}
 			<div class="card panel">
 				<div class="card-head card-head-sm " data-toggle="collapse" data-parent="#creator" data-target="#creator1" aria-expanded="false">
 						<header>More FCQs</header>

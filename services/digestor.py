@@ -56,8 +56,9 @@ def digest(filename, db, conn):
     if filename == 'ALL':
         allfiles = [f for f in listdir('data/csv/') if isfile(join('data/csv/', f))]
         for f in allfiles:
-            logging.info("{0} ".format(f))
-            digest_fcq(f, db, conn)
+            if not f.startswith('.'):
+                logging.info("{0} ".format(f))
+                digest_fcq(f, db, conn)
         return
     elif filename == 'GRADES':
         digest_grades(db, conn)
@@ -103,7 +104,7 @@ def display_results(result, filename):
 
 
 def digest_fcq(filename, db, conn):
-    data = dataSet('data/csv/' + filename)
+    data = dataSet('./data/csv/' + filename)
     fcq_data = list(map(Fcq().sanitize_from_raw, data.raw_data))
     dci_from_data(fcq_data, db, conn)
     result = r.db(db).table('Fcq').insert(fcq_data).run(conn)
