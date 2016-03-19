@@ -7,16 +7,8 @@ class LineChartModule(ChartModule):
 
     def render(self, header, chart_data):
         self.chart_data = chart_data
-        return '''
-        <div class="col-md-8">
-          <div class="card-head">
-            <header>{0}</header>
-          </div>
-          <div class="card-body height-8">
-              <canvas id="{1}" width="auto" height="auto">
-          </div>
-        </div>
-        '''.format(header, self.chart_id)
+        return self.render_string('modules/linechart.html',
+                                  header=header, chart_id=self.chart_id)
 
     def embedded_javascript(self):
         return '''
