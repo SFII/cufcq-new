@@ -14,16 +14,7 @@ class FcqCardModule(BaseModule):
         for fcq_id in self.fcq_ids:
             javascript += '''
             $("#header-{0}").one( "click", function(){{
-                $.ajax({{
-                    type: "GET",
-                    url: "/ajax/fcqcard/{0}",
-                    success: function(data, status) {{
-                        $("#body-{0}").html(data);
-                    }},
-                    error: function() {{
-                        console.log("AJAX ERROR: {0} could not be loaded.");
-                    }}
-                }})
+                $( "#body-{0}" ).load( "/ajax/fcqcard/{0}");
             }});
             '''.format(fcq_id)
         return javascript
