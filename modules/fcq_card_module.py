@@ -16,10 +16,12 @@ class FcqCardModule(BaseModule):
         for fcq_id in self.fcq_ids:
             javascript += '''
             $("#card-{0}").one( "click", function(){{
-                $( "#body-{0}" ).load( "/ajax/fcqcard/{0}");
-                $(document).ready(function(){{
-                    $('ul.tabs').tabs();
-                    console.log("{0}");
+                $( "#body-{0}" ).load( "/ajax/fcqcard/{0}", function(){{
+                    $( "#nav-{0} :not(.disabled) a").click(function (e) {{
+                        e.preventDefault();
+                        $(this).tab('show');
+                        console.log(e);
+                    }});
                 }});
             }});
             '''.format(fcq_id)
