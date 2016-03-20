@@ -15,6 +15,10 @@ class FcqCardModule(BaseModule):
             javascript += '''
             $("#header-{0}").one( "click", function(){{
                 $( "#body-{0}" ).load( "/ajax/fcqcard/{0}");
+                $(document).ready(function(){{
+                    $('ul.tabs').tabs();
+                    console.log("{0}");
+                }});
             }});
             '''.format(fcq_id)
         return javascript

@@ -1,0 +1,32 @@
+
+  <div class="card-body">
+    <ul class="nav nav-tabs" data-toggle="tabs">
+      <li class="tab active"><a href="#{{ fcq_id }}-1">Title</a></li>
+      <li class="tab"><a href="#{{ fcq_id }}-2">Meta</a></li>
+      <li class="tab"><a href="#{{ fcq_id }}-3">Fcq</a></li>
+    </ul>
+    <div class="tab-content style-default-bright">
+      <div class="tab-pane active" id="{{ fcq_id }}-1">
+        {% if fcq_data %}
+        <h1>
+          {{fcq_data['course_subject']}} {{fcq_data['course_number']}}-{{fcq_data['section']}}, {{date}}</br>
+          <small>Course: <a href="/course/{{fcq_data['course_id']}}">{{fcq_data['course_title']}}</a></small></br>
+          <small>Instructor: <a href="/course/{{fcq_data['instructor_id']}}">{{fcq_data['instructor_last'].capitalize()}}, {{fcq_data['instructor_first'].capitalize()}}</a></small></br>
+          <small>Department: <a href="/course/{{fcq_data['department_id']}}">{{fcq_data['course_subject']}}</a></small></br>
+        </h1>
+        {% end %}
+      </div>
+      <div class="tab-pane" id="{{ fcq_id }}-2">fdsa</div>
+      <div class="tab-pane" id="{{ fcq_id }}-3">fdsa</div>
+    </div>
+  </div>
+
+<!-- <div class="progress progress-hairline">
+  <div class="progress-bar progress-bar-primary-dark" style="width:54%"></div>
+</div>
+<div class="progress">
+<div class="progress-bar progress-bar-primary-dark" style="width:12%"></div>
+</div>
+<div class="progress">
+<div class="progress-bar progress-bar-primary-dark" style="width:88%"></div>
+</div> -->

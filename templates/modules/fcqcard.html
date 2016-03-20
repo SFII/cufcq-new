@@ -8,12 +8,12 @@
                       <a class="btn btn-icon-toggle"><i class="fa fa-angle-down"></i></a>
                   </div>
               </div>
-              <div id="{{ fcq_id }}" class="collapse" style="height: 0px;">
-                <div class="card-head">
+              <div id="{{ fcq_id }}" class="card-head collapse" style="height: 0px;">
                   <div id="body-{{ fcq_id }}" class="card-body tab-content">
-                    <h1>header</h1>
+                    {% set fcq_data = None %}
+                    {% set grade_data = None %}
+                    {% include fcqdata.html %}
                   </div><!--end .card-body -->
-                </div>
               </div>
           </div>
       {% end %}
