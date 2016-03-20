@@ -2,6 +2,8 @@
 * Overides for Google Custom Search Ugly Crap *
 **/
 
+.hide-google {position: absolute; left: -9999em;}
+
 /* make sure search option container is big enough */
 .gsc-selected-option-container {
   background-color: transparent;

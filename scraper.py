@@ -116,6 +116,7 @@ def download_fcq(year, term, fcqdpt, url):
     filename = "{year}{term}-{campus}".format(year=year, term=term, campus=fcqdpt[0:2])
     os.system("mkdir -p data/raw/")
     os.system("mkdir -p data/csv/")
+    os.system("mkdir -p data/grades/")
     xcel_path = "./data/raw/{filename}.xls".format(filename=filename)
     output = open(xcel_path, 'wb')
     output.write(r.content)
