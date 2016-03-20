@@ -1,5 +1,4 @@
 from modules.base_module import BaseModule
-import tornado.web
 
 
 class FcqCardModule(BaseModule):
@@ -7,13 +6,16 @@ class FcqCardModule(BaseModule):
 
     def render(self, fcq_ids):
         self.fcq_ids = fcq_ids
-        return self.render_string('modules/fcqcard.html', fcq_ids=fcq_ids, fcq_title=self.fcq_title)
+        chunks = [self.fcq_ids[x:x + 7]
+                  for x in range(0, len(self.fcq_ids), 7)]
+        return self.render_string(
+            'modules/FcqCollection.html', chunks=chunks, fcq_ids=fcq_ids, fcq_title=self.fcq_title)
 
     def embedded_javascript(self):
         javascript = ""
         for fcq_id in self.fcq_ids:
             javascript += '''
-            $("#header-{0}").one( "click", function(){{
+            $("#card-{0}").one( "click", function(){{
                 $.ajax({{
                     type: "GET",
                     url: "/ajax/fcqcard/{0}",
