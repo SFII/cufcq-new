@@ -14,6 +14,6 @@ routes = [
     (r"/courses", CourseHandler),
     # (r"/departments", DepartmentHandler),
     (r"/ajax/fcqcard/([\w-]+)", FcqCardHandler),
-    (r"/instructor/([\w-]+)", InstructorHandler),
-    (r"/api/(instructor|course|fcq|department)/([\w-]+)", ApiHandler)
+    (r"/instructors/([\w-]+)", InstructorHandler),
+    (r"/api/(instructor|course|fcq|grade|department)/([\w-]+)", ApiHandler)
 ]

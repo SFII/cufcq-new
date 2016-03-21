@@ -33,6 +33,15 @@
               <td><a target="_blank" href="/api/fcq/{{fcq_id}}">{{fcq_id}}</a></td>
             </tr>
             <tr>
+              <td>Grade Data</td>
+              <td>
+                {% if grade_data %}
+                  <a target="_blank" href="/api/grade/{{fcq_id}}">{{fcq_id}}</a></td>
+                {% else %}
+                  None
+                {% end %}
+            </tr>
+            <tr>
               <td>Course</td>
               <td><a target="_blank" href="/course/{{fcq_data['course_id']}}">{{fcq_data['course_title']}}</a></td>
             </tr>
@@ -190,6 +199,87 @@
       </div>
       <div class="tab-pane" id="{{ fcq_id }}-5">
         {% if grade_data %}
+          <h2>Grades</h2>
+          <div class="col-lg-3">
+            <canvas id="gradepie-{{ fcq_id }}" width="auto" height="auto">
+          </div>
+          <div class="col-lg-9">
+            This table contains information regarding grades given for the class.
+            <table class="table table-striped no-margin">
+              <tbody>
+                <tr>
+                  <td>
+                    <abbr title="Average GPA grade given for the class, with F average being 0.0, D average being 1.0, C average being 2.0, B Average being 3.0, A average being 4.0">Average GPA Grade</abbr>
+                  </td>
+                  <td>
+                      {{saferound(grade_data['average_grade'])}}
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <abbr title="What percentage of the class received a C grade or higher">Percentage Passed</abbr>
+                  </td>
+                  <td>
+                      {{saferound(100.0 - (100 * grade_data['percent_c_minus_or_below']))}}
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                  Percent As
+                  </td>
+                  <td>
+                      {{saferound(100.0 * grade_data['percent_a'])}} %
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    Percent Bs
+                  </td>
+                  <td>
+                      {{saferound(100.0 * grade_data['percent_b'])}} %
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    Percent Cs
+                  </td>
+                  <td>
+                      {{saferound(100.0 * grade_data['percent_c'])}} %
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    Percent Ds
+                  </td>
+                  <td>
+                      {{saferound(100.0 * grade_data['percent_d'])}} %
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    Percent Fs
+                  </td>
+                  <td>
+                      {{saferound(100.0 * grade_data['percent_f'])}} %
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    Percent Incompletes
+                  </td>
+                  <td>
+                      {{saferound(100.0 * grade_data['percent_incomplete'])}} %
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <script type="text/javascript">
+          var options = {% raw chart_options %};
+          var data = {% raw gradepie_json %};
+          var ctx = document.getElementById("gradepie-{{ fcq_id }}").getContext("2d");
+          var myPieChart = new Chart(ctx).Pie(data, options);
+          </script>
         {% end %}
       </div>
       <div class="tab-pane" id="{{ fcq_id }}-6">
