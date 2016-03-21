@@ -1,0 +1,289 @@
+
+    <ul id="nav-{{ fcq_id }}" class="nav nav-tabs" data-toggle="tabs">
+      <li class="tab active"><a href="#{{ fcq_id }}-1">Title</a></li>
+      <li class="tab"><a href="#{{ fcq_id }}-2">Meta</a></li>
+      <li class="tab"><a href="#{{ fcq_id }}-3">Course</a></li>
+      <li class="tab"><a href="#{{ fcq_id }}-4">Instructor</a></li>
+      <li class="tab {{disabled(grade_data)}}"><a href="#{{ fcq_id }}-5">Grades</a></li>
+      <li class="tab {{disabled(denver_data)}}"><a href="#{{ fcq_id }}-6">Denver</a></li>
+    </ul>
+    <div class="tab-content style-default-bright">
+      <div class="tab-pane active" id="{{ fcq_id }}-1">
+        {% if fcq_data %}
+        <h1>
+          {{fcq_data['course_subject']}} {{fcq_data['course_number']}}-{{fcq_data['section']}}, {{date}}</br>
+          <small>Course: <a href="/course/{{fcq_data['course_id']}}">{{fcq_data['course_title']}}</a></small></br>
+          <small>Instructor: <a href="/instructor/{{fcq_data['instructor_id']}}">{{fcq_data['instructor_last'].capitalize()}}, {{fcq_data['instructor_first'].capitalize()}}</a></small></br>
+          <small>Department: <a href="/department/{{fcq_data['department_id']}}">{{fcq_data['course_subject']}}</a></small></br>
+        </h1>
+        {% end %}
+      </div>
+      <div class="tab-pane" id="{{ fcq_id }}-2">
+        {% if fcq_data %}
+        <h2>Fcq Meta</h2>
+        This table contains identifiable information about the fcq. This includes the yearterm, instructor, course, department, course level, and other identifiable information about the class and instructor.
+        <table class="table table-striped no-margin">
+          <tbody>
+            <tr>
+              <td>Yearterm</td>
+              <td>{{date}}</td>
+            </tr>
+            <tr>
+              <td>Fcq Id</td>
+              <td><a target="_blank" href="/api/fcq/{{fcq_id}}">{{fcq_id}}</a></td>
+            </tr>
+            <tr>
+              <td>Grade Data</td>
+              <td>
+                {% if grade_data %}
+                  <a target="_blank" href="/api/grade/{{fcq_id}}">{{fcq_id}}</a></td>
+                {% else %}
+                  None
+                {% end %}
+            </tr>
+            <tr>
+              <td>Course</td>
+              <td><a target="_blank" href="/course/{{fcq_data['course_id']}}">{{fcq_data['course_title']}}</a></td>
+            </tr>
+            <tr>
+              <td>Instructor</td>
+              <td><a target="_blank" href="/instructor/{{fcq_data['instructor_id']}}">{{fcq_data['instructor_last'].capitalize()}}, {{fcq_data['instructor_first'].capitalize()}}</a></td>
+            </tr>
+            <tr>
+              <td>Department</td>
+              <td><a target="_blank" href="/course/{{fcq_data['department_id']}}">{{fcq_data['course_subject']}}</a></td>
+            </tr>
+            <tr>
+              <td>Fcqs collected online</td>
+              <td>{{fcq_data['online_fcq']}}</td>
+            </tr>
+            <tr>
+              <td>Forms returned / requested</td>
+              <td>
+                  {{fcq_data['forms_returned']}} / {{fcq_data['forms_requested']}}
+                  {% raw progress_bar(fcq_data['forms_returned'], fcq_data['forms_requested'])%}
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        {% end %}
+      </div>
+      <div class="tab-pane" id="{{ fcq_id }}-3">
+        {% if fcq_data %}
+        <h2>Course</h2>
+        This table contains the averaged results of the fcq survey questions pertaining to the course.
+        <table class="table table-striped no-margin">
+          <tbody>
+            <tr>
+              <td>Course Title</td>
+              <td>{{fcq_data['course_title']}}</td>
+            </tr>
+            <tr>
+              <td>Course Code</td>
+              <td>{{fcq_data['course_subject']}} {{fcq_data['course_number']}}</td>
+            </tr>
+            <tr>
+              <td>Section</td>
+              <td>{{fcq_data['section']}}</td>
+            </tr>
+            <tr>
+              <td>Course Level</td>
+              <td>{{course_level}}</td>
+            </tr>
+            <tr>
+              <td>
+                <abbr title="Students rate the course overall. All ratings are on a scale of 1 to 6.">
+                     Course Overall </abbr>
+              </td>
+              <td>
+                  {{saferound(fcq_data['courseoverall'])}} / 6.0
+                  {% raw progress_bar(fcq_data['courseoverall'], 6.0) %}
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <abbr title="Students rate their personal interest in the material before they enrolled. All ratings are on a scale of 1 to 6.">
+                     Prior Interest </abbr>
+              </td>
+              <td>
+                  {{saferound(fcq_data['course_priorinterest'])}} / 6.0
+                  {% raw progress_bar(fcq_data['course_priorinterest'], 6.0) %}
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <abbr title="Students rate the intellectual challenge of the course. All ratings are on a scale of 1 to 6.">
+                     Course Challenge </abbr>
+              </td>
+              <td>
+                  {{saferound(fcq_data['course_challenge'])}} / 6.0
+                  {% raw progress_bar(fcq_data['course_challenge'], 6.0) %}
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <abbr title="Students rate how much they have learned in this course. All ratings are on a scale of 1 to 6.">
+                     Amount Learned </abbr>
+              </td>
+              <td>
+                  {{saferound(fcq_data['course_howmuchlearned'])}} / 6.0
+                  {% raw progress_bar(fcq_data['course_howmuchlearned'], 6.0) %}
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <abbr title="Students estimate the average number of hours per week they have spent on this course for all course-related work, including attending classes, labs, recitations, readings reviewing notes, writing papers, etc.">
+                     Average Workload </abbr>
+              </td>
+              <td>
+                  {{fcq_data['hours_per_week_in_class_string']}}
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        {% end %}
+      </div>
+      <div class="tab-pane" id="{{ fcq_id }}-4">
+        {% if fcq_data %}
+        <h2>Instructor</h2>
+        This table contains the averaged results of the fcq survey questions pertaining to the instructor.
+        <table class="table table-striped no-margin">
+          <tbody>
+            <tr>
+              <td>Instructor</td>
+              <td>{{fcq_data['course_title']}}</td>
+            </tr>
+            <tr>
+              <td>Instructor Group</td>
+              <td>{% raw instructor_group %}</td>
+            </tr>
+            <tr>
+              <td>
+              <abbr title="Students rate the instructors overall performance. All ratings are on a scale of 1 to 6."> Instructor Overall </abbr>
+              </td>
+              <td>
+                  {{saferound(fcq_data['instructoroverall'])}} / 6.0
+                  {% raw progress_bar(fcq_data['instructoroverall'], 6.0) %}
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <abbr title="Students rate the instructor's effectiveness in encouraging interest in the subject. All ratings are on a scale of 1 to 6."> Instructor Effectiveness</abbr>
+              </td>
+              <td>
+                  {{saferound(fcq_data['instructor_effectiveness'])}} / 6.0
+                  {% raw progress_bar(fcq_data['instructor_effectiveness'], 6.0) %}
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <abbr title="Students rate the instructor's availability for course-related assistance such as email, office hours individual appointments, phone contact, etc. All ratings are on a scale of 1 to 6."> Instructor Availability </abbr>
+              </td>
+              <td>
+                  {{saferound(fcq_data['instructor_availability'])}} / 6.0
+                  {% raw progress_bar(fcq_data['instructor_availability'], 6.0) %}
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <abbr title="Students rate the instructor's respect and professional treatment of all students regardless of race, color, national origin, sex, age, disability, creed, religion, sexual orientation, or veteran status. All ratings are on a scale of 1 to 6."> Instructor Respect </abbr>
+              </td>
+              <td>
+                  {{saferound(fcq_data['instructor_respect'])}} / 6.0
+                  {% raw progress_bar(fcq_data['instructor_respect'], 6.0) %}
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        {% end %}
+      </div>
+      <div class="tab-pane" id="{{ fcq_id }}-5">
+        {% if grade_data %}
+          <h2>Grades</h2>
+          <div class="col-lg-3">
+            <canvas id="gradepie-{{ fcq_id }}" width="auto" height="auto">
+          </div>
+          <div class="col-lg-9">
+            This table contains information regarding grades given for the class.
+            <table class="table table-striped no-margin">
+              <tbody>
+                <tr>
+                  <td>
+                    <abbr title="Average GPA grade given for the class, with F average being 0.0, D average being 1.0, C average being 2.0, B Average being 3.0, A average being 4.0">Average GPA Grade</abbr>
+                  </td>
+                  <td>
+                      {{saferound(grade_data['average_grade'])}}
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <abbr title="What percentage of the class received a C grade or higher">Percentage Passed</abbr>
+                  </td>
+                  <td>
+                      {{saferound(100.0 - (100 * grade_data['percent_c_minus_or_below']))}}
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                  Percent As
+                  </td>
+                  <td>
+                      {{saferound(100.0 * grade_data['percent_a'])}} %
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    Percent Bs
+                  </td>
+                  <td>
+                      {{saferound(100.0 * grade_data['percent_b'])}} %
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    Percent Cs
+                  </td>
+                  <td>
+                      {{saferound(100.0 * grade_data['percent_c'])}} %
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    Percent Ds
+                  </td>
+                  <td>
+                      {{saferound(100.0 * grade_data['percent_d'])}} %
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    Percent Fs
+                  </td>
+                  <td>
+                      {{saferound(100.0 * grade_data['percent_f'])}} %
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    Percent Incompletes
+                  </td>
+                  <td>
+                      {{saferound(100.0 * grade_data['percent_incomplete'])}} %
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <script type="text/javascript">
+          var options = {% raw chart_options %};
+          var data = {% raw gradepie_json %};
+          var ctx = document.getElementById("gradepie-{{ fcq_id }}").getContext("2d");
+          var myPieChart = new Chart(ctx).Pie(data, options);
+          </script>
+        {% end %}
+      </div>
+      <div class="tab-pane" id="{{ fcq_id }}-6">
+        {% if denver_data %}
+        {% end %}
+      </div>
+    </div>

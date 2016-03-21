@@ -16,16 +16,13 @@ class FcqCardModule(BaseModule):
         for fcq_id in self.fcq_ids:
             javascript += '''
             $("#card-{0}").one( "click", function(){{
-                $.ajax({{
-                    type: "GET",
-                    url: "/ajax/fcqcard/{0}",
-                    success: function(data, status) {{
-                        $("#body-{0}").html(data);
-                    }},
-                    error: function() {{
-                        console.log("AJAX ERROR: {0} could not be loaded.");
-                    }}
-                }})
+                $( "#body-{0}" ).load( "/ajax/fcqcard/{0}", function(){{
+                    $( "#nav-{0} :not(.disabled) a").click(function (e) {{
+                        e.preventDefault();
+                        $(this).tab('show');
+                        console.log(e);
+                    }});
+                }});
             }});
             '''.format(fcq_id)
         return javascript
