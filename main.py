@@ -1,5 +1,6 @@
 import signal
 import time
+import os
 import unittest
 import tornado.ioloop
 import tornado.web
@@ -13,7 +14,8 @@ import logging
 define('debug', default=True, help='set True for debug mode', type=bool)
 define('test', default=False, help='set True to run Tests', type=bool)
 define('port', default=7000, help='run on the given port', type=int)
-define('initalize', default=False, help='run initialize ', type=bool)
+define('backup', default=False, help='backs up the database', type=bool)
+define('restore', default="", help='restores the database with the backup file you specify', type=str)
 define('database_name', default='cufcq', help='rethink database name', type=str)
 define('database_host', default='localhost', help='rethink database host', type=str)
 define('database_port', default=28015, help='rethink database port', type=int)
@@ -60,6 +62,14 @@ def main():
     if options.test:
         testsuite = unittest.TestLoader().discover('test')
         return unittest.TextTestRunner(verbosity=2).run(testsuite)
+    if options.backup:
+        remove = "rm -rf rethinkdb_dump*"
+        backup = "rethinkdb dump -e {0}".format(settings['database_name'])
+        os.system(remove)
+        return os.system(backup)
+    if options.restore != '':
+        restore = "rethinkdb restore {0} --force".format(options.restore)
+        return os.system(restore)
     if options.digest != '':
         return digest(options.digest, settings['database_name'], settings['conn'])
     if options.associate:
