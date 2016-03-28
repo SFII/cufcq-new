@@ -6,10 +6,11 @@ class FcqCardModule(BaseModule):
 
     def render(self, fcq_ids):
         self.fcq_ids = fcq_ids
-        chunks = [self.fcq_ids[x:x + 7]
-                  for x in range(0, len(self.fcq_ids), 7)]
+        self.fcq_ids.reverse()
+        chunks = [self.fcq_ids[x:x + 6]
+                  for x in range(0, len(self.fcq_ids), 6)]
         return self.render_string(
-            'modules/FcqCollection.html', chunks=chunks, fcq_ids=fcq_ids, fcq_title=self.fcq_title)
+            'modules/FcqCollection.html', chunks=chunks, fcq_ids=fcq_ids, fcq_title=self.fcq_title, convert_date=self.convert_date)
 
     def embedded_javascript(self):
         javascript = ""

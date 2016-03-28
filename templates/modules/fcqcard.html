@@ -1,19 +1,10 @@
-<div class="col-md-9">
-      <div class="panel-group" id="fcqs">
-      {% for fcq_id in fcq_ids %}
-      <div class="card panel">
-              <div class="card-head card-head-sm collapsed" data-toggle="collapse" data-parent="#{{ fcq_id }}" data-target="#{{ fcq_id }}" aria-expanded="false">
-                  <header id="header-{{ fcq_id }}">{{fcq_title(fcq_id)}}</header>
-                  <div class="tools">
-                      <a class="btn btn-icon-toggle"><i class="fa fa-angle-down"></i></a>
-                  </div>
-              </div>
-              <div id="{{ fcq_id }}" class="card-head collapse" style="height: 0px;">
-                  <div id="body-{{ fcq_id }}" class="card-body tab-content">
-                    <i>loading...</i>
-                  </div><!--end .card-body -->
-              </div>
-          </div>
-      {% end %}
+<div id="card-{{ fcq_id }}" class="card-head card-head-sm collapsed" data-toggle="collapse" data-parent="#{{ fcq_id }}" data-target="#{{ fcq_id }}" aria-expanded="false">
+    <header>{{fcq_title(fcq_id)}}</header>
+    <div class="tools">
+        <a class="btn btn-icon-toggle"><i class="fa fa-angle-down"></i></a>
+    </div>
+</div>
+<div id="{{ fcq_id }}" class="collapse" aria-expanded="false" style="height: 0px;">
+  <div id="body-{{ fcq_id }}" class="card-body"><p><i>loading...</i></p>
   </div>
 </div>
