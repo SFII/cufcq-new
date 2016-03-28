@@ -88,7 +88,7 @@ class FcqCardHandler(BaseHandler):
                 return "disabled"
             return ""
 
-        return self.render('modules/FcqData.html',
+        return self.render('modules/fcqdata.html',
                            saferound=saferound,
                            gradepie_json=gradepie_json,
                            chart_options=chart_options,
