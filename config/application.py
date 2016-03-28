@@ -20,11 +20,10 @@ from models.department import Department
 import logging
 
 settings = {
-    'cookie_secret': '8goWPH9uTyO+9e2NzuaW6pbR6WKH1EbmrXIfxttXq00=',
+    'cookie_secret': 'PqITv9b7QUyoAUUcgfRtReoZIXjQrEKKk9fpQpGu6MU=',
     'autoreload': True,
     'template_path': 'templates/',
     'static_path': 'static/',
-    'login_url': '/login',
     'grade': Grade(),
     'fcq': Fcq(),
     'course': Course(),
@@ -45,8 +44,6 @@ def initialize_settings():
     database_host = options.database_host
     if options.debug:
         database_name += '_debug'
-    if options.test:
-        database_name += '_test'
     settings['database_name'] = database_name
     try:
         conn = r.connect(host=options.database_host, port=options.database_port)

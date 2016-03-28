@@ -6,6 +6,7 @@ import tornado.web
 import tornado.escape
 from tornado.httpserver import HTTPServer
 from tornado.options import define, options
+from test.test_runner import run_tests
 from config.application import make_application, initialize_settings
 from services.digestor import digest, cleanup, associate, overtime
 import logging
@@ -58,8 +59,7 @@ def main():
 
         terminate()
     if options.test:
-        testsuite = unittest.TestLoader().discover('test')
-        return unittest.TextTestRunner(verbosity=2).run(testsuite)
+        return run_tests(application)
     if options.digest != '':
         return digest(options.digest, settings['database_name'], settings['conn'])
     if options.associate:
