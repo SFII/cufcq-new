@@ -347,6 +347,7 @@ def associate(db, conn):
     has_mode(db, conn, 'Course', 'activity_type', mode_table='Grade')
     has_mode(db, conn, 'Course', 'hours_per_week_in_class_string')
     has_mode(db, conn, 'Instructor', 'instructor_group')
+    has_mode(db, conn, 'Instructor', 'campus')
     has_many(db, conn, 'Course', 'Fcq', has_many_id='id')
     has_many(db, conn, 'Course', 'Grade', has_many_id='id', many_table='Grade')
     has_many(db, conn, 'Course', 'fcqs_yearterm', has_many_id='yearterm')

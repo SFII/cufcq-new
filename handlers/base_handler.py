@@ -7,6 +7,19 @@ from functools import wraps
 
 class BaseHandler(tornado.web.RequestHandler):
 
+    def render(self, template_name, **kwargs):
+        raw_data = kwargs['raw_data']
+        kwargs['keywords_string'] = self.keywords_string(raw_data)
+        kwargs['description_string'] = self.description_string(raw_data)
+        super().render(template_name, **kwargs)
+
+    def keywords_string(self, raw_data):
+        return """cufcq,university,colorado,faculty,course,instructor,fcq,grade,department,database"""
+
+    def description_string(self, raw_data):
+        return """CUFCQ is a data analysis project for studying and visualizing
+        the University of Colorado's Faculty Course Questionnaire data."""
+
     def convert_date(self, yearterm):
         VALID_TERMS = {'1': 'Spring', '4': 'Summer', '7': 'Fall'}
         yearterm_str = str(yearterm)
@@ -20,6 +33,13 @@ class BaseHandler(tornado.web.RequestHandler):
             'DN': 'Denver',
             'CS': 'Colorado Springs'
         }[campus]
+
+    def convert_level(self, level):
+        return {
+            'GR': "Graduate Level",
+            'UD': "Upper Division",
+            'LD': "Lower Division"
+        }[level]
 
     def fcq_title(self, fcq_data):
         date = self.convert_date(fcq_data['yearterm'])

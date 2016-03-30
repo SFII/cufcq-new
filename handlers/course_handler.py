@@ -2,8 +2,30 @@ import tornado.web
 import tornado.template
 from handlers.base_handler import BaseHandler
 
-class CourseHandler(tornado.web.RequestHandler):
-    def get(self):
+class CourseHandler(BaseHandler):
+
+    def keywords_string(self, course_data):
+        course_subject = course_data['course_subject']
+        course_number = course_data['course_number']
+        alternate_titles = course_data['alternate_titles']
+        return """{0},{1},{2},cufcq,university,colorado,faculty,course,course,
+        fcq,grade,department,database""".format(course_subject, course_number, ','.join(alternate_titles))
+
+    def description_string(self, course_data):
+        course_subject = course_data['course_subject']
+        course_number = course_data['course_number']
+        course_title = course_data['course_title']
+        course_level = self.convert_level(course_data['level'])
+        campus_location = self.convert_campus(course_data['campus'])
+        return """{0} {1}: {2} is a {3} course at the University of Colorado, {4}. CUFCQ is
+        a data analysis project for studying and visualizing the University of
+        Colorado's Faculty Course Questionnaire data.""".format(course_subject, course_number, course_title, course_level, campus_location)
+
+    def get(self, id):
+        course = self.application.settings['course'].get_item(id)
+        if course is None:
+            # 404 goes here
+            return
         course_info_object = {
             "code": "ACCT 3220",
             "title": "Corp Financial Rprtng 1",
@@ -49,6 +71,7 @@ class CourseHandler(tornado.web.RequestHandler):
         class1,class2,class3
         ]
         self.render('layouts/course_view.html',
+            raw_data=course,
             course_info=course_info_object,
             instructor_stats=instructor_stats_object,
             department_info=department_info_object,
