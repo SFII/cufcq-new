@@ -81,8 +81,6 @@ def digest_grades(db, conn):
     dci_from_data(grade_data, db, conn)
     batch_insert(db, conn, grade_data, 'Grade')
 
-
-
 def dci_from_data(dataset, db, conn):
     for model in [Department(), Course(), Instructor()]:
         sanitized_data = list(map(model.sanitize_from_raw, dataset))
