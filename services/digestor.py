@@ -114,10 +114,17 @@ def digest_fcq(filename, db, conn):
 def cleanup(db, conn):
     associate(db, conn)
     overtime(db, conn)
-    # stats_data(db, conn)
-    # grade_data(db, conn)
+    foobar_query = r.db(db).table('Fcq').filter({'course_title': ''}).for_each(
+        lambda fcq: r.db(db).table('Fcq').get(fcq['id']).update(
+            {
+                'course_title': r.db(db).table('Course').get(fcq['course_id'])['course_title']
+            }
+        )
+    ).run(conn, array_limit=200000, non_atomic=True)
+    logging.info(foobar_query)
 
-
+def foobar(db, conn):
+    pass
 
 def overtime(db, conn):
     try:
@@ -308,10 +315,6 @@ def model_overtime(db, conn):
         ).run(conn, array_limit=200000)
         logging.info(overtime_query)
 
-# Mode:
-# r.expr([1,2,2,2,3,3]).group(r.row).count().ungroup().orderBy('reduction').nth(-1)('group')`
-
-
 def has_many(db, conn, model, has_many, has_many_id=None, many_table='Fcq'):
     model_id = "{0}_id".format(model).lower()
     has_many_plural = "{0}s".format(has_many).lower()
@@ -322,7 +325,6 @@ def has_many(db, conn, model, has_many, has_many_id=None, many_table='Fcq'):
     ).run(conn, array_limit=200000)
     logging.info(grouped_model)
 
-
 def has_mode(db, conn, model, field, mode_table='Fcq'):
     model_id = "{0}_id".format(model).lower()
     mode_query = r.db(db).table(mode_table).group(model_id).ungroup().for_each(
@@ -331,14 +333,6 @@ def has_mode(db, conn, model, field, mode_table='Fcq'):
         })
     ).run(conn, array_limit=200000)
     logging.info(mode_query)
-
-
-    # has_mode(db, conn, 'Course', 'hours', mode_table='Grade')
-    # has_mode(db, conn, 'Course', 'honors', mode_table='Grade')
-    # has_mode(db, conn, 'Course', 'rap', mode_table='Grade')
-    # has_mode(db, conn, 'Course', 'activity_type', mode_table='Grade')
-    # has_many(db, conn, 'Course', 'hours_per_week_in_class_string')
-
 
 def associate(db, conn):
     has_mode(db, conn, 'Course', 'hours', mode_table='Grade')
