@@ -39,7 +39,7 @@ class Fcq(BaseModel):
             'level': (self.is_in_list(self.COURSE_LEVELS), ),
             'section': (self.is_string, ),
             'course_title': (self.is_string, self.is_not_empty),
-            'instructor_first': (self.is_string, self.is_not_empty, ),
+            'instructor_first': (self.is_string, ),
             'instructor_last': (self.is_string, self.is_not_empty, ),
             'instructor_group': (self.is_in_list(self.INSTRUCTOR_GROUPS), ),
             'forms_requested': (self.is_int, self.is_truthy),

@@ -231,25 +231,22 @@ class BaseModel:
         table = self.__class__.__name__
         return list(r.db(self.DB).table(table).filter(data).run(self.conn))
 
-    def create_item(self, data, quiet=False):
+    def create_item(self, data, skip_verify=False):
         """
         Given data, creates a new database item if the data passes the validator
         Returns an id of the created item, or None if it fails to pass the validator
         """
         table = self.__class__.__name__
-        verified = self.verify(data)
-        if len(verified) == 0:
-            result = r.db(self.DB).table(table).insert(data).run(self.conn)
-            if result['errors']:
-                return result['first error']
-            if result['generated_keys']:
-                return result['generated_keys'][0]
-            if result['inserted']:
-                return data['id']
-            return logging.critical("data {0} did something strange.".format(data))
-        if not quiet:
-            logging.warn(verified)
-        return None
+        if not skip_verify:
+            verified = self.verify(data)
+            if len(verified):
+                logging.error("Verification errors: {0}".format(verified))
+                return None
+        result = r.db(self.DB).table(table).insert(data).run(self.conn)
+        generated_keys = result.get('generated_keys')
+        if generated_keys is None:
+            return data.get('id')
+        return generated_keys[0]
 
     def delete_item(self, item_id):
         """

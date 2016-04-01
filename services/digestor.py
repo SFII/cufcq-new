@@ -112,14 +112,6 @@ def digest_fcq(filename, db, conn):
 def cleanup(db, conn):
     associate(db, conn)
     overtime(db, conn)
-    foobar_query = r.db(db).table('Fcq').filter({'course_title': ''}).for_each(
-        lambda fcq: r.db(db).table('Fcq').get(fcq['id']).update(
-            {
-                'course_title': r.db(db).table('Course').get(fcq['course_id'])['course_title']
-            }
-        )
-    ).run(conn, array_limit=200000, non_atomic=True)
-    logging.info(foobar_query)
 
 def foobar(db, conn):
     pass
