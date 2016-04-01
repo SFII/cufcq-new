@@ -7,11 +7,13 @@ import tornado.web
 import tornado.escape
 from tornado.httpserver import HTTPServer
 from tornado.options import define, options
+from test.test_runner import run_tests
 from config.application import make_application, initialize_settings
-from services.digestor import digest, cleanup, associate, overtime
+from services.digestor import digest, cleanup, associate, overtime, foobar
 import logging
 
 define('debug', default=True, help='set True for debug mode', type=bool)
+define('foobar', default=False, help='runs a small method for debugging purposes', type=bool)
 define('test', default=False, help='set True to run Tests', type=bool)
 define('port', default=7000, help='run on the given port', type=int)
 define('backup', default=False, help='backs up the database', type=bool)
@@ -60,8 +62,7 @@ def main():
 
         terminate()
     if options.test:
-        testsuite = unittest.TestLoader().discover('test')
-        return unittest.TextTestRunner(verbosity=2).run(testsuite)
+        return run_tests(application)
     if options.backup:
         remove = "rm -rf rethinkdb_dump*"
         backup = "rethinkdb dump -e {0}".format(settings['database_name'])
@@ -78,6 +79,8 @@ def main():
         return overtime(settings['database_name'], settings['conn'])
     if options.cleanup:
         return cleanup(settings['database_name'], settings['conn'])
+    if options.foobar:
+        return foobar(settings['database_name'], settings['conn'])
     if options.debug:
         httpserver.listen(settings['site_port'])
         signal.signal(signal.SIGINT, sig_handler)

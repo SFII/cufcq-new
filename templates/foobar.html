@@ -1,0 +1,15 @@
+<h1>{{data['id']}}</h1>
+<form action="/foobar" method="POST">
+  First name:<br>
+  <input type="text" name="instructor_first" value="{{data['instructor_first']}}">
+  <br>
+  Last name:<br>
+  <input type="text" name="instructor_last" value="{{data['instructor_last']}}">
+  <input type="text" hidden name="id" value="{{data['id']}}">
+  <input type="submit" value="Submit">
+</form>
+<ul>
+  {%for fcq in data['fcqs'] %}
+  <li>{{fcq}}</li>
+  {% end %}
+</ul>

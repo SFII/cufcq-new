@@ -14,11 +14,7 @@ class FcqCardHandler(BaseHandler):
             'OTH': "<abbr title=\"Other primary instructor, such as adjunct, visiting, honorarium, etc.\">OTH</abbr>",
             'TA': "<abbr title=\"Teaching Assistant\">TA</abbr>"
         }[fcq_data['instructor_group']]
-        course_level = {
-            'GR': "Graduate Level",
-            'UD': "Upper Division",
-            'LD': "Lower Division"
-        }[fcq_data['level']]
+        course_level = self.convert_level(fcq_data['level'])
         denver_data = fcq_data['denver_data']
         date = self.convert_date(fcq_data['yearterm'])
         campus = self.convert_campus(fcq_data['campus'])

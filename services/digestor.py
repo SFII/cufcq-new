@@ -81,8 +81,6 @@ def digest_grades(db, conn):
     dci_from_data(grade_data, db, conn)
     batch_insert(db, conn, grade_data, 'Grade')
 
-
-
 def dci_from_data(dataset, db, conn):
     for model in [Department(), Course(), Instructor()]:
         sanitized_data = list(map(model.sanitize_from_raw, dataset))
@@ -114,10 +112,9 @@ def digest_fcq(filename, db, conn):
 def cleanup(db, conn):
     associate(db, conn)
     overtime(db, conn)
-    # stats_data(db, conn)
-    # grade_data(db, conn)
 
-
+def foobar(db, conn):
+    pass
 
 def overtime(db, conn):
     try:
@@ -308,10 +305,6 @@ def model_overtime(db, conn):
         ).run(conn, array_limit=200000)
         logging.info(overtime_query)
 
-# Mode:
-# r.expr([1,2,2,2,3,3]).group(r.row).count().ungroup().orderBy('reduction').nth(-1)('group')`
-
-
 def has_many(db, conn, model, has_many, has_many_id=None, many_table='Fcq'):
     model_id = "{0}_id".format(model).lower()
     has_many_plural = "{0}s".format(has_many).lower()
@@ -322,7 +315,6 @@ def has_many(db, conn, model, has_many, has_many_id=None, many_table='Fcq'):
     ).run(conn, array_limit=200000)
     logging.info(grouped_model)
 
-
 def has_mode(db, conn, model, field, mode_table='Fcq'):
     model_id = "{0}_id".format(model).lower()
     mode_query = r.db(db).table(mode_table).group(model_id).ungroup().for_each(
@@ -332,14 +324,6 @@ def has_mode(db, conn, model, field, mode_table='Fcq'):
     ).run(conn, array_limit=200000)
     logging.info(mode_query)
 
-
-    # has_mode(db, conn, 'Course', 'hours', mode_table='Grade')
-    # has_mode(db, conn, 'Course', 'honors', mode_table='Grade')
-    # has_mode(db, conn, 'Course', 'rap', mode_table='Grade')
-    # has_mode(db, conn, 'Course', 'activity_type', mode_table='Grade')
-    # has_many(db, conn, 'Course', 'hours_per_week_in_class_string')
-
-
 def associate(db, conn):
     has_mode(db, conn, 'Course', 'hours', mode_table='Grade')
     has_mode(db, conn, 'Course', 'honors', mode_table='Grade')
@@ -347,6 +331,7 @@ def associate(db, conn):
     has_mode(db, conn, 'Course', 'activity_type', mode_table='Grade')
     has_mode(db, conn, 'Course', 'hours_per_week_in_class_string')
     has_mode(db, conn, 'Instructor', 'instructor_group')
+    has_mode(db, conn, 'Instructor', 'campus')
     has_many(db, conn, 'Course', 'Fcq', has_many_id='id')
     has_many(db, conn, 'Course', 'Grade', has_many_id='id', many_table='Grade')
     has_many(db, conn, 'Course', 'fcqs_yearterm', has_many_id='yearterm')

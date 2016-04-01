@@ -43,6 +43,7 @@ class Department(BaseModel):
         'COMM': 'Communication',
         'COMR': 'Communication Residential Academic Program',
         'CONV': 'Convocation Music',
+        'COUN': 'Clinical Mental Health Counseling',
         'CSCI': 'Computer Science',
         'CSVC': 'Career Services',
         'CVEN': 'Civil Engineering',
