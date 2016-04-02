@@ -9,6 +9,7 @@ from handlers.api.api_handler import ApiHandler
 from handlers.ajax.fcqcard_handler import FcqCardHandler
 from handlers.foobar import Foobar
 from handlers.not_found_handler import NotFoundHandler
+from handlers.about_handler import AboutHandler
 # Tornado pro-tip: regex routing is optimized by putting more frequently
 # accessed routes and simpler regexes before other routes.
 routes = [
@@ -21,4 +22,5 @@ routes = [
     (r"/department/([\w-]+)", DepartmentHandler),
     (r"/api/(instructor|course|fcq|grade|department)/([\w-]+)", ApiHandler),
     (r"/notFound", NotFoundHandler)
+    (r"/about", AboutHandler)
 ]

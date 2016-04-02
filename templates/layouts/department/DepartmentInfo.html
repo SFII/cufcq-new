@@ -1,0 +1,41 @@
+<!-- BEGIN INSTRUCTOR INFO -->
+	<div class="card instructor-stats-card">
+		<div class="card-head style-{{ color }} text-center">
+			<header>{{ department_info.get('long_name') }}</header>
+		</div><!--end .card-head -->
+		<div class="card-body no-padding height-info scroll">
+			<ul class="list divider-full-bleed">
+				<li class="tile">
+					<div class="tile-content">
+						<div class="tile-text text-primary-dark .instructor-stats-card-department">Code: <a href="google.com" class="text-light">{{ department_info.get('code') }}</a></div>
+					</div>
+				</li>
+				<li class="tile">
+					<div class="tile-content">	
+						<div class="tile-text text-primary-dark">Campus: <a class="text-light">{{ department_info.get('campus') }}</a></div>
+					</div>
+				</li>
+				<li class="tile">
+					<div class="tile-content">	
+						<div class="tile-text text-primary-dark">College: <a class="text-light">{{ department_info.get('college') }}</a></div>
+					</div>
+				</li>
+				<li class="tile">
+					<div class="tile-content">	
+						<div class="tile-text text-primary-dark">Instructors: <a class="text-light">{{ department_info.get('instructors') }}</a></div>
+					</div>
+				</li>
+				<li class="tile">
+					<div class="tile-content">	
+						<div class="tile-text text-primary-dark">Courses: <a class="text-light">{{ department_info.get('courses') }}</a></div>
+					</div>
+				</li>
+				<li class="tile">
+					<div class="tile-content">	
+						<div class="tile-text text-primary-dark">Last FCQ: <a class="text-light">{{ department_info.get('last_fcq') }}</a></div>
+					</div>
+				</li>
+			</ul>
+		</div><!--end .card-body -->
+	</div><!--end .card -->
+<!-- END INSTRUCTOR INFO -->

@@ -10,7 +10,6 @@ class LineChartModule(ChartModule):
         self.chart_data = chart_data
         return self.render_string('modules/linechart.html',
                                   header=header, color=color, chart_id=self.chart_id)
-
     def chart_options(self):
         return super(LineChartModule, self).chart_options()
 
