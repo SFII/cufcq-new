@@ -2,7 +2,7 @@ from handlers.base_handler import BaseHandler
 
 
 class DepartmentHandler(BaseHandler):
-    
+
     def color(self):
         return 'violet'
 
@@ -36,5 +36,6 @@ class DepartmentHandler(BaseHandler):
 
 
         self.render('layouts/department_view.html',
+                    raw_data=department,
                     department_info=department_info_object,
                     department_stats=department_stats_object,)
