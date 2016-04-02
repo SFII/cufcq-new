@@ -46,12 +46,22 @@ class CourseHandler(BaseHandler):
             }[key]
             return {
                 'label': label,
+<<<<<<< HEAD
+                'backgroundColor': "rgba({0},{1},{2},0.2)".format(*color),
+                'borderColor': "rgba({0},{1},{2},1)".format(*color),
+                'pointBackgroundColor': "rgba({0},{1},{2},1)".format(*color),
+                'pointHoverBackgroundColor': "rgba({0},{1},{2},1)".format(*color),
+                'pointHoverBorderColor': "#fff",
+                'pointHoverBorderWidth': 2,
+                'pointHoverRadius': 5,
+=======
                 'fillColor': "rgba({0},{1},{2},0.2)".format(*color),
                 'strokeColor': "rgba({0},{1},{2},1)".format(*color),
                 'pointColor': "rgba({0},{1},{2},1)".format(*color),
                 'pointHighlightStroke': "rgba({0},{1},{2},1)".format(*color),
                 'pointStrokeColor': "#fff",
                 'pointHighlightFill': "#fff",
+>>>>>>> 0e296ea0dc90ed0efc58143eba7539418ab9d5ef
                 'data': list(map(_overtime_builder(overtime_data, key), yearterms))
             }
 

@@ -75,6 +75,52 @@ class InstructorHandler(BaseHandler):
             'datasets': datasets,
         })
 
+    def overtime_linechart_data(self, raw_data):
+
+        def _overtime_builder(overtime_data, key):
+            def _transform_overtime_data(yearterm):
+                return round(overtime_data[str(yearterm)][key], 1)
+            return _transform_overtime_data
+
+        def _overtime_dataset_builder(key):
+            color = {
+                'instructor_effectiveness_average': (247, 92, 3),
+                'instructor_respect_average': (217, 3, 104),
+                'instructoroverall_average': (130, 2, 99),
+                'instructor_availability_average': (4, 167, 119)
+            }[key]
+            label = {
+                'instructor_effectiveness_average': 'Effectiveness',
+                'instructor_respect_average': 'Respect',
+                'instructoroverall_average': 'Overall',
+                'instructor_availability_average': 'Availability'
+            }[key]
+            return {
+                'label': label,
+                'backgroundColor': "rgba({0},{1},{2},0.2)".format(*color),
+                'borderColor': "rgba({0},{1},{2},1)".format(*color),
+                'pointBackgroundColor': "rgba({0},{1},{2},1)".format(*color),
+                'pointHoverBackgroundColor': "rgba({0},{1},{2},1)".format(*color),
+                'pointHoverBorderColor': "#fff",
+                'pointHoverBorderWidth': 2,
+                'data': list(map(_overtime_builder(overtime_data, key), yearterms))
+            }
+
+        keys = [
+            'instructor_effectiveness_average',
+            'instructor_respect_average',
+            'instructoroverall_average',
+            'instructor_availability_average'
+        ]
+        yearterms = raw_data['fcqs_yearterms']
+        overtime_data = raw_data['fcqs_overtime']
+        labels = list(map(self.convert_date, yearterms))
+        datasets = list(map(_overtime_dataset_builder, keys))
+        return tornado.escape.json_encode({
+            'labels': labels,
+            'datasets': datasets,
+        })
+
     def get(self, id):
         instructor = self.application.settings['instructor'].get_item(id)
         if instructor is None:

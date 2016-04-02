@@ -19,44 +19,44 @@ class FcqCardHandler(BaseHandler):
         date = self.convert_date(fcq_data['yearterm'])
         campus = self.convert_campus(fcq_data['campus'])
         chart_options = tornado.escape.json_encode({
-            'tooltipTemplate': '<%if (label){%><%=label%>: <%}%><%= value %>%'
+            'legend': {
+                'display': False,
+            },
+            'title': {
+                'display': False,
+            },
         })
         gradepie_json = tornado.escape.json_encode([])
         if grade_data:
-            gradepie_data = [
-                {
-                    'value': round(100 * grade_data['percent_a'], 0),
-                    'color': '#2c7bb6',
-                    'label': 'A Grade',
-                },
-                {
-                    'value': round(100 * grade_data['percent_b'], 0),
-                    'color': '#abd9e9',
-                    'label': 'B Grade',
-                },
-                {
-                    'value': round(100 * grade_data['percent_c'], 0),
-                    'color': '#ffffbf',
-                    'label': 'C Grade',
-                },
-                {
-                    'value': round(100 * grade_data['percent_d'], 0),
-                    'color': '#fdae61',
-                    'label': 'D Grade',
-                },
-                {
-                    'value': round(100 * grade_data['percent_f'], 0),
-                    'color': '#d7191c',
-                    'label': 'F Grade',
-                },
-                {
-                    'value': round(100 * grade_data['percent_incomplete'], 0),
-                    'color': '#333333',
-                    'label': 'Incomplete',
-                }
-            ]
+            gradepie_data = {
+                'labels': [
+                    'A Grade',
+                    'B Grade',
+                    'C Grade',
+                    'D Grade',
+                    'F Grade',
+                    'Incomplete'
+                ],
+                'datasets': [{
+                    'data': [
+                        round(100 * grade_data['percent_a'], 0),
+                        round(100 * grade_data['percent_b'], 0),
+                        round(100 * grade_data['percent_c'], 0),
+                        round(100 * grade_data['percent_d'], 0),
+                        round(100 * grade_data['percent_f'], 0),
+                        round(100 * grade_data['percent_incomplete'], 0)
+                    ],
+                    'backgroundColor': [
+                        '#2c7bb6',
+                        '#abd9e9',
+                        '#ffffbf',
+                        '#fdae61',
+                        '#d7191c',
+                        '#333333'
+                    ]
+                }]
+            }
             gradepie_json = tornado.escape.json_encode(gradepie_data)
-
 
         def progress_bar(numerator, denominator):
             numer = numerator or 0

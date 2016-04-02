@@ -260,10 +260,12 @@
             </table>
           </div>
           <script type="text/javascript">
-          var options = {% raw chart_options %};
-          var data = {% raw gradepie_json %};
           var ctx = document.getElementById("gradepie-{{ fcq_id }}").getContext("2d");
-          var myPieChart = new Chart(ctx).Pie(data, options);
+          var myPieChart = new Chart(ctx,{
+              type:'pie',
+              data:{% raw gradepie_json %},
+              options: {% raw chart_options %}
+          });
           </script>
         {% end %}
       </div>

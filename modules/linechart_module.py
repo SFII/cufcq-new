@@ -10,11 +10,16 @@ class LineChartModule(ChartModule):
         self.chart_data = chart_data
         return self.render_string('modules/linechart.html',
                                   header=header, color=color, chart_id=self.chart_id)
+    def chart_options(self):
+        return super(LineChartModule, self).chart_options()
 
     def embedded_javascript(self):
+        options = self.chart_options()
         return '''
-        var options = {0};
-        var data = {1};
         var ctx = document.getElementById("{2}").getContext("2d");
-        var myLineChart = new Chart(ctx).Line(data, options);
-        '''.format(self.chart_options, self.chart_data, self.chart_id)
+        var myLineChart = new Chart(ctx,{{
+            type:'line',
+            data:{1},
+            options:{0}
+        }});
+        '''.format(options, self.chart_data, self.chart_id)
