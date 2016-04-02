@@ -67,10 +67,10 @@ class BaseHandler(tornado.web.RequestHandler):
 
         def _overtime_dataset_builder(key):
             color = {
-                'instructor_effectiveness_average': (220, 220, 220),
-                'instructor_respect_average': (220, 220, 220),
-                'instructoroverall_average': (220, 220, 220),
-                'instructor_availability_average': (220, 220, 220)
+                'instructor_effectiveness_average': (247, 92, 3),
+                'instructor_respect_average': (217, 3, 104),
+                'instructoroverall_average': (130, 2, 99),
+                'instructor_availability_average': (4, 167, 119)
             }[key]
             label = {
                 'instructor_effectiveness_average': 'Effectiveness',
