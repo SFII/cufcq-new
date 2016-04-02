@@ -4,7 +4,7 @@
     <div class="card-head style-primary text-primary text-center">
       <header>Instructor Averages</header>
     </div><!--end .card-head -->
-    <div class="card-body no-padding height-5 scroll">
+    <div class="card-body no-padding height-stats scroll">
       <ul class="list divider-full-bleed">
         <li class="tile">
           <div class="tile-content">
@@ -13,12 +13,12 @@
         </li>
         <li class="tile">
           <div class="tile-content">  
-            <div class="tile-text text-primary-dark .instructor-stats-card-department">Effectiveness Score: <a class="text-light">{{i_eff = instructor_stats.get("effectiveness")}} out of 6</a></div>
+            <div class="tile-text text-primary-dark .instructor-stats-card-department">Effectiveness: <a class="text-light">{{i_eff = instructor_stats.get("effectiveness")}} out of 6</a></div>
           </div>
         </li>
         <li class="tile">
           <div class="tile-content">  
-            <div class="tile-text text-primary-dark .instructor-stats-card-department">Availability Score: <a class="text-light">{{i_average = instructor_stats.get("availability")}} out of 6</a></div>
+            <div class="tile-text text-primary-dark .instructor-stats-card-department">Availability: <a class="text-light">{{i_average = instructor_stats.get("availability")}} out of 6</a></div>
           </div>
         </li>
         <li class="tile">

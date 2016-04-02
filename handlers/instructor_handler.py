@@ -3,9 +3,10 @@ import tornado.template
 import logging
 from handlers.base_handler import BaseHandler
 
+
 class InstructorHandler(BaseHandler):
 
-    def color(self, course_data):
+    def color(self):
         return 'primary'
 
     def keywords_string(self, instructor_data):
@@ -25,7 +26,8 @@ class InstructorHandler(BaseHandler):
         campus_location = self.convert_campus(instructor_data['campus'])
         return """{0} {1} is a {2} at the University of Colorado, {3}. CUFCQ is
         a data analysis project for studying and visualizing the University of
-        Colorado's Faculty Course Questionnaire data.""".format(first_name, last_name, instructor_description, campus_location)
+        Colorado's Faculty Course Questionnaire data.""".format(
+            first_name, last_name, instructor_description, campus_location)
 
     def overtime_linechart_data(self, raw_data):
 
@@ -90,15 +92,17 @@ class InstructorHandler(BaseHandler):
             "first_fcq": self.convert_date(instructor.get('fcqs_yearterms')[0]),
         }
         instructor_stats_object = {
-            "effectiveness": round(instructor.get('fcqs_stats').get('instructor_effectiveness_average'), 1),
-            "overall": round(instructor.get('fcqs_stats').get('instructoroverall_average'), 1),
-            "availability": round(instructor.get('fcqs_stats').get('instructor_availability_average'), 1),
-            "respect": round(instructor.get('fcqs_stats').get('instructor_respect_average'), 1),
+            "effectiveness": round(
+                instructor.get('fcqs_stats').get('instructor_effectiveness_average'), 1),
+            "overall": round(
+                instructor.get('fcqs_stats').get('instructoroverall_average'), 1),
+            "availability": round(
+                instructor.get('fcqs_stats').get('instructor_availability_average'), 1),
+            "respect": round(
+                instructor.get('fcqs_stats').get('instructor_respect_average'), 1),
         }
 
-        # fcqs = self.get_fcq_data(instructor.get('fcqs'))
         fcqs = instructor.get('fcqs', [])
-
         chart_data = self.overtime_linechart_data(instructor)
 
         self.render('layouts/instructor_view.html',

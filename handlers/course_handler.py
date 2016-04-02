@@ -4,7 +4,7 @@ from handlers.base_handler import BaseHandler
 
 class CourseHandler(BaseHandler):
 
-    def color(self, course_data):
+    def color(self):
         return 'orange'
 
     def keywords_string(self, course_data):

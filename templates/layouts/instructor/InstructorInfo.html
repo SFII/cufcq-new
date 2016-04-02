@@ -8,7 +8,7 @@
 			<ul class="list divider-full-bleed">
 				<li class="tile">
 					<div class="tile-content">
-						<div class="tile-text text-primary-dark .instructor-stats-card-department">Department: <a href="google.com" class="text-light">{{ instructor_info.get('department') }}</a></div>
+						<div class="tile-text text-primary-dark .instructor-stats-card-department">Department: <a href="/department/{{instructor_info.get('department').lower()}}" class="text-light">{{ instructor_info.get('department') }}</a></div>
 					</div>
 				</li>
 				<li class="tile">

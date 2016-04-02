@@ -1,9 +1,9 @@
 
     <ul id="nav-{{ fcq_id }}" class="nav nav-tabs" data-toggle="tabs">
-      <li class="tab active"><a href="#{{ fcq_id }}-1">Info</a></li>
-      <li class="tab"><a href="#{{ fcq_id }}-2">Meta</a></li>
-      <li class="tab"><a href="#{{ fcq_id }}-3">Course</a></li>
-      <li class="tab"><a href="#{{ fcq_id }}-4">Instructor</a></li>
+      <li class="tab active"><a class="gui-dynamic" href="#{{ fcq_id }}-1">Info</a></li>
+      <li class="tab"><a class="gui-dynamic" href="#{{ fcq_id }}-2">Meta</a></li>
+      <li class="tab"><a class="gui-dynamic" href="#{{ fcq_id }}-3">Course</a></li>
+      <li class="tab"><a class="gui-dynamic" href="#{{ fcq_id }}-4">Instructor</a></li>
       <li class="tab {{disabled(grade_data)}}"><a href="#{{ fcq_id }}-5">Grades</a></li>
       <li class="tab {{disabled(denver_data)}}"><a href="#{{ fcq_id }}-6">Denver</a></li>
     </ul>
@@ -13,36 +13,22 @@
         <h2>
           {{fcq_data['course_subject']}} {{fcq_data['course_number']}}-{{fcq_data['section']}}, {{date}}
           </br>
-          <small>Course: <a href="/course/{{fcq_data['course_id']}}">{{fcq_data['course_title']}}</a></small>
+          <small>Course: <a class="text-primary-dark text-light" href="/course/{{fcq_data['course_id']}}">{{fcq_data['course_title']}}</a></small>
           </br>
-          <small>Instructor: <a href="/instructor/{{fcq_data['instructor_id']}}">{{fcq_data['instructor_last'].capitalize()}}, {{fcq_data['instructor_first'].capitalize()}}</a></small>
+          <small>Instructor: <a class="text-primary-dark text-light" href="/instructor/{{fcq_data['instructor_id']}}">{{fcq_data['instructor_last'].capitalize()}}, {{fcq_data['instructor_first'].capitalize()}}</a></small>
           </br>
-          <small>Department: <a href="/department/{{fcq_data['department_id']}}">{{fcq_data['course_subject']}}</a></small>
+          <small>Department: <a class="text-primary-dark text-light" href="/department/{{fcq_data['department_id']}}">{{fcq_data['course_subject']}}</a></small>
           </br>
         </h2>
         {% end %}
       </div>
       <div class="tab-pane" id="{{ fcq_id }}-2">
         {% if fcq_data %}
-        </br>
         <table class="table table-striped no-margin">
           <tbody>
             <tr>
               <td>Yearterm</td>
               <td>{{date}}</td>
-            </tr>
-            <tr>
-              <td>Fcq Id</td>
-              <td><a target="_blank" href="/api/fcq/{{fcq_id}}">{{fcq_id}}</a></td>
-            </tr>
-            <tr>
-              <td>Grade Data</td>
-              <td>
-                {% if grade_data %}
-                  <a target="_blank" href="/api/grade/{{fcq_id}}">{{fcq_id}}</a></td>
-                {% else %}
-                  None
-                {% end %}
             </tr>
             <tr>
               <td>Course</td>
@@ -73,13 +59,11 @@
       </div>
       <div class="tab-pane" id="{{ fcq_id }}-3">
         {% if fcq_data %}
-        <h2>Course</h2>
-        This table contains the averaged results of the FCQ survey questions pertaining to the course.
         <table class="table table-striped no-margin">
           <tbody>
             <tr>
               <td>Course Title</td>
-              <td>{{fcq_data['course_title']}}</td>
+              <td><a href="/course/{{fcq_data['course_id']}}">{{fcq_data['course_title']}}</a></td>
             </tr>
             <tr>
               <td>Course Code</td>
@@ -148,12 +132,10 @@
       </div>
       <div class="tab-pane" id="{{ fcq_id }}-4">
         {% if fcq_data %}
-        <h2>Instructor</h2>
-        This table contains the averaged results of the FCQ survey questions pertaining to the instructor.
         <table class="table table-striped no-margin">
           <tbody>
             <tr>
-              <td>Instructor</td>
+              <td>Name</td>
               <td>{{fcq_data['instructor_last'].capitalize()}}, {{fcq_data['instructor_first'].capitalize()}}</td>
             </tr>
             <tr>
