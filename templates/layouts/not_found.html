@@ -1,41 +1,45 @@
 <!DOCTYPE html>
 <html lang="en">
-{% include standard/head.html %}
+{% include standard/head.html%}
 
 {% block content %}
-<div class="menubar-hoverable header-fixed ">
-  <div id="base">
+<div class="menubar-hoverable header-fixed">
+<div id="base">
     <div id="content">
-      <section>
+        <section>
         <div class="section-body">
-          <div class="row">
-            <div class="col-md-12">
-                <div class="card">
-                    <div class="card-head style-primary text-center">
-                        404
-                    </div>
-                    <div class="card-body no-padding">
-                        <div>
-                            Page Not Found
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="card-head text-primary text-center">
+                                <h2 class="fa-5x">
+                                    404
+                                </h2>
+                            </div>
+                        <div class="card-body no-padding text-center fa-3x">
+                            <div>
+                                Page Not Found!
+                            </div>
+                            <div>
+                                <button type="button" class="btn btn-lg ink-reaction btn-raised btn-primary height-2 width-6" onclick="goBack()">
+                                    Back
+                                </button>
+                                <script>
+                                    function goBack(){
+                                        window.history.back();
+                                    }
+                                </script>
+                            </div>
                         </div>
-                        <div>
-                            <button class="btn btn-lg ink-reaction btn-raised btn-primary" onClick="goBack()">
-                                Back
-                            </button>
-                            <script>
-                                function goBack() {
-                                    window.history.back();
-                                }
-                            </script>
                         </div>
                     </div>
                 </div>
             </div>
-          </div>
         </div>
-      </section>
+        </section>
     </div>
-  </div>
+</div>
 {% end %}
 {% include standard/body.html %}
 </div>
