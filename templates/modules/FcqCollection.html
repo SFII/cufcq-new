@@ -7,7 +7,7 @@
     </div>
   {% for fcq_id in chunks.pop(0) %}
     <div class="card panel">
-      {% include fcqcard.html %}
+      {% include FcqCardBlank.html %}
     </div>
   {% end %}
   {% for i in range (0, len(chunks)) %}
@@ -21,7 +21,7 @@
     <div id="creator-{{i}}" class="collapse" aria-expanded="false" style="height: 0px;">
     {% for fcq_id in chunks[i] %}
       <div class="panel">
-        {% include fcqcard.html %}
+        {% include FcqCardBlank.html %}
       </div>
     {% end %}
     </div>

@@ -1,6 +1,5 @@
 import tornado.web
 import tornado.template
-import logging
 from handlers.base_handler import BaseHandler
 
 
