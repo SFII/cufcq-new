@@ -8,7 +8,7 @@ from functools import wraps
 class BaseHandler(tornado.web.RequestHandler):
 
     def render(self, template_name, **kwargs):
-        raw_data = kwargs['raw_data']
+        raw_data = kwargs.get('raw_data','')
         kwargs['keywords_string'] = self.keywords_string(raw_data)
         kwargs['description_string'] = self.description_string(raw_data)
         super().render(template_name, **kwargs)
@@ -67,10 +67,10 @@ class BaseHandler(tornado.web.RequestHandler):
 
         def _overtime_dataset_builder(key):
             color = {
-                'instructor_effectiveness_average': (220, 220, 220),
-                'instructor_respect_average': (220, 220, 220),
-                'instructoroverall_average': (220, 220, 220),
-                'instructor_availability_average': (220, 220, 220)
+                'instructor_effectiveness_average': (247, 92, 3),
+                'instructor_respect_average': (217, 3, 104),
+                'instructoroverall_average': (130, 2, 99),
+                'instructor_availability_average': (4, 167, 119)
             }[key]
             label = {
                 'instructor_effectiveness_average': 'Effectiveness',
