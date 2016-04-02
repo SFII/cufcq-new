@@ -4,13 +4,13 @@ from modules.base_module import BaseModule
 class FcqCardModule(BaseModule):
     fcq_ids = []
 
-    def render(self, fcq_ids):
+    def render(self, fcq_ids, color):
         self.fcq_ids = fcq_ids
         self.fcq_ids.reverse()
         chunks = [self.fcq_ids[x:x + 6]
                   for x in range(0, len(self.fcq_ids), 6)]
         return self.render_string(
-            'modules/FcqCollection.html', chunks=chunks, fcq_ids=fcq_ids, fcq_title=self.fcq_title, convert_date=self.convert_date)
+            'modules/FcqCollection.html', chunks=chunks, fcq_ids=fcq_ids, fcq_title=self.fcq_title, convert_date=self.convert_date, color=color)
 
     def embedded_javascript(self):
         javascript = ""

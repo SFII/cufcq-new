@@ -57,4 +57,5 @@ class InstructorHandler(BaseHandler):
                     chart_data=chart_data,
                     instructor_info=instructor_info_object,
                     instructor_stats=instructor_stats_object,
-                    instructor_fcqs=fcqs)
+                    instructor_fcqs=fcqs,
+                    color="primary")

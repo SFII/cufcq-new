@@ -29,9 +29,9 @@ class BaseHandler(tornado.web.RequestHandler):
 
     def convert_campus(self, campus):
         return {
-            'BD': 'Boulder',
-            'DN': 'Denver',
-            'CS': 'Colorado Springs'
+            'BD': 'CU Boulder',
+            'DN': 'CU Denver',
+            'CS': 'CU Colorado Springs',
         }[campus]
 
     def convert_level(self, level):

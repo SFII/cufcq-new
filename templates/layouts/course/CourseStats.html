@@ -1,0 +1,33 @@
+<!-- BEGIN INSTRUCTOR INFO -->
+<div class="col-md-3">
+  <div class="card instructor-stats-card">
+    <div class="card-head style-orange text-primary text-center">
+      <header>Instructor Averages</header>
+    </div><!--end .card-head -->
+    <div class="card-body no-padding height-5 scroll">
+      <ul class="list divider-full-bleed">
+        <li class="tile">
+          <div class="tile-content">
+            <div class="tile-text text-primary-dark .instructor-stats-card-department">Average Challenge: <a class="text-light">{{i_overall = course_stats.get("challenge")}} out of 6</a></div>
+          </div>
+        </li>
+        <li class="tile">
+          <div class="tile-content">  
+            <div class="tile-text text-primary-dark .instructor-stats-card-department">Amount Learned: <a class="text-light">{{i_eff = course_stats.get("learned")}} out of 6</a></div>
+          </div>
+        </li>
+        <li class="tile">
+          <div class="tile-content">  
+            <div class="tile-text text-primary-dark .instructor-stats-card-department">Overall Score: <a class="text-light">{{i_average = course_stats.get("overall")}} out of 6</a></div>
+          </div>
+        </li>
+        <li class="tile">
+          <div class="tile-content">  
+            <div class="tile-text text-primary-dark .instructor-stats-card-department">Average Workload: <a class="text-light">{{i_respect = course_stats.get("workload")}} hrs/week</a></div>
+          </div>
+        </li>
+      </ul>
+    </div><!--end .card-body -->
+  </div><!--end .card -->
+</div><!--end .col -->
+<!-- END INSTRUCTOR INFO -->

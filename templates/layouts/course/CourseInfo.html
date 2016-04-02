@@ -1,43 +1,43 @@
-<!-- BEGIN INSTRUCTOR INFO -->
+<!-- BEGIN course INFO -->
 <div class="col-md-3">
-	<div class="card instructor-stats-card">
-		<div class="card-head text-primary text-center">
-			<h2>{{ course_info.get('code') }} - {{ course_info.get('title') }} </h2>
+	<div class="card course-stats-card">
+		<div class="card-head style-orange text-center">
+			<header>{{ course_info.get('title') }}</header>
 		</div><!--end .card-head -->
 		<div class="card-body no-padding height-8 scroll">
 			<ul class="list divider-full-bleed">
 				<li class="tile">
 					<div class="tile-content">
-						<div class="tile-text text-primary-dark .instructor-stats-card-department">Department: <a href="google.com" class="text-light">{{ course_info.get('department') }}</a></div>
+						<div class="tile-text text-primary-dark .course-stats-card-department">Course Code: <a href="google.com" class="text-light">{{ course_info.get('id') }}</a></div>
 					</div>
 				</li>
 				<li class="tile">
 					<div class="tile-content">	
-						<div class="tile-text text-primary-dark">Sections Offered : <a class="text-light">{{ course_info.get('sections') }}</a></div>
+						<div class="tile-text text-primary-dark">Campus: <a class="text-light">{{ course_info.get('campus') }}</a></div>
 					</div>
 				</li>
 				<li class="tile">
 					<div class="tile-content">	
-						<div class="tile-text text-primary-dark"> Participating Instructors: <a class="text-light">{{ course_info.get('instructors') }}</a></div>
+						<div class="tile-text text-primary-dark">Department: <a class="text-light">{{ course_info.get('department') }}</a></div>
 					</div>
 				</li>
 				<li class="tile">
 					<div class="tile-content">	
-						<div class="tile-text text-primary-dark">Students Taught: <a class="text-light">{{ course_info.get('students') }}</a></div>
+						<div class="tile-text text-primary-dark">Subject: <a class="text-light">{{ course_info.get('subject') }}</a></div>
 					</div>
 				</li>
 				<li class="tile">
 					<div class="tile-content">	
-						<div class="tile-text text-primary-dark">Last FCQ: <a class="text-light">{{ course_info.get('last_fcq') }}</a></div>
+						<div class="tile-text text-primary-dark">Sections: <a class="text-light">{{ course_info.get('sections') }}</a></div>
 					</div>
 				</li>
 				<li class="tile">
 					<div class="tile-content">	
-						<div class="tile-text text-primary-dark">First FCQ: <a class="text-light">{{ course_info.get('first_fcq') }}</a></div>
+						<div class="tile-text text-primary-dark">Instructors: <a class="text-light">{{ course_info.get('Instructors') }}</a></div>
 					</div>
 				</li>
 			</ul>
 		</div><!--end .card-body -->
 	</div><!--end .card -->
 </div><!--end .col -->
-<!-- END INSTRUCTOR INFO -->
+<!-- END course INFO -->

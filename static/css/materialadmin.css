@@ -5298,53 +5298,6 @@ section.style-gray-dark,
   border-color: #313534;
   color: #ffffff;
 }
-
-section .style-orange-dark,
-.offcanvas-pane .style-orange-dark,
-.card .style-orange-dark,
-section.style-orange-dark,
-.offcanvas-pane.style-orange-dark,
-.card.style-orange-dark {
-  background-color: #f75c03;
-  border-color: #f75c03;
-  color: #ffffff;
-}
-
-section .style-pink-dark,
-.offcanvas-pane .style-pink-dark,
-.card .style-pink-dark,
-section.style-pink-dark,
-.offcanvas-pane.style-pink-dark,
-.card.style-pink-dark {
-  background-color: #D90368;
-  border-color: #D90368;
-  color: #ffffff;
-}
-
-section .style-purple-dark,
-.offcanvas-pane .style-purple-dark,
-.card .style-purple-dark,
-section.style-purple-dark,
-.offcanvas-pane.style-purple-dark,
-.card.style-purple-dark {
-  background-color: #820263;
-  border-color: #820263;
-  color: #ffffff;
-}
-
-section .style-violet-dark,
-.offcanvas-pane .style-violet-dark,
-.card .style-violet-dark,
-section.style-violet-dark,
-.offcanvas-pane.style-violet-dark,
-.card.style-violet-dark {
-  background-color: #540D6E;
-  border-color: #540D6E;
-  color: #ffffff;
-}
-
-
-
 section .style-gray-dark .btn-icon-toggle:hover,
 .offcanvas-pane .style-gray-dark .btn-icon-toggle:hover,
 .card .style-gray-dark .btn-icon-toggle:hover,

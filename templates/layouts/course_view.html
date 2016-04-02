@@ -11,17 +11,15 @@
 				<div class="section-body">
 					<div class="row">
 						{% include course/CourseInfo.html %}
-						{% include instructor/InstructorBreakdown.html %}
 					</div><!--end .row -->
 					<div class="row">
-						{% include instructor/DepartmentStats.html %}
-						{% include instructor/Fcqs.html %}
+						{% include course/CourseStats.html %}
+						{% module fcq_card(course_fcqs,color) %}
 					</div><!--end .row -->
 				</div><!--end .section-body -->
 			</section>
 		</div><!--end #content-->
 		<!-- END CONTENT -->
-    {% include standard/body/OffCanvasRight.html %}
 	</div><!--end #base-->
 	<!-- END BASE -->
 {% end %}
