@@ -10,16 +10,15 @@
         <div class="section-body">
           <div class="row">
             {% include instructor/InstructorInfo.html %}
-            {% include instructor/InstructorBreakdown.html %}
+            {% module chart_overtime("Instructor Statistics", chart_data) %}
           </div>
           <div class="row">
-            {% include instructor/DepartmentStats.html %}
+            {% include instructor/InstructorStats.html %}
             {% module fcq_card(instructor_fcqs) %}
           </div>
         </div>
       </section>
     </div>
-    {% include standard/body/OffCanvasRight.html %}
   </div>
 {% end %}
 {% include standard/body.html %}
