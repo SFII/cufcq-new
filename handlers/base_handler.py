@@ -8,7 +8,7 @@ from functools import wraps
 class BaseHandler(tornado.web.RequestHandler):
 
     def render(self, template_name, **kwargs):
-        raw_data = kwargs['raw_data']
+        raw_data = kwargs.get('raw_data','')
         kwargs['keywords_string'] = self.keywords_string(raw_data)
         kwargs['description_string'] = self.description_string(raw_data)
         super().render(template_name, **kwargs)

@@ -1,0 +1,28 @@
+<div class="col-md-2">
+  <div class="card">
+    <div class="card-head">
+      <header>Breakdown</header>
+    </div>
+    <div class="card-body height-8">
+      <strong>Overall: </strong> {{i_overall = instructor_stats.get("overall")}} /6
+      <span class="pull-right text-success text-sm">CHANGE <i class="md md-trending-up"></i></span>
+      <div class="progress progress-hairline">
+        <div class="progress-bar progress-bar-primary-dark" style="width:{{i_overall/6 * 100}}%"></div>
+      </div>
+      <strong>Availablity: </strong> {{i_average = instructor_stats.get("availability")}} /6
+      <span class="pull-right text-success text-sm">CHANGE <i class="md md-trending-up"></i></span>
+      <div class="progress progress-hairline">
+        <div class="progress-bar progress-bar-primary-dark" style="width:{{i_average/6 * 100}}%"></div>
+      </div>
+      <strong>Effectiveness</strong> {{i_eff = instructor_stats.get("effectiveness")}} /6
+      <span class="pull-right text-danger text-sm">CHANGE<i class="md md-trending-down"></i></span>
+      <div class="progress progress-hairline">
+        <div class="progress-bar progress-bar-danger" style="width:{{i_eff/6 * 100}}%"></div>
+      </div>
+      <strong>Respect</strong> {{i_respect = instructor_stats.get("respect")}} /6
+      <span class="pull-right text-success text-sm"> CHANGE <i class="md md-trending-up"></i></span>
+      <div class="progress progress-hairline">
+        <div class="progress-bar progress-bar-primary-dark" style="width:{{i_respect/6 * 100}}%"></div>
+      </div>
+    </div>
+</div>

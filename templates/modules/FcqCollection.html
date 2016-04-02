@@ -1,5 +1,10 @@
 <div class="col-md-9">
   <div class="panel-group" id="fcqs">
+    <div class="style-primary card panel">
+      <div class="card-head text-primary style-primary text-center">
+        <header> Past Instructor Sections <header>
+      </div>
+    </div>
   {% for fcq_id in chunks.pop(0) %}
     <div class="card panel">
       {% include fcqcard.html %}
@@ -8,7 +13,7 @@
   {% for i in range (0, len(chunks)) %}
   <div class="card panel">
     <div class="card-head card-head-sm collapsed" data-toggle="collapse" data-parent="#creator" data-target="#creator-{{i}}" aria-expanded="false">
-        <header>{{ convert_date(chunks[i][0].split('-')[1])}} - {{ convert_date(chunks[i][-1].split('-')[1])}}</header>
+        <header class="text-primary-dark">{{ convert_date(chunks[i][0].split('-')[1])}} - {{ convert_date(chunks[i][-1].split('-')[1])}}</header>
         <div class="tools">
           <a class="btn btn-icon-toggle"><i class="fa fa-angle-down"></i></a>
         </div>
