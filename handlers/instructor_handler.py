@@ -27,7 +27,7 @@ class InstructorHandler(BaseHandler):
     def get(self, id):
         instructor = self.application.settings['instructor'].get_item(id)
         if instructor is None:
-            #404 goes here
+            self.redirect('/notFound')
             return
 
         instructor_info_object = {
