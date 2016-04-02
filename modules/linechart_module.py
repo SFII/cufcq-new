@@ -5,11 +5,11 @@ import logging
 
 class LineChartModule(ChartModule):
 
-    def render(self, header, chart_data, chart_id="linechart"):
+    def render(self, header, color, chart_data, chart_id="linechart"):
         self.chart_id = chart_id
         self.chart_data = chart_data
         return self.render_string('modules/linechart.html',
-                                  header=header, chart_id=self.chart_id)
+                                  header=header, color=color, chart_id=self.chart_id)
 
     def embedded_javascript(self):
         return '''

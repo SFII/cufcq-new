@@ -8,10 +8,15 @@ from functools import wraps
 class BaseHandler(tornado.web.RequestHandler):
 
     def render(self, template_name, **kwargs):
-        raw_data = kwargs.get('raw_data','')
+        raw_data = kwargs.get('raw_data', '')
         kwargs['keywords_string'] = self.keywords_string(raw_data)
         kwargs['description_string'] = self.description_string(raw_data)
+        kwargs['linechart_data'] = self.overtime_linechart_data(raw_data)
+        kwargs['color'] = self.color(raw_data)
         super().render(template_name, **kwargs)
+
+    def color(self, raw_data):
+        return 'primary'
 
     def keywords_string(self, raw_data):
         return """cufcq,university,colorado,faculty,course,instructor,fcq,grade,department,database"""
@@ -58,48 +63,8 @@ class BaseHandler(tornado.web.RequestHandler):
                     dict(fcq_title=self.fcq_title(fcq), **fcq),
                     fcq_data))
 
-    def overtime_linechart_data(self, model_data):
-
-        def _overtime_builder(overtime_data, key):
-            def _transform_overtime_data(yearterm):
-                return round(overtime_data[str(yearterm)][key], 1)
-            return _transform_overtime_data
-
-        def _overtime_dataset_builder(key):
-            color = {
-                'instructor_effectiveness_average': (247, 92, 3),
-                'instructor_respect_average': (217, 3, 104),
-                'instructoroverall_average': (130, 2, 99),
-                'instructor_availability_average': (4, 167, 119)
-            }[key]
-            label = {
-                'instructor_effectiveness_average': 'Effectiveness',
-                'instructor_respect_average': 'Respect',
-                'instructoroverall_average': 'Overall',
-                'instructor_availability_average': 'Availability'
-            }[key]
-            return {
-                'label': label,
-                'fillColor': "rgba({0},{1},{2},0.2)".format(*color),
-                'strokeColor': "rgba({0},{1},{2},1)".format(*color),
-                'pointColor': "rgba({0},{1},{2},1)".format(*color),
-                'pointHighlightStroke': "rgba({0},{1},{2},1)".format(*color),
-                'pointStrokeColor': "#fff",
-                'pointHighlightFill': "#fff",
-                'data': list(map(_overtime_builder(overtime_data, key), yearterms))
-            }
-
-        keys = [
-            'instructor_effectiveness_average',
-            'instructor_respect_average',
-            'instructoroverall_average',
-            'instructor_availability_average'
-        ]
-        yearterms = model_data['fcqs_yearterms']
-        overtime_data = model_data['fcqs_overtime']
-        labels = list(map(self.convert_date, yearterms))
-        datasets = list(map(_overtime_dataset_builder, keys))
+    def overtime_linechart_data(self, raw_data):
         return tornado.escape.json_encode({
-            'labels': labels,
-            'datasets': datasets,
+            'labels': [],
+            'datasets': [],
         })

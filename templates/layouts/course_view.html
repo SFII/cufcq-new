@@ -3,25 +3,22 @@
 {% include standard/head.html %}
 
 {% block content %}
-	<!-- BEGIN BASE-->
-	<div id="base">
-		<!-- BEGIN CONTENT-->
-		<div id="content">
-			<section>
-				<div class="section-body">
-					<div class="row">
-						{% include course/CourseInfo.html %}
-					</div><!--end .row -->
-					<div class="row">
-						{% include course/CourseStats.html %}
-						{% module fcq_card(course_fcqs,color) %}
-					</div><!--end .row -->
-				</div><!--end .section-body -->
-			</section>
-		</div><!--end #content-->
-		<!-- END CONTENT -->
-	</div><!--end #base-->
-	<!-- END BASE -->
+  <div id="base">
+    <div id="content">
+      <section>
+        <div class="section-body">
+          <div class="row">
+            {% include course/CourseInfo.html %}
+            {% module chart_overtime("Course Statistics", color, linechart_data) %}
+          </div>
+          <div class="row">
+            {% include course/CourseStats.html %}
+            {% module fcq_card(course_fcqs,color) %}
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
 {% end %}
 {% include standard/body.html %}
 </html>
