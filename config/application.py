@@ -30,7 +30,7 @@ settings = {
     'course': Course(),
     'instructor': Instructor(),
     'department': Department(),
-    'default_handler_class': NotFoundHandler(),
+    'default_handler_class': NotFoundHandler,
     'ui_modules': {
         'chart_overtime': LineChartModule,
         'fcq_card': FcqCardModule

@@ -4,5 +4,5 @@ from handlers.base_handler import BaseHandler
 
 class NotFoundHandler(BaseHandler):
     def get(self):
-        self.render('/notFound')
+        self.render('layouts/not_found.html')
         return
