@@ -49,12 +49,12 @@ class InstructorHandler(BaseHandler):
             }[key]
             return {
                 'label': label,
-                'fillColor': "rgba({0},{1},{2},0.2)".format(*color),
-                'strokeColor': "rgba({0},{1},{2},1)".format(*color),
-                'pointColor': "rgba({0},{1},{2},1)".format(*color),
-                'pointHighlightStroke': "rgba({0},{1},{2},1)".format(*color),
-                'pointStrokeColor': "#fff",
-                'pointHighlightFill': "#fff",
+                'backgroundColor': "rgba({0},{1},{2},0.2)".format(*color),
+                'borderColor': "rgba({0},{1},{2},1)".format(*color),
+                'pointBackgroundColor': "rgba({0},{1},{2},1)".format(*color),
+                'pointHoverBackgroundColor': "rgba({0},{1},{2},1)".format(*color),
+                'pointHoverBorderColor': "#fff",
+                'pointHoverBorderWidth': 2,
                 'data': list(map(_overtime_builder(overtime_data, key), yearterms))
             }
 
