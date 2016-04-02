@@ -12,6 +12,7 @@ from config.application import make_application, initialize_settings
 from services.digestor import digest, cleanup, associate, overtime, foobar
 import logging
 
+define('prod', default=False,help='start in prod mode',type=bool)
 define('debug', default=True, help='set True for debug mode', type=bool)
 define('foobar', default=False, help='runs a small method for debugging purposes', type=bool)
 define('test', default=False, help='set True to run Tests', type=bool)
@@ -38,6 +39,7 @@ def main():
     application = make_application(settings)
     httpserver = HTTPServer(application, xheaders=True)
     max_wait_seconds_before_shutdown = 0
+
 
     # signal handler
     def sig_handler(sig, frame):
@@ -86,10 +88,12 @@ def main():
         signal.signal(signal.SIGINT, sig_handler)
         signal.signal(signal.SIGTERM, sig_handler)
     else:
+        settings['site_port'] = options.port
         httpserver.bind(settings['site_port'])  # port
-        httpserver.start(0)
+        httpserver.start(1)
+
     logging.info("Now serving on http://localhost:{0}".format(settings['site_port']))
-    tornado.ioloop.IOLoop.instance().start()
+    tornado.ioloop.IOLoop.current().start()
     logging.info('Exit ...')
 
 

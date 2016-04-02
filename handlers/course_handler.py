@@ -2,6 +2,7 @@ import tornado.web
 import tornado.template
 from handlers.base_handler import BaseHandler
 
+
 class CourseHandler(BaseHandler):
 
     def color(self):
@@ -12,7 +13,8 @@ class CourseHandler(BaseHandler):
         course_number = course_data['course_number']
         alternate_titles = course_data['alternate_titles']
         return """{0},{1},{2},cufcq,university,colorado,faculty,course,course,
-        fcq,grade,department,database""".format(course_subject, course_number, ','.join(alternate_titles))
+        fcq,grade,department,database""".format(
+            course_subject, course_number, ','.join(alternate_titles))
 
     def description_string(self, course_data):
         course_subject = course_data['course_subject']
@@ -22,7 +24,8 @@ class CourseHandler(BaseHandler):
         campus_location = self.convert_campus(course_data['campus'])
         return """{0} {1}: {2} is a {3} course at the University of Colorado, {4}. CUFCQ is
         a data analysis project for studying and visualizing the University of
-        Colorado's Faculty Course Questionnaire data.""".format(course_subject, course_number, course_title, course_level, campus_location)
+        Colorado's Faculty Course Questionnaire data.""".format(
+            course_subject, course_number, course_title, course_level, campus_location)
 
     def overtime_linechart_data(self, raw_data):
 
