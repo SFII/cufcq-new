@@ -2,8 +2,13 @@ var margin = {top: 20, right: 20, bottom: 30, left: 50},
     width = 960 - margin.left - margin.right,
     height = 500 - margin.top - margin.bottom;
 
-var parseDate = d3.time.format("%y-%b-%d").parse,
-    formatPercent = d3.format(".0%");
+var yeartermToDate = function(yearterm){
+  year = Math.floor(yearterm / 10);
+  sem = yearterm % 10;
+  season_string = (sem == 1 ? 'Spring ' : (sem == 4 ? 'Summer ' : 'Fall '));
+  month = (sem == 1 ? 0 : (sem == 4 ? 4 : 8));
+  return new Date(year, month, 1);
+}
 
 var x = d3.time.scale()
     .range([0, width]);
@@ -11,7 +16,11 @@ var x = d3.time.scale()
 var y = d3.scale.linear()
     .range([height, 0]);
 
-var color = d3.scale.category20();
+var gradecolor = d3.scale.ordinal().domain(
+  ['percent_incomplete','percent_f','percent_d','percent_c','percent_b','percent_a']
+).range(
+  ['#333333','#d7191c','#fdae61','#ffffbf','#abd9e9','#2c7bb6']
+);
 
 var xAxis = d3.svg.axis()
     .scale(x)
@@ -20,7 +29,6 @@ var xAxis = d3.svg.axis()
 var yAxis = d3.svg.axis()
     .scale(y)
     .orient("left")
-    .tickFormat(formatPercent);
 
 var area = d3.svg.area()
     .x(function(d) { return x(d.date); })
@@ -36,34 +44,35 @@ var svg = d3.select("#grades_overtime_chart").append("svg")
     .append("g")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-color.domain(d3.keys(areaChartData[0]).filter(function(key) { return key !== "date"; }));
-
-areaChartData.forEach(function(d) {
-  d.date = parseDate(d.date);
+grades_yearterms.forEach(function(d) {
+  grades_overtime[d]['grade_data_averages']['date'] = yeartermToDate;
 });
 
-var browsers = stack(color.domain().map(function(name) {
+var grades = stack(gradecolor.domain().map(function(name) {
   return {
     name: name,
-    values: areaChartData.map(function(d) {
-      return {date: d.date, y: d[name] / 100};
+    values: grades_yearterms.map(function(d) {
+      return {
+        date: yeartermToDate(d),
+        y: grades_overtime[d]['grade_data_averages'][name]
+      };
     })
   };
 }));
 
-x.domain(d3.extent(areaChartData, function(d) { return d.date; }));
+x.domain(d3.extent(grades_yearterms, function(d) { return yeartermToDate(d); }));
 
-var browser = svg.selectAll(".browser")
-    .areaChartData(browsers)
+var grade = svg.selectAll(".grade")
+    .areaChartData(grades)
   .enter().append("g")
-    .attr("class", "browser");
+    .attr("class", "grade");
 
-browser.append("path")
+grade.append("path")
     .attr("class", "area")
     .attr("d", function(d) { return area(d.values); })
     .style("fill", function(d) { return color(d.name); });
 
-browser.append("text")
+grade.append("text")
     .datum(function(d) { return {name: d.name, value: d.values[d.values.length - 1]}; })
     .attr("transform", function(d) { return "translate(" + x(d.value.date) + "," + y(d.value.y0 + d.value.y / 2) + ")"; })
     .attr("x", -6)
