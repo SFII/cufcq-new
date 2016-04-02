@@ -59,21 +59,6 @@ class InstructorHandler(BaseHandler):
 
         # fcqs = self.get_fcq_data(instructor.get('fcqs'))
         fcqs = instructor.get('fcqs', [])
-        class1 = {
-            'name': 'Spring 2015 ACCT 5220-2 Playing with Dildos',
-            'info': 'All you need to know!',
-            'sdfjksjkdf': 'akjhsdakljsdjklasd',
-        }
-        class2 = {
-            'name': 'Fall 2014 PSYCH 1300-2 Amateur Freud',
-            'info': 'Facts out the wazoo!',
-            'sdchrfjksjkdf': 'akjhsdakljsdjklasd',
-        }
-        class3 = {
-            'name': 'Fall 2013 CSCI 5001-2 Making Moneyzz',
-            'info': 'Daddy Warbucks!',
-            'sdfjksjkdf': 'akjhsdakljsdjklasd',
-        }
 
         chart_data = self.overtime_linechart_data(instructor)
 

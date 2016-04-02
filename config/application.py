@@ -12,6 +12,7 @@ from tornado.web import Application
 from config.routes import routes
 from modules.linechart_module import LineChartModule
 from modules.fcq_card_module import FcqCardModule
+from modules.grades_overtime_module import GradesOvertimeModule
 from models.fcq import Fcq
 from models.grade import Grade
 from models.course import Course
@@ -30,6 +31,7 @@ settings = {
     'instructor': Instructor(),
     'department': Department(),
     'ui_modules': {
+        'grades_overtime_chart': GradesOvertimeModule,
         'chart_overtime': LineChartModule,
         'fcq_card': FcqCardModule
     }

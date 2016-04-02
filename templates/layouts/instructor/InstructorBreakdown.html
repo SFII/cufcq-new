@@ -2,7 +2,7 @@
 <div class="col-md-9">
   <div class="card ">
     <div class="row">
-    {% module chart_overtime("Instructor Statistics", chart_data) %}
+    {% module grades_overtime_chart(raw_data['grades_overtime'], raw_data['grades_yearterms']) %}
       <div class="col-md-4">
         <div class="card-head">
           <header>Breakdown</header>
