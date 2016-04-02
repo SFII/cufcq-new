@@ -17,6 +17,7 @@ from models.grade import Grade
 from models.course import Course
 from models.instructor import Instructor
 from models.department import Department
+from handlers.not_found_handler import NotFoundHandler
 import logging
 
 settings = {
@@ -29,6 +30,7 @@ settings = {
     'course': Course(),
     'instructor': Instructor(),
     'department': Department(),
+    'default_handler_class': NotFoundHandler,
     'ui_modules': {
         'chart_overtime': LineChartModule,
         'fcq_card': FcqCardModule

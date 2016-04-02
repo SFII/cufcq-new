@@ -24,7 +24,7 @@ class CourseHandler(BaseHandler):
     def get(self, id):
         course = self.application.settings['course'].get_item(id)
         if course is None:
-            # 404 goes here
+            self.redirect('/notFound')
             return
         course_info_object = {
             "code": "ACCT 3220",

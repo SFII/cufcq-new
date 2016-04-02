@@ -6,6 +6,6 @@ class DepartmentHandler(BaseHandler):
     def get(self):
         department = self.application.settings['department'].get_item(id)
         if department is None:
-            # 404 goes here
+            self.redirect('/notFound')
             return
         return
