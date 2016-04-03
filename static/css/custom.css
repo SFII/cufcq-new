@@ -36,7 +36,7 @@ section.style-orange,
 }
 
 .gui-orange {
-  color: #f75c03 !important;    
+  color: #f75c03 !important;
 }
 
 section .style-orange-dark,
@@ -84,7 +84,7 @@ section.style-violet,
 }
 
 .gui-violet{
-  color: #540D6E !important; 
+  color: #540D6E !important;
 }
 
 section .style-violet-dark,
@@ -99,12 +99,14 @@ section.style-violet-dark,
 }
 
 .gui-primary{
-  color: #0aa89e !important;    
+  color: #0aa89e !important;
 }
 
 .height-14{
   height:560px;
+  overflow: hidden;
 }
+
 .height-info{
   height:290px;
 }

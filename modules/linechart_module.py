@@ -7,7 +7,6 @@ class LineChartModule(ChartModule):
 
     def render(self, raw_data, keys, chart_id="linechart"):
         self.chart_id = chart_id
-        self.chart_data = self.overtime_linechart_data(raw_data, keys)
         logging.warn(self.chart_data)
         return self.render_string('modules/linechart.html', chart_id=self.chart_id)
 
@@ -15,7 +14,11 @@ class LineChartModule(ChartModule):
 
         def _overtime_builder(overtime_data, key):
             def _transform_overtime_data(yearterm):
-                return round(overtime_data[str(yearterm)][key], 1)
+                value = overtime_data[str(yearterm)][key]
+                if value is not None:
+                    return round(value, 1)
+                else:
+                    return None
             return _transform_overtime_data
 
         def _overtime_dataset_builder(key):
@@ -28,7 +31,7 @@ class LineChartModule(ChartModule):
                 'instructor_respect_average': (217, 3, 104),
                 'instructoroverall_average': (130, 2, 99),
                 'instructor_availability_average': (4, 167, 119),
-            }[key]
+            }.get(key, (36, 36, 36))
             label = {
                 'course_howmuchlearned_average': 'Amount Learned',
                 'course_challenge_average': 'Challenge',
@@ -38,7 +41,7 @@ class LineChartModule(ChartModule):
                 'instructor_respect_average': 'Respect',
                 'instructoroverall_average': 'Instructor Overall',
                 'instructor_availability_average': 'Availability'
-            }[key]
+            }.get(key, '???')
             return {
                 'label': label,
                 'backgroundColor': "rgba({0},{1},{2},0.2)".format(*color),
@@ -60,14 +63,10 @@ class LineChartModule(ChartModule):
             'datasets': datasets,
         })
 
-    def chart_options(self):
-        return super(LineChartModule, self).chart_options()
-
     def embedded_javascript(self):
         options = self.chart_options()
         foo = '''
-        var ctx = document.getElementById("{2}").getContext("2d");
-        var myLineChart = new Chart(ctx,{{
+        new Chart(document.getElementById("{2}").getContext("2d"),{{
             type:'line',
             data:{1},
             options:{0}

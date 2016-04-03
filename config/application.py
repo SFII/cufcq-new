@@ -10,6 +10,7 @@ import rethinkdb as r
 from tornado.options import define, options
 from tornado.web import Application
 from config.routes import routes
+from modules.navchart_module import NavChartModule
 from modules.linechart_module import LineChartModule
 from modules.fcq_card_module import FcqCardModule
 from models.fcq import Fcq
@@ -32,6 +33,7 @@ settings = {
     'department': Department(),
     'default_handler_class': NotFoundHandler,
     'ui_modules': {
+        'tabbed_chart_nav': NavChartModule,
         'chart_overtime': LineChartModule,
         'fcq_card': FcqCardModule
     }
