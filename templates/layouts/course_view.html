@@ -13,7 +13,7 @@
           </div>
           <div class="row">
             {% include course/CourseStats.html %}
-            {% module fcq_card(course_fcqs,color) %}
+            {% module fcq_card(raw_data.get('fcqs',[]),color) %}
           </div>
         </div>
       </section>

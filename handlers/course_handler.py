@@ -81,27 +81,4 @@ class CourseHandler(BaseHandler):
             self.redirect('/notFound')
             return
 
-        course_info_object = {
-            "title": course.get('course_title'),
-            "id": course.get('id'),
-            "campus": self.convert_campus(course.get('campus')),
-            "department": course.get('department_id'),
-            "subject": course.get('course_subject'),
-            "sections": len(course.get('fcqs')),
-            "instructors": course.get('fcqs_stats').get('total_instructors'),
-        }
-
-        course_stats_object = {
-            "challenge": round(course.get('fcqs_stats').get('course_challenge_average'), 1),
-            "learned": round(course.get('fcqs_stats').get('course_howmuchlearned_average'), 1),
-            "overall": round(course.get('fcqs_stats').get('courseoverall_average'), 1),
-            "workload": course.get('hours_per_week_in_class_string')
-        }
-
-        fcqs = course.get('fcqs', [])
-
-        self.render('layouts/course_view.html',
-            raw_data=course,
-            course_info=course_info_object,
-            course_stats=course_stats_object,
-            course_fcqs=fcqs)
+        self.render('layouts/course_view.html', raw_data=course)

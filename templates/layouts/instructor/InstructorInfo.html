@@ -2,38 +2,38 @@
 <div class="col-md-3">
 	<div class="card instructor-stats-card">
 		<div class="card-head style-primary text-center">
-			<header>{{ instructor_info.get('first_name') }} {{ instructor_info.get('last_name') }}</header>
+			<header>{{ raw_data.get('instructor_first', 'instructor_first missing').title() }} {{ raw_data.get('instructor_last', 'instructor_last missing').title() }}</header>
 		</div><!--end .card-head -->
 		<div class="card-body no-padding height-8 scroll">
 			<ul class="list divider-full-bleed">
 				<li class="tile">
 					<div class="tile-content">
-						<div class="tile-text text-primary-dark .instructor-stats-card-department">Department: <a href="/department/{{instructor_info.get('department').lower()}}" class="text-light">{{ instructor_info.get('department') }}</a></div>
+						<div class="tile-text text-primary-dark .instructor-stats-card-department">Department: <a href="/department/{{raw_data.get('department_id').lower()}}" class="text-light">{{ raw_data.get('department_id', 'department_id missing').upper() }}</a></div>
 					</div>
 				</li>
 				<li class="tile">
 					<div class="tile-content">	
-						<div class="tile-text text-primary-dark">Instructor Type: <a class="text-light">{{ instructor_info.get('type') }}</a></div>
+						<div class="tile-text text-primary-dark">Instructor Type: <a class="text-light">{{ raw_data.get('instructor_group', 'instructor_group missing') }}</a></div>
 					</div>
 				</li>
 				<li class="tile">
 					<div class="tile-content">	
-						<div class="tile-text text-primary-dark">Sections Taught: <a class="text-light">{{ instructor_info.get('sections') }}</a></div>
+						<div class="tile-text text-primary-dark">Sections Taught: <a class="text-light">{{ len(raw_data.get('fcqs', '')) }}</a></div>
 					</div>
 				</li>
 				<li class="tile">
 					<div class="tile-content">	
-						<div class="tile-text text-primary-dark">Courses Taught: <a class="text-light">{{ instructor_info.get('courses') }}</a></div>
+						<div class="tile-text text-primary-dark">Courses Taught: <a class="text-light">{{ len(raw_data.get('courses', 'courses missing')) }}</a></div>
 					</div>
 				</li>
 				<li class="tile">
 					<div class="tile-content">	
-						<div class="tile-text text-primary-dark">Last FCQ: <a class="text-light">{{ instructor_info.get('last_fcq') }}</a></div>
+						<div class="tile-text text-primary-dark">First FCQ: <a class="text-light">{{ convert_date(raw_data.get('fcqs_yearterms', ['',''])[0]) }}</a></div>
 					</div>
 				</li>
 				<li class="tile">
 					<div class="tile-content">	
-						<div class="tile-text text-primary-dark">First FCQ: <a class="text-light">{{ instructor_info.get('first_fcq') }}</a></div>
+						<div class="tile-text text-primary-dark">Last FCQ: <a class="text-light">{{ convert_date(raw_data.get('fcqs_yearterms', ['',''])[-1]) }}</a></div>
 					</div>
 				</li>
 			</ul>

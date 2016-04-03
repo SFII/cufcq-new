@@ -14,7 +14,7 @@
           </div>
           <div class="row">
             {% include instructor/InstructorStats.html %}
-            {% module fcq_card(instructor_fcqs,color) %}
+            {% module fcq_card(raw_data.get('fcqs',[]),color) %}
           </div>
         </div>
       </section>

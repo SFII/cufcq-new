@@ -20,6 +20,6 @@ routes = [
     (r"/course/([\w-]+)", CourseHandler),
     (r"/department/([\w-]+)", DepartmentHandler),
     (r"/api/(instructor|course|fcq|grade|department)/([\w-]+)", ApiHandler),
-    (r"/notFound", NotFoundHandler)
-#    (r"/about", AboutHandler)
+    (r"/notFound", NotFoundHandler),
+    (r"/about", AboutHandler)
 ]
