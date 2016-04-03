@@ -2,7 +2,7 @@ from handlers.base_handler import BaseHandler
 
 
 class DepartmentHandler(BaseHandler):
-    
+
     def color(self):
         return 'violet'
 
@@ -56,5 +56,4 @@ class DepartmentHandler(BaseHandler):
         if department is None:
             self.redirect('/notFound')
             return
-
         self.render('layouts/department_view.html', raw_data=department)

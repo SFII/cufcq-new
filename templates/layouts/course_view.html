@@ -9,7 +9,14 @@
         <div class="section-body">
           <div class="row">
             {% include course/CourseInfo.html %}
-            {% module chart_overtime("Course Statistics", color, linechart_data) %}
+            {% set header = "Course Statistics" %}
+            {% set keys = [
+              'course_howmuchlearned_average',
+              'course_challenge_average',
+              'courseoverall_average',
+              'course_priorinterest_average'
+                ] %}
+            {% include card/linechart.html %}
           </div>
           <div class="row">
             {% include course/CourseStats.html %}
