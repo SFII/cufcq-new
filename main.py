@@ -88,8 +88,6 @@ def main():
         signal.signal(signal.SIGINT, sig_handler)
         signal.signal(signal.SIGTERM, sig_handler)
     else:
-        settings['site_port'] = options.port
-        httpserver.bind(settings['site_port'])  # port
         httpserver.start(1)
 
     logging.info("Now serving on http://localhost:{0}".format(settings['site_port']))

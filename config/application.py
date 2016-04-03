@@ -33,6 +33,7 @@ settings = {
 def initialize_settings():
     settings['debug'] = options.debug
     settings['autoreload'] = options.debug
+    settings['site_port'] = options.port
     database_name = options.database_name
     database_port = options.database_port
     database_host = options.database_host
