@@ -1,13 +1,6 @@
 import tornado.ioloop
-import tornado.web
-import tornado.escape
-import unittest
-import time
-import signal
-from tornado.httpserver import HTTPServer
-from tornado.options import define, options
+from tornado.options import options
 import rethinkdb as r
-from tornado.options import define, options
 from tornado.web import Application
 from config.routes import routes
 from modules.navchart_module import NavChartModule
@@ -23,7 +16,6 @@ import logging
 
 settings = {
     'cookie_secret': 'PqITv9b7QUyoAUUcgfRtReoZIXjQrEKKk9fpQpGu6MU=',
-    'autoreload': True,
     'template_path': 'templates/',
     'static_path': 'static/',
     'grade': Grade(),
@@ -42,15 +34,15 @@ settings = {
 
 def initialize_settings():
     settings['debug'] = options.debug
+    settings['autoreload'] = options.debug
     settings['site_port'] = options.port
     database_name = options.database_name
     database_port = options.database_port
     database_host = options.database_host
-    if options.debug:
-        database_name += '_debug'
+    database_name += '_debug'
     settings['database_name'] = database_name
     try:
-        conn = r.connect(host=options.database_host, port=options.database_port)
+        conn = r.connect(host=database_host, port=database_port)
         settings['conn'] = conn
         r.db_create(database_name).run(conn)
     except Exception as e:

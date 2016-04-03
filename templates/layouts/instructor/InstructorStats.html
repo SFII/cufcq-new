@@ -8,22 +8,22 @@
       <ul class="list divider-full-bleed">
         <li class="tile">
           <div class="tile-content">
-            <div class="tile-text text-primary-dark .instructor-stats-card-department">Overall Score: <a class="text-light">{{i_overall = instructor_stats.get("overall")}} out of 6</a></div>
+            <div class="tile-text text-primary-dark .instructor-stats-card-department">Overall Score: <a class="text-light">{{i_overall = noneCheck(raw_data.get('fcqs_stats').get('instructoroverall_average'))}} out of 6</a></div>
           </div>
         </li>
         <li class="tile">
           <div class="tile-content">  
-            <div class="tile-text text-primary-dark .instructor-stats-card-department">Effectiveness: <a class="text-light">{{i_eff = instructor_stats.get("effectiveness")}} out of 6</a></div>
+            <div class="tile-text text-primary-dark .instructor-stats-card-department">Effectiveness: <a class="text-light">{{i_eff = noneCheck(raw_data.get('fcqs_stats').get('instructor_effectiveness_average'))}} out of 6</a></div>
           </div>
         </li>
         <li class="tile">
           <div class="tile-content">  
-            <div class="tile-text text-primary-dark .instructor-stats-card-department">Availability: <a class="text-light">{{i_average = instructor_stats.get("availability")}} out of 6</a></div>
+            <div class="tile-text text-primary-dark .instructor-stats-card-department">Availability: <a class="text-light">{{i_average = noneCheck(raw_data.get('fcqs_stats').get('instructor_availability_average'))}} out of 6</a></div>
           </div>
         </li>
         <li class="tile">
           <div class="tile-content">  
-            <div class="tile-text text-primary-dark .instructor-stats-card-department">Respect Score: <a class="text-light">{{i_respect = instructor_stats.get("respect")}} out of6</a></div>
+            <div class="tile-text text-primary-dark .instructor-stats-card-department">Respect Score: <a class="text-light">{{i_respect = noneCheck(raw_data.get('fcqs_stats').get('instructor_respect_average'))}} out of 6</a></div>
           </div>
         </li>
       </ul>

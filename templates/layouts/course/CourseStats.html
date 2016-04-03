@@ -8,22 +8,22 @@
       <ul class="list divider-full-bleed">
         <li class="tile">
           <div class="tile-content">
-            <div class="tile-text text-primary-dark .instructor-stats-card-department">Challenge: <a class="text-light">{{i_overall = course_stats.get("challenge")}} out of 6</a></div>
+            <div class="tile-text text-primary-dark .instructor-stats-card-department">Challenge: <a class="text-light">{{i_overall = noneCheck(raw_data.get('fcqs_stats').get('course_challenge_average'))}} out of 6</a></div>
           </div>
         </li>
         <li class="tile">
           <div class="tile-content">  
-            <div class="tile-text text-primary-dark .instructor-stats-card-department">Amount Learned: <a class="text-light">{{i_eff = course_stats.get("learned")}} out of 6</a></div>
+            <div class="tile-text text-primary-dark .instructor-stats-card-department">Amount Learned: <a class="text-light">{{i_eff = noneCheck(raw_data.get('fcqs_stats').get('course_howmuchlearned_average'))}} out of 6</a></div>
           </div>
         </li>
         <li class="tile">
           <div class="tile-content">  
-            <div class="tile-text text-primary-dark .instructor-stats-card-department">Overall Score: <a class="text-light">{{i_average = course_stats.get("overall")}} out of 6</a></div>
+            <div class="tile-text text-primary-dark .instructor-stats-card-department">Overall Score: <a class="text-light">{{i_average = noneCheck(raw_data.get('fcqs_stats').get('courseoverall_average'))}} out of 6</a></div>
           </div>
         </li>
         <li class="tile">
           <div class="tile-content">  
-            <div class="tile-text text-primary-dark .instructor-stats-card-department">Workload: <a class="text-light">{{i_respect = course_stats.get("workload")}} hrs/week</a></div>
+            <div class="tile-text text-primary-dark .instructor-stats-card-department">Workload: <a class="text-light">{{i_respect = raw_data.get('hours_per_week_in_class_string', 0) }} hrs/week</a></div>
           </div>
         </li>
       </ul>

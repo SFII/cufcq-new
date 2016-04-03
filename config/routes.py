@@ -15,7 +15,6 @@ from handlers.about_handler import AboutHandler
 routes = [
     (r"/", IndexHandler),
     (r"/foobar", Foobar),
-    # (r"/departments", DepartmentHandler),
     (r"/ajax/fcqcard/([\w-]+)", FcqCardHandler),
     (r"/instructor/([\w-]+)", InstructorHandler),
     (r"/course/([\w-]+)", CourseHandler),
