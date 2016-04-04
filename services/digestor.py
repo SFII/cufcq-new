@@ -129,8 +129,7 @@ def overtime(db, conn):
 def model_overtime(db, conn):
 
     def _grades_overtime(doc, val):
-        return {
-            'grade_data_averages': r.branch(((doc.get_field('grades').count() > 0) & ((val['group'] % 10) != 4)), {
+        return r.branch(((doc.get_field('grades').count() > 0) & ((val['group'] % 10) != 4)), {
                 'percent_a': val['reduction'].get_field('percent_a').avg().default(None),
                 'percent_b': val['reduction'].get_field('percent_b').avg().default(None),
                 'percent_c': val['reduction'].get_field('percent_c').avg().default(None),
@@ -140,7 +139,6 @@ def model_overtime(db, conn):
                 'percent_c_minus_or_below': val['reduction'].get_field('percent_c_minus_or_below').avg().default(None),
                 'average_grade': val['reduction'].get_field('average_grade').avg().default(None),
             }, None)
-        }
 
     def _general_overtime(doc, val):
         return {
