@@ -8,16 +8,16 @@ class NavChartModule(LineChartModule):
     def render(self, color, raw_data):
         chart_keys = [
             [
-                'instructor_effectiveness_average',
-                'instructor_respect_average',
-                'instructoroverall_average',
-                'instructor_availability_average'
-            ],
-            [
                 'course_howmuchlearned_average',
                 'course_challenge_average',
                 'courseoverall_average',
                 'course_priorinterest_average'
+            ],
+            [
+                'instructor_effectiveness_average',
+                'instructor_respect_average',
+                'instructoroverall_average',
+                'instructor_availability_average'
             ],
             [
                 'TTT_instructoroverall_average',
@@ -35,8 +35,8 @@ class NavChartModule(LineChartModule):
                 'percent_d',
                 'percent_c',
                 'percent_b',
-                'percent_a',
                 'average_grade',
+                'percent_a',
             ]
         ]
         self.chart_data = []
