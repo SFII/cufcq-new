@@ -5,4 +5,4 @@ import os
 class IndexHandler(StaticHandler):
     def get(self):
         pid = os.getpid()
-        self.render('home.html', proccess=pid)
+        self.render('layouts/home.html', proccess=pid)
