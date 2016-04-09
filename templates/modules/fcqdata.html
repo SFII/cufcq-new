@@ -31,6 +31,19 @@
               <td>{{date}}</td>
             </tr>
             <tr>
+              <td>Fcq Id</td>
+               <td><a target="_blank" href="/api/fcq/{{fcq_id}}">{{fcq_id}}</a></td>
+             </tr>
+             <tr>
+               <td>Grade Data</td>
+               <td>
+                 {% if grade_data %}
+                   <a target="_blank" href="/api/grade/{{fcq_id}}">{{fcq_id}}</a></td>
+                 {% else %}
+                   None
+                 {% end %}
+             </tr>		
+             <tr>
               <td>Course</td>
               <td><a target="_blank" href="/course/{{fcq_data['course_id']}}">{{fcq_data['course_title']}}</a></td>
             </tr>
