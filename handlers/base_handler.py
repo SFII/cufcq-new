@@ -26,10 +26,9 @@ class BaseHandler(tornado.web.RequestHandler):
 
     def noneCheck(self, raw_data):
         if(raw_data is not None):
-            round(raw_data, 1)
-        else:
-            return 0
-        
+            return round(raw_data, 1)
+        return 0
+
     def description_string(self, raw_data):
         return """CUFCQ is a data analysis project for studying and visualizing
         the University of Colorado's Faculty Course Questionnaire data."""

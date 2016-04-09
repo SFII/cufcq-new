@@ -129,8 +129,7 @@ def overtime(db, conn):
 def model_overtime(db, conn):
 
     def _grades_overtime(doc, val):
-        return {
-            'grade_data_averages': r.branch(((doc.get_field('grades').count() > 0) & ((val['group'] % 10) != 4)), {
+        return r.branch(((doc.get_field('grades').count() > 0) & ((val['group'] % 10) != 4)), {
                 'percent_a': val['reduction'].get_field('percent_a').avg().default(None),
                 'percent_b': val['reduction'].get_field('percent_b').avg().default(None),
                 'percent_c': val['reduction'].get_field('percent_c').avg().default(None),
@@ -140,7 +139,90 @@ def model_overtime(db, conn):
                 'percent_c_minus_or_below': val['reduction'].get_field('percent_c_minus_or_below').avg().default(None),
                 'average_grade': val['reduction'].get_field('average_grade').avg().default(None),
             }, None)
-        }
+
+    def _expanded_grades_overtime(doc, val):
+        return r.branch(((doc.get_field('grades').count() > 0) & ((val['group'] % 10) != 4)), {
+                    'percent_a': val['reduction'].get_field('percent_a').avg().default(None),
+                    'percent_b': val['reduction'].get_field('percent_b').avg().default(None),
+                    'percent_c': val['reduction'].get_field('percent_c').avg().default(None),
+                    'percent_d': val['reduction'].get_field('percent_d').avg().default(None),
+                    'percent_f': val['reduction'].get_field('percent_f').avg().default(None),
+                    'percent_incomplete': val['reduction'].get_field('percent_incomplete').avg().default(None),
+                    'percent_c_minus_or_below': val['reduction'].get_field('percent_c_minus_or_below').avg().default(None),
+                    'average_grade': val['reduction'].get_field('average_grade').avg().default(None),
+                    'GR_percent_a': val['reduction'].filter({'level': 'GR'}).get_field('percent_a').avg().default(None),
+                    'GR_percent_b': val['reduction'].filter({'level': 'GR'}).get_field('percent_b').avg().default(None),
+                    'GR_percent_c': val['reduction'].filter({'level': 'GR'}).get_field('percent_c').avg().default(None),
+                    'GR_percent_d': val['reduction'].filter({'level': 'GR'}).get_field('percent_d').avg().default(None),
+                    'GR_percent_f': val['reduction'].filter({'level': 'GR'}).get_field('percent_f').avg().default(None),
+                    'GR_percent_incomplete': val['reduction'].filter({'level': 'GR'}).get_field('percent_incomplete').avg().default(None),
+                    'GR_percent_c_minus_or_below': val['reduction'].filter({'level': 'GR'}).get_field('percent_c_minus_or_below').avg().default(None),
+                    'GR_average_grade': val['reduction'].filter({'level': 'GR'}).get_field('average_grade').avg().default(None),
+                    'UD_percent_a': val['reduction'].filter({'level': 'UD'}).get_field('percent_a').avg().default(None),
+                    'UD_percent_b': val['reduction'].filter({'level': 'UD'}).get_field('percent_b').avg().default(None),
+                    'UD_percent_c': val['reduction'].filter({'level': 'UD'}).get_field('percent_c').avg().default(None),
+                    'UD_percent_d': val['reduction'].filter({'level': 'UD'}).get_field('percent_d').avg().default(None),
+                    'UD_percent_f': val['reduction'].filter({'level': 'UD'}).get_field('percent_f').avg().default(None),
+                    'UD_percent_incomplete': val['reduction'].filter({'level': 'UD'}).get_field('percent_incomplete').avg().default(None),
+                    'UD_percent_c_minus_or_below': val['reduction'].filter({'level': 'UD'}).get_field('percent_c_minus_or_below').avg().default(None),
+                    'UD_average_grade': val['reduction'].filter({'level': 'UD'}).get_field('average_grade').avg().default(None),
+                    'LD_percent_a': val['reduction'].filter({'level': 'LD'}).get_field('percent_a').avg().default(None),
+                    'LD_percent_b': val['reduction'].filter({'level': 'LD'}).get_field('percent_b').avg().default(None),
+                    'LD_percent_c': val['reduction'].filter({'level': 'LD'}).get_field('percent_c').avg().default(None),
+                    'LD_percent_d': val['reduction'].filter({'level': 'LD'}).get_field('percent_d').avg().default(None),
+                    'LD_percent_f': val['reduction'].filter({'level': 'LD'}).get_field('percent_f').avg().default(None),
+                    'LD_percent_incomplete': val['reduction'].filter({'level': 'LD'}).get_field('percent_incomplete').avg().default(None),
+                    'LD_percent_c_minus_or_below': val['reduction'].filter({'level': 'LD'}).get_field('percent_c_minus_or_below').avg().default(None),
+                    'LD_average_grade': val['reduction'].filter({'level': 'LD'}).get_field('average_grade').avg().default(None),
+                }, None)
+
+    def _grades_stats(doc):
+        return r.branch(((doc.get_field('grades').count() > 0)), {
+                'percent_a': doc['grade_data'].get_field('percent_a').avg().default(None),
+                'percent_b': doc['grade_data'].get_field('percent_b').avg().default(None),
+                'percent_c': doc['grade_data'].get_field('percent_c').avg().default(None),
+                'percent_d': doc['grade_data'].get_field('percent_d').avg().default(None),
+                'percent_f': doc['grade_data'].get_field('percent_f').avg().default(None),
+                'percent_incomplete': doc['grade_data'].get_field('percent_incomplete').avg().default(None),
+                'percent_c_minus_or_below': doc['grade_data'].get_field('percent_c_minus_or_below').avg().default(None),
+                'average_grade': doc['grade_data'].get_field('average_grade').avg().default(None),
+            }, None)
+
+    def _expanded_grades_stats(doc):
+        return r.branch(((doc.get_field('grades').count() > 0)), {
+                'percent_a': doc['grade_data'].get_field('percent_a').avg().default(None),
+                'percent_b': doc['grade_data'].get_field('percent_b').avg().default(None),
+                'percent_c': doc['grade_data'].get_field('percent_c').avg().default(None),
+                'percent_d': doc['grade_data'].get_field('percent_d').avg().default(None),
+                'percent_f': doc['grade_data'].get_field('percent_f').avg().default(None),
+                'percent_incomplete': doc['grade_data'].get_field('percent_incomplete').avg().default(None),
+                'percent_c_minus_or_below': doc['grade_data'].get_field('percent_c_minus_or_below').avg().default(None),
+                'average_grade': doc['grade_data'].get_field('average_grade').avg().default(None),
+                'GR_percent_a': doc['grade_data'].filter({'level': 'GR'}).get_field('percent_a').avg().default(None),
+                'GR_percent_b': doc['grade_data'].filter({'level': 'GR'}).get_field('percent_b').avg().default(None),
+                'GR_percent_c': doc['grade_data'].filter({'level': 'GR'}).get_field('percent_c').avg().default(None),
+                'GR_percent_d': doc['grade_data'].filter({'level': 'GR'}).get_field('percent_d').avg().default(None),
+                'GR_percent_f': doc['grade_data'].filter({'level': 'GR'}).get_field('percent_f').avg().default(None),
+                'GR_percent_incomplete': doc['grade_data'].filter({'level': 'GR'}).get_field('percent_incomplete').avg().default(None),
+                'GR_percent_c_minus_or_below': doc['grade_data'].filter({'level': 'GR'}).get_field('percent_c_minus_or_below').avg().default(None),
+                'GR_average_grade': doc['grade_data'].filter({'level': 'GR'}).get_field('average_grade').avg().default(None),
+                'UD_percent_a': doc['grade_data'].filter({'level': 'UD'}).get_field('percent_a').avg().default(None),
+                'UD_percent_b': doc['grade_data'].filter({'level': 'UD'}).get_field('percent_b').avg().default(None),
+                'UD_percent_c': doc['grade_data'].filter({'level': 'UD'}).get_field('percent_c').avg().default(None),
+                'UD_percent_d': doc['grade_data'].filter({'level': 'UD'}).get_field('percent_d').avg().default(None),
+                'UD_percent_f': doc['grade_data'].filter({'level': 'UD'}).get_field('percent_f').avg().default(None),
+                'UD_percent_incomplete': doc['grade_data'].filter({'level': 'UD'}).get_field('percent_incomplete').avg().default(None),
+                'UD_percent_c_minus_or_below': doc['grade_data'].filter({'level': 'UD'}).get_field('percent_c_minus_or_below').avg().default(None),
+                'UD_average_grade': doc['grade_data'].filter({'level': 'UD'}).get_field('average_grade').avg().default(None),
+                'LD_percent_a': doc['grade_data'].filter({'level': 'LD'}).get_field('percent_a').avg().default(None),
+                'LD_percent_b': doc['grade_data'].filter({'level': 'LD'}).get_field('percent_b').avg().default(None),
+                'LD_percent_c': doc['grade_data'].filter({'level': 'LD'}).get_field('percent_c').avg().default(None),
+                'LD_percent_d': doc['grade_data'].filter({'level': 'LD'}).get_field('percent_d').avg().default(None),
+                'LD_percent_f': doc['grade_data'].filter({'level': 'LD'}).get_field('percent_f').avg().default(None),
+                'LD_percent_incomplete': doc['grade_data'].filter({'level': 'LD'}).get_field('percent_incomplete').avg().default(None),
+                'LD_percent_c_minus_or_below': doc['grade_data'].filter({'level': 'LD'}).get_field('percent_c_minus_or_below').avg().default(None),
+                'LD_average_grade': doc['grade_data'].filter({'level': 'LD'}).get_field('average_grade').avg().default(None),
+            }, None)
 
     def _general_overtime(doc, val):
         return {
@@ -277,6 +359,16 @@ def model_overtime(db, conn):
             'Department': _department_stats,
             'Course': _course_stats
         }[model]
+        _model_grades_overtime = {
+            'Instructor': _expanded_grades_overtime,
+            'Department': _expanded_grades_overtime,
+            'Course': _grades_overtime
+        }[model]
+        _model_grades_stats = {
+            'Instructor': _expanded_grades_stats,
+            'Department': _expanded_grades_stats,
+            'Course': _grades_stats
+        }[model]
         overtime_query = r.db(db).table(model).merge(
             lambda doc: {
                 'fcq_data': r.branch(
@@ -298,9 +390,9 @@ def model_overtime(db, conn):
                 ).coerce_to('object'),
                 'fcqs_stats': _model_stats(doc),
                 'grades_overtime': doc['grade_data'].group('yearterm').ungroup().map(
-                    lambda val: [val['group'].coerce_to('string'), _grades_overtime(doc, val)]
+                    lambda val: [val['group'].coerce_to('string'), _model_grades_overtime(doc, val)]
                 ).coerce_to('object'),
-                'grades_stats': None
+                'grades_stats': _model_grades_stats(doc)
             })
         ).run(conn, array_limit=200000)
         logging.info(overtime_query)
@@ -332,6 +424,7 @@ def associate(db, conn):
     has_mode(db, conn, 'Course', 'hours_per_week_in_class_string')
     has_mode(db, conn, 'Instructor', 'instructor_group')
     has_mode(db, conn, 'Instructor', 'campus')
+    has_mode(db, conn, 'Department', 'fcq_department')
     has_many(db, conn, 'Course', 'Fcq', has_many_id='id')
     has_many(db, conn, 'Course', 'Grade', has_many_id='id', many_table='Grade')
     has_many(db, conn, 'Course', 'fcqs_yearterm', has_many_id='yearterm')
