@@ -8,6 +8,8 @@ from models.grade import Grade
 from models.instructor import Instructor
 from models.course import Course
 from models.department import Department
+from models.college import College
+from models.campus import Campus
 from os import listdir
 from os.path import isfile, join
 
@@ -348,25 +350,33 @@ def model_overtime(db, conn):
         return dot
 
     # model_overtime
-    for model in ['Instructor', 'Department', 'Course']:
+    for model in ['Instructor', 'Department', 'Course', 'College', 'Campus']:
         _model_overtime = {
             'Instructor': _instructor_overtime,
             'Department': _department_overtime,
+            'College': _department_overtime,
+            'Campus': _department_overtime,
             'Course': _course_overtime
         }[model]
         _model_stats = {
             'Instructor': _instructor_stats,
             'Department': _department_stats,
+            'College': _department_stats,
+            'Campus': _department_stats,
             'Course': _course_stats
         }[model]
         _model_grades_overtime = {
             'Instructor': _expanded_grades_overtime,
             'Department': _expanded_grades_overtime,
+            'College': _expanded_grades_overtime,
+            'Campus': _expanded_grades_overtime,
             'Course': _grades_overtime
         }[model]
         _model_grades_stats = {
             'Instructor': _expanded_grades_stats,
             'Department': _expanded_grades_stats,
+            'College': _expanded_grades_stats,
+            'Campus': _expanded_grades_stats,
             'Course': _grades_stats
         }[model]
         overtime_query = r.db(db).table(model).merge(
@@ -399,46 +409,65 @@ def model_overtime(db, conn):
 
 def has_many(db, conn, model, has_many, has_many_id=None, many_table='Fcq'):
     model_id = "{0}_id".format(model).lower()
+    if model == 'Campus':
+        model_id = 'campus'
     has_many_plural = "{0}s".format(has_many).lower()
     if not has_many_id:
         has_many_id = "{0}_id".format(has_many).lower()
     grouped_model = r.db(db).table(many_table).group(model_id).get_field(has_many_id).ungroup().for_each(
-        lambda doc: r.db(db).table(model).get(doc['group']).update({has_many_plural: doc['reduction'].distinct()})
+        lambda doc: r.db(db).table(model).get(doc['group'].downcase()).update({has_many_plural: doc['reduction'].distinct()})
     ).run(conn, array_limit=200000)
     logging.info(grouped_model)
 
 def has_mode(db, conn, model, field, mode_table='Fcq'):
     model_id = "{0}_id".format(model).lower()
     mode_query = r.db(db).table(mode_table).group(model_id).ungroup().for_each(
-        lambda doc: r.db(db).table(model).get(doc['group']).update({
+        lambda doc: r.db(db).table(model).get(doc['group'].downcase()).update({
             field: doc['reduction'].group(field).count().ungroup().order_by('reduction').nth(-1).default({'group': None})['group']
         })
     ).run(conn, array_limit=200000)
     logging.info(mode_query)
 
 def associate(db, conn):
-    has_mode(db, conn, 'Course', 'hours', mode_table='Grade')
-    has_mode(db, conn, 'Course', 'honors', mode_table='Grade')
-    has_mode(db, conn, 'Course', 'rap', mode_table='Grade')
-    has_mode(db, conn, 'Course', 'activity_type', mode_table='Grade')
-    has_mode(db, conn, 'Course', 'hours_per_week_in_class_string')
-    has_mode(db, conn, 'Instructor', 'instructor_group')
-    has_mode(db, conn, 'Instructor', 'campus')
-    has_mode(db, conn, 'Department', 'fcq_department')
-    has_many(db, conn, 'Course', 'Fcq', has_many_id='id')
-    has_many(db, conn, 'Course', 'Grade', has_many_id='id', many_table='Grade')
-    has_many(db, conn, 'Course', 'fcqs_yearterm', has_many_id='yearterm')
-    has_many(db, conn, 'Course', 'grades_yearterm', has_many_id='yearterm', many_table='Grade')
-    has_many(db, conn, 'Course', 'alternate_title', has_many_id='course_title')
-    has_many(db, conn, 'Course', 'Instructor')
-    has_many(db, conn, 'Instructor', 'Fcq', has_many_id='id')
-    has_many(db, conn, 'Instructor', 'Grade', has_many_id='id', many_table='Grade')
-    has_many(db, conn, 'Instructor', 'fcqs_yearterm', has_many_id='yearterm')
-    has_many(db, conn, 'Instructor', 'grades_yearterm', has_many_id='yearterm', many_table='Grade')
-    has_many(db, conn, 'Instructor', 'Course')
-    has_many(db, conn, 'Department', 'Fcq', has_many_id='id')
-    has_many(db, conn, 'Department', 'Grade', has_many_id='id', many_table='Grade')
-    has_many(db, conn, 'Department', 'fcqs_yearterm', has_many_id='yearterm')
-    has_many(db, conn, 'Department', 'grades_yearterm', has_many_id='yearterm', many_table='Grade')
-    has_many(db, conn, 'Department', 'Instructor')
-    has_many(db, conn, 'Department', 'Course')
+    has_many(db, conn, 'College', 'Grade', has_many_id='id', many_table='Grade')
+    has_many(db, conn, 'College', 'Fcq', has_many_id='id')
+    has_many(db, conn, 'College', 'Instructor', has_many_id='id')
+    has_many(db, conn, 'College', 'Course', has_many_id='id')
+    has_many(db, conn, 'College', 'Department', has_many_id='id')
+    has_many(db, conn, 'College', 'fcqs_yearterm', has_many_id='yearterm')
+    has_many(db, conn, 'College', 'grades_yearterm', has_many_id='yearterm', many_table='Grade')
+    has_many(db, conn, 'Campus', 'Grade', has_many_id='id', many_table='Grade')
+    has_many(db, conn, 'Campus', 'Fcq', has_many_id='id')
+    has_many(db, conn, 'Campus', 'Instructor', has_many_id='id')
+    has_many(db, conn, 'Campus', 'Course', has_many_id='id')
+    has_many(db, conn, 'Campus', 'Department', has_many_id='id')
+    has_many(db, conn, 'Campus', 'College', has_many_id='id')
+    has_many(db, conn, 'Campus', 'fcqs_yearterm', has_many_id='yearterm')
+    has_many(db, conn, 'Campus', 'grades_yearterm', has_many_id='yearterm', many_table='Grade')
+    # has_mode(db, conn, 'Instructor', 'college_id')
+    # has_mode(db, conn, 'Campus', 'college_id')
+    # has_mode(db, conn, 'Course', 'hours', mode_table='Grade')
+    # has_mode(db, conn, 'Course', 'honors', mode_table='Grade')
+    # has_mode(db, conn, 'Course', 'rap', mode_table='Grade')
+    # has_mode(db, conn, 'Course', 'activity_type', mode_table='Grade')
+    # has_mode(db, conn, 'Course', 'hours_per_week_in_class_string')
+    # has_mode(db, conn, 'Instructor', 'instructor_group')
+    # has_mode(db, conn, 'Instructor', 'campus')
+    # has_mode(db, conn, 'Department', 'fcq_department')
+    # has_many(db, conn, 'Course', 'Fcq', has_many_id='id')
+    # has_many(db, conn, 'Course', 'Grade', has_many_id='id', many_table='Grade')
+    # has_many(db, conn, 'Course', 'fcqs_yearterm', has_many_id='yearterm')
+    # has_many(db, conn, 'Course', 'grades_yearterm', has_many_id='yearterm', many_table='Grade')
+    # has_many(db, conn, 'Course', 'alternate_title', has_many_id='course_title')
+    # has_many(db, conn, 'Course', 'Instructor')
+    # has_many(db, conn, 'Instructor', 'Fcq', has_many_id='id')
+    # has_many(db, conn, 'Instructor', 'Grade', has_many_id='id', many_table='Grade')
+    # has_many(db, conn, 'Instructor', 'fcqs_yearterm', has_many_id='yearterm')
+    # has_many(db, conn, 'Instructor', 'grades_yearterm', has_many_id='yearterm', many_table='Grade')
+    # has_many(db, conn, 'Instructor', 'Course')
+    # has_many(db, conn, 'Department', 'Fcq', has_many_id='id')
+    # has_many(db, conn, 'Department', 'Grade', has_many_id='id', many_table='Grade')
+    # has_many(db, conn, 'Department', 'fcqs_yearterm', has_many_id='yearterm')
+    # has_many(db, conn, 'Department', 'grades_yearterm', has_many_id='yearterm', many_table='Grade')
+    # has_many(db, conn, 'Department', 'Instructor')
+    # has_many(db, conn, 'Department', 'Course')

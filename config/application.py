@@ -11,6 +11,8 @@ from models.grade import Grade
 from models.course import Course
 from models.instructor import Instructor
 from models.department import Department
+from models.college import College
+from models.campus import Campus
 from handlers.not_found_handler import NotFoundHandler
 import logging
 
@@ -23,6 +25,8 @@ settings = {
     'course': Course(),
     'instructor': Instructor(),
     'department': Department(),
+    'college': College(),
+    'campus': Campus(),
     'default_handler_class': NotFoundHandler,
     'ui_modules': {
         'tabbed_chart_nav': NavChartModule,
@@ -52,6 +56,8 @@ def initialize_settings():
     settings['course'].init(database_name, conn)
     settings['instructor'].init(database_name, conn)
     settings['department'].init(database_name, conn)
+    settings['college'].init(database_name, conn)
+    settings['campus'].init(database_name, conn)
     return settings
 
 
