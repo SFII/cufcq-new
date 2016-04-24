@@ -1,31 +1,19 @@
-<!-- BEGIN INSTRUCTOR INFO -->
-  <div class="card instructor-stats-card">
+<div class="card instructor-stats-card">
     <div class="card-head style-{{ color }} text-primary text-center">
       <header>Department Averages</header>
-    </div><!--end .card-head -->
+    </div>
     <div class="card-body no-padding height-stats scroll">
       <ul class="list divider-full-bleed">
         <li class="tile">
           <div class="tile-content">
-            <div class="tile-text text-primary-dark .instructor-stats-card-department">Course Overall: <a class="text-light">{{i_overall = department_stats.get("course_overall")}} out of 6</a></div>
+            <div class="tile-text text-primary-dark .instructor-stats-card-department">Course Overall: <a class="text-light">{{noneCheck(raw_data['fcqs_stats']['courseoverall_average'])}} out of 6</a></div>
           </div>
         </li>
         <li class="tile">
-          <div class="tile-content">  
-            <div class="tile-text text-primary-dark .instructor-stats-card-department">Instructor Overall: <a class="text-light">{{i_eff = department_stats.get("instructor_overall")}} out of 6</a></div>
-          </div>
-        </li>
-        <li class="tile">
-          <div class="tile-content">  
-            <div class="tile-text text-primary-dark .instructor-stats-card-department">Course Difficulty: <a class="text-light">{{i_average = department_stats.get("course_challenge")}} out of 6</a></div>
-          </div>
-        </li>
-        <li class="tile">
-          <div class="tile-content">  
-            <div class="tile-text text-primary-dark .instructor-stats-card-department">Amount Learned: <a class="text-light">{{i_respect = department_stats.get("course_learned")}} out of 6</a></div>
+          <div class="tile-content">
+            <div class="tile-text text-primary-dark .instructor-stats-card-department">Instructor Overall: <a class="text-light">{{noneCheck(raw_data['fcqs_stats']['instructoroverall_average'])}} out of 6</a></div>
           </div>
         </li>
       </ul>
-    </div><!--end .card-body -->
-  </div><!--end .card -->
-<!-- END INSTRUCTOR INFO -->
+    </div>
+  </div>

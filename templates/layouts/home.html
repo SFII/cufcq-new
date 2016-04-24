@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+{% include standard/head.html%}
+
+{% block content %}
+<div class="menubar-hoverable header-fixed">
+    <div id="base">
+        <div id="content">
+            <section>
+            <div class="section-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="card">
+                            <div class="card-head text-primary text-center">
+                                <img src="../../static/images/logo.png" class="logo"></img>
+                                <h2 class="fa-1x">
+                                        Welcome to CUFCQ!
+                                </h2>
+                            </div>
+                            <div class="card-body text-primary-dark text-center">
+                                This is a website designed to help you understand FCQs and past grade data for instructors, courses, and departments. Start your search here!
+                            </div>
+                            <div class="col-md-4 text-center"></div>
+                            <div class="col-md-4 text-center">
+                                <form class="form" action="" method="GET">
+                                    <div class="form-group">
+                                        <div class="input-group">
+                                            <div class="input-group-content">
+                                                <input type="text" class="form-control" name="q" placeholder="Search">
+                                            </div>
+                                            <div class="input-group-btn">
+                                                <button type="submit" class="btn btn-icon-toggle ink-reaction"><i class="fa fa-search"></i></button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                                <link type="text/css" rel="stylesheet" href="/static/css/google-search.css" />
+                                <div class="hide-google">
+                                    <gcse:searchresults-only></gcse:searchresults-only>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>               
+            </div>
+            </section>
+        </div>
+    </div>
+{% end %}
+{% include standard/body.html %}
+</div>
+</html>

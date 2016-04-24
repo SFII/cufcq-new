@@ -21,7 +21,6 @@ class FcqCardModule(BaseModule):
                     $( "#nav-{0} :not(.disabled) a").click(function (e) {{
                         e.preventDefault();
                         $(this).tab('show');
-                        console.log(e);
                     }});
                 }});
             }});

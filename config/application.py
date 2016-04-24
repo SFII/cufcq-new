@@ -1,15 +1,9 @@
 import tornado.ioloop
-import tornado.web
-import tornado.escape
-import unittest
-import time
-import signal
-from tornado.httpserver import HTTPServer
-from tornado.options import define, options
+from tornado.options import options
 import rethinkdb as r
-from tornado.options import define, options
 from tornado.web import Application
 from config.routes import routes
+from modules.navchart_module import NavChartModule
 from modules.linechart_module import LineChartModule
 from modules.fcq_card_module import FcqCardModule
 from models.fcq import Fcq
@@ -17,12 +11,13 @@ from models.grade import Grade
 from models.course import Course
 from models.instructor import Instructor
 from models.department import Department
+from models.college import College
+from models.campus import Campus
 from handlers.not_found_handler import NotFoundHandler
 import logging
 
 settings = {
     'cookie_secret': 'PqITv9b7QUyoAUUcgfRtReoZIXjQrEKKk9fpQpGu6MU=',
-    'autoreload': True,
     'template_path': 'templates/',
     'static_path': 'static/',
     'grade': Grade(),
@@ -30,8 +25,11 @@ settings = {
     'course': Course(),
     'instructor': Instructor(),
     'department': Department(),
+    'college': College(),
+    'campus': Campus(),
     'default_handler_class': NotFoundHandler,
     'ui_modules': {
+        'tabbed_chart_nav': NavChartModule,
         'chart_overtime': LineChartModule,
         'fcq_card': FcqCardModule
     }
@@ -40,15 +38,15 @@ settings = {
 
 def initialize_settings():
     settings['debug'] = options.debug
+    settings['autoreload'] = options.debug
     settings['site_port'] = options.port
     database_name = options.database_name
     database_port = options.database_port
     database_host = options.database_host
-    if options.debug:
-        database_name += '_debug'
+    database_name += '_debug'
     settings['database_name'] = database_name
     try:
-        conn = r.connect(host=options.database_host, port=options.database_port)
+        conn = r.connect(host=database_host, port=database_port)
         settings['conn'] = conn
         r.db_create(database_name).run(conn)
     except Exception as e:
@@ -58,6 +56,8 @@ def initialize_settings():
     settings['course'].init(database_name, conn)
     settings['instructor'].init(database_name, conn)
     settings['department'].init(database_name, conn)
+    settings['college'].init(database_name, conn)
+    settings['campus'].init(database_name, conn)
     return settings
 
 
